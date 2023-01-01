@@ -1,0 +1,45 @@
+PlayBot Commands List
+
+BlackBuy Spend Mode Off		- /blackbuyoff  
+BlackBuy Spend Mode On      	- /blackbuyon  
+BlackBuy 14 Spend Mode Off  	- /blackbuy14off  
+BlackBuy 14 Spend Mode On   	- /blackbuy14on  
+Buy Life Mode Off           	- /buylifeoff  
+Buy Life Mode On            	- /buylifeon  
+Buy Luck Potion Mode Off    	- /buyluckoff  
+Buy Luck Potion Mode On     	- /buyluckon  
+Buy Power Potion Mode Off   	- /buypoweroff  
+Buy Power Potion Mode On    	- /buypoweron  
+CreepAttack Mode Off        	- /creepattackoff  
+CreepAttack Mode On         	- /creepattackon  
+Experince Buying Mode Off   	- /expbuyoff  
+Experince Buying Mode On    	- /expbuyon  
+Fighting Mode Off           	- /fightoff  
+Fighting Mode On            	- /fighton 
+GetGems Mode Off            	- /getgemsoff  
+GetGems Mode On             	- /getgemson  
+Interval Text Mode Off      	- /intervaltextoff  
+Interval Text Mode On       	- /intervaltexton 
+Log In Char                 	- /login charname password  
+Log Out Char                	- /logoutchar  
+PlayBot Commands List       	- /helpplaybot
+Player's Items              	- /items  
+Player's Status             	- /status  
+Set Creep Target            	- /setcreep creep  
+Set Goldsave                	- /setgoldsave number
+Set Item Buy Level          	- /setitembuy number  
+Set Scrolls Buy ItemScore   	- /setscrolls number  
+Set SlaySum Min ItemScore   	- /setslaysum number 
+Set XPSpend for upgrades    	- /setxpspend number  
+Settings List               	- /settings  
+Town/Forest Switch Mode     	- /townforest 
+Town/Work Switch Mode       	- /townwork  
+Version Checker             	- /versioncheck  
+XPUpgrade Mode Off          	- /xpupgradeoff 
+XPUpgrade Mode On           	- /xpupgradeon  
+ZNC Mode Off                	- /zncoff		- (Single Only)
+ZNC Mode Off                	- /zncoff charnum	- (Multi or MultiMulti Only)
+ZNC Mode On                 	- /zncon		- (Single Only)
+ZNC Mode On                 	- /zncon charnum	- (Multi or MultiMulti Only)
+
+If you want more information about a command use /help <command> - ie /help settings
