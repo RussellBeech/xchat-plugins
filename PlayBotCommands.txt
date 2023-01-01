@@ -1,0 +1,38 @@
+PlayBot Commands List
+
+Autostart Mode Off          - /autostartoff	- (Single Only)
+Autostart Mode On           - /autostarton	- (Single Only
+Best Bet/Fight/Creep/Slay   - /bestall
+Bot Text Mode Off           - /bottextoff
+Bot Text Mode On            - /bottexton
+Erase Config File           - /eraseconfig
+Error Text Mode Off         - /errortextoff
+Error Text Mode On          - /errortexton
+Evil Mode Off               - /eviloff
+Evil Mode On                - /evilon
+Interval Text Mode Off      - /intervaltextoff
+Interval Text Mode On       - /intervaltexton
+Item Upgrader Mode Off      - /itemupgraderoff
+Item Upgrader Mode On       - /itemupgraderon
+Log In Char                 - /login charname password
+Log Out Char                - /logoutchar
+Multiple Fight Mode         - /singlefightoff
+PlayBot Commands List       - /helpplaybot
+Player's Items              - /items
+Player's Status             - /status
+Rawplayers Mode On          - /rawplayerson
+Rawstats Mode On            - /rawstatson
+Set Align Level             - /setalignlevel number
+Set BetMoney                - /setbetmoney number
+Set Engineer Buy Level      - /setengineerbuy number
+Set Hero Buy ItemScore      - /setherobuy number
+Set Item Buy Level          - /setitembuy number
+Settings List               - /settings
+Single Fight Mode           - /singlefighton
+Update Nick                 - /updatenick		- (Single Only)
+Update Nick                 - /updatenick charnumber	- (Multi Only)
+Upgrade All 1 Mode Off      - /upgradealloff
+Upgrade All 1 Mode On       - /upgradeallon
+Version Checker             - /versioncheck
+
+If you want more information about a command use /help <command> - ie /help settings
