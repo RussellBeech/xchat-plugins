@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.4"
+__module_version__ = "1.5"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -82,15 +82,16 @@ monsters = [	["Blue_Dragon",	        7500],	\
 creeps.reverse()
 monsters.reverse()
 
-#               Network                 Website                                 Server                          FightLL ChanName        BotName                         GameID
-gamelist = [    ["abandoned-irc",       "http://irpg.abandoned-irc.net",        "irc.abandoned-irc.net",        True,   "#zw-idlerpg",  "IdleRPG",                      1],  \
-		["dalnet",              "https://tilde.green/~hellspawn",       "irc.dal.net",                  True,   "#irpg",        "DAL-IRPG",                     2], \
-		["efnet",               "http://idle.rpgsystems.org",           "irc.efnet.net",                True,   "#idlerpg",     "IdleRPG",                      3], \
-		["technet",             "http://evilnet.idleirpg.site",         "irc.technet.chat",             True,   "#idlerpg",     "IdleRPG/IRC-nERDs",            4],  \
-		["irc-nerds",           "http://evilnet.idleirpg.site",         "irc.irc-nerds.net",            True,   "#idlerpg",     "IdleRPG",                      4],  \
-		["twistednet",          "http://idlerpg.twistednet.org",        "irc.twistednet.org",           False,  "#idlerpg",     "IdleRPG",                      5]   ]
+#               Network                 Website                                 Server                          FightLL ChanName        BotName                         GameID  WebSSL
+gamelist = [    ["abandoned",           "https://irpg.abandoned-irc.net",       "irc.abandoned-irc.net",        True,   "#zw-idlerpg",  "IdleRPG",                      1,      True],  \
+		["dalnet",              "https://tilde.green/~hellspawn",       "irc.dal.net",                  True,   "#irpg",        "DAL-IRPG",                     2,      True], \
+		["efnet",               "http://idle.rpgsystems.org",           "irc.efnet.net",                True,   "#idlerpg",     "IdleRPG",                      3,      False], \
+		["technet",             "http://evilnet.idleirpg.site",         "irc.technet.chat",             True,   "#idlerpg",     "IdleRPG/IRC-nERDs",            4,      False],  \
+		["irc-nerds",           "http://evilnet.idleirpg.site",         "irc.irc-nerds.net",            True,   "#idlerpg",     "IdleRPG",                      4,      False],  \
+		["twistednet",          "http://idlerpg.twistednet.org",        "irc.twistednet.org",           False,  "#idlerpg",     "IdleRPG",                      5,      False]   ]
 
 russweb = "https://russellb.000webhostapp.com/"
+gitweb = "https://github.com/RussellBeech/xchat-plugins"
 playerview = None 
 playerview2 = None 
 playerview3 = None 
@@ -113,7 +114,7 @@ playerspagelist2 = None
 playerspagelist3 = None
 playerspagelist4 = None
 mainhook = None
-itemslist = None
+itemslists = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
@@ -161,6 +162,8 @@ setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False t
 scrollssum = 3000 # item score you start buying scrolls
 xpupgrade = True # Upgrade Items with XP
 xpspend = 20 # Amount you use with xpget to upgrade items
+bottextmode = True # True = on, False = off
+errortextmode = True # True = on, False = off
 intervaltext = True # True = on, False = off - Text displayed every interval
 townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching
 buyluck = False
@@ -193,6 +196,10 @@ gameid = 0
 gameid2 = 0
 gameid3 = 0
 gameid4 = 0
+webssl = None
+webssl2 = None
+webssl3 = None
+webssl4 = None
 name = None
 pswd = None
 name2 = None
@@ -210,9 +217,6 @@ private = True
 chanmessage = True
 chanmessagecount = 0
 level = 0
-level2 = 0
-level3 = 0
-level4 = 0
 mysum = 0
 itemSum = 0
 expertSum = 0
@@ -252,9 +256,6 @@ tunic = 0
 weapon = 0
 
 fights = 0
-fights2 = 0
-fights3 = 0
-fights4 = 0
 scrolls = 0
 exp = 0
 luck = 0
@@ -263,15 +264,6 @@ mana = 0
 stone1 = None
 stone2 = None
 stone3 = None
-stoneb1 = None
-stoneb2 = None
-stoneb3 = None
-stonec1 = None
-stonec2 = None
-stonec3 = None
-stoned1 = None
-stoned2 = None
-stoned3 = None
 expert1 = None
 expert2 = None
 expert3 = None
@@ -291,9 +283,6 @@ gems = 0
 ability = None
 xp = 0
 life = 0
-life2 = 0
-life3 = 0
-life4 = 0
 align = "n"
 upgradelevel = 0
 eatused = 0
@@ -319,26 +308,11 @@ webworksB = None
 webworksC = None 
 webworksD = None 
 gameactive = None
-lottonuma1 = None
-lottonuma2 = None
-lottonuma3 = None
-lottonumb1 = None
-lottonumb2 = None
-lottonumb3 = None
-lottonumc1 = None
-lottonumc2 = None
-lottonumc3 = None
-lottonumd1 = None
-lottonumd2 = None
-lottonumd3 = None
+lottonum1 = None
+lottonum2 = None
+lottonum3 = None
 location = None
 locationtime = 0
-location2 = None
-locationtime2 = 0
-location3 = None
-locationtime3 = 0
-location4 = None
-locationtime4 = 0
 
 game_chan = None
 game_chan2 = None
@@ -354,6 +328,8 @@ for entry in configList:
 		blackbuyspend = entry[1]
 	if(entry[0] == "blackbuyspend14"):
 		blackbuyspend14 = entry[1]
+	if(entry[0] == "bottextmode"):
+		bottextmode = entry[1]
 	if(entry[0] == "buylife"):
 		buylife = entry[1]
 	if(entry[0] == "buyluck"):
@@ -362,6 +338,8 @@ for entry in configList:
 		buypower = entry[1]
 	if(entry[0] == "creepattack"):
 		creepattack = entry[1]
+	if(entry[0] == "errortextmode"):
+		errortextmode = entry[1]
 	if(entry[0] == "expbuy"):
 		expbuy = entry[1]
 	if(entry[0] == "fightmode"):
@@ -407,6 +385,7 @@ def versionchecker():
 	global currentversion
 	global python3
 	global russweb
+	global gitweb
 
 	webversion = None
 	try:
@@ -428,7 +407,7 @@ def versionchecker():
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < webversion):
 			xchat.prnt("You have an old version of PlayBot")
-			xchat.prnt("You can download a new version from {0}".format(russweb))
+			xchat.prnt("You can download a new version from {0} or {1}".format(russweb, gitweb))
 		if(currentversion > webversion):
 			xchat.prnt("Give me, Give me")
 
@@ -455,14 +434,18 @@ def configwrite():
 	global ZNC2
 	global ZNC3
 	global ZNC4
-	
+	global bottextmode
+	global errortextmode
+
 	configList = []
 	configList.append( ( "blackbuyspend", blackbuyspend ) )
 	configList.append( ( "blackbuyspend14", blackbuyspend14 ) )
+	configList.append( ( "bottextmode", bottextmode ) )
 	configList.append( ( "buylife", buylife ) )
 	configList.append( ( "buyluck", buyluck ) )
 	configList.append( ( "buypower", buypower ) )
 	configList.append( ( "creepattack", creepattack ) )
+	configList.append( ( "errortextmode", errortextmode ) )
 	configList.append( ( "expbuy", expbuy ) )
 	configList.append( ( "fightmode", fightmode ) )
 	configList.append( ( "getgems", getgems ) )
@@ -638,22 +621,22 @@ def usecommand(commanded, num):
 		try:
 			game_chan.command( "msg {0} {1}".format(botname, commanded) )
 		except AttributeError:
-			raise NameError( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
 	if(num == 2 and botdisable2 is False):
 		try:
 			game_chan2.command( "msg {0} {1}".format(botname2, commanded) )
 		except AttributeError:
-			raise NameError( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2) )
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2) )
 	if(num == 3 and botdisable3 is False):
 		try:
 			game_chan3.command( "msg {0} {1}".format(botname3, commanded) )
 		except AttributeError:
-			raise NameError( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3) )
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3) )
 	if(num == 4 and botdisable4 is False):
 		try:
 			game_chan4.command( "msg {0} {1}".format(botname4, commanded) )
 		except AttributeError:
-			raise NameError( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4) )
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4) )
 
 xchat.prnt( "To start PlayBot use /login CharName Password" )
 
@@ -734,7 +717,13 @@ def login(word, word_eol, userdata):
 	global webworksC
 	global webworksD
 	global slaysum
-	
+	global webssl
+	global webssl2
+	global webssl3
+	global webssl4
+	global bottextmode
+	global errortextmode
+
 	charcount += 1
 
 	netlist = []
@@ -755,6 +744,7 @@ def login(word, word_eol, userdata):
 				channame = entry[4]
 				botname = entry[5]
 				gameid = entry[6]
+				webssl = entry[7]
 				netcheck = True
 				
 		# find context
@@ -773,7 +763,8 @@ def login(word, word_eol, userdata):
 		if netcheck is True:
 			webdata2(1)
 		if netcheck is False:
-			xchat.prnt("Networks supported: {0}".format(netlist))
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
 			if "quakenet" in netname.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name is None or pswd is None or netcheck is False):
@@ -815,6 +806,7 @@ def login(word, word_eol, userdata):
 				channame2 = entry[4]
 				botname2 = entry[5]
 				gameid2 = entry[6]
+				webssl2 = entry[7]
 				netcheck = True
 
 		# find context
@@ -833,7 +825,8 @@ def login(word, word_eol, userdata):
 		if netcheck is True:
 			webdata2(2)
 		if netcheck is False:
-			xchat.prnt("Networks supported: {0}".format(netlist))
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname2))
 			if "quakenet" in netname2.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name2 is None or pswd2 is None or netcheck is False):
@@ -888,6 +881,7 @@ def login(word, word_eol, userdata):
 				channame3 = entry[4]
 				botname3 = entry[5]
 				gameid3 = entry[6]
+				webssl3 = entry[7]
 				netcheck = True
 
 		# find context
@@ -906,7 +900,8 @@ def login(word, word_eol, userdata):
 		if netcheck is True:
 			webdata2(3)
 		if netcheck is False:
-			xchat.prnt("Networks supported: {0}".format(netlist))
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname3))
 			if "quakenet" in netname3.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name3 is None or pswd3 is None or netcheck is False):
@@ -965,6 +960,7 @@ def login(word, word_eol, userdata):
 				channame4 = entry[4]
 				botname4 = entry[5]
 				gameid4 = entry[6]
+				webssl4 = entry[7]
 				netcheck = True
 
 		# find context
@@ -983,7 +979,8 @@ def login(word, word_eol, userdata):
 		if netcheck is True:
 			webdata2(4)
 		if netcheck is False:
-			xchat.prnt("Networks supported: {0}".format(netlist))
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname4))
 			if "quakenet" in netname4.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name4 is None or pswd4 is None or netcheck is False):
@@ -1047,6 +1044,8 @@ def login(word, word_eol, userdata):
 			xchat.prnt("BlackBuy Spend 14 Mode Activated.  To turn it off use /blackbuy14off")
 		if blackbuyspend14 is False:
 			xchat.prnt("BlackBuy Spend 14 Mode Deactivated.  To turn it off use /blackbuy14on")
+		if bottextmode is True:
+			xchat.prnt("Bot Text Mode Activated.  To turn it off use /bottextoff")
 		if buylife is True:
 			xchat.prnt("Buy Life Mode Activated.  To turn it off use /buylifeoff")
 		if buylife is False:
@@ -1063,6 +1062,8 @@ def login(word, word_eol, userdata):
 			xchat.prnt("CreepAttack Mode Activated.  To turn it off use /creepattackoff")
 		if creepattack is False:
 			xchat.prnt("CreepAttack Mode Deactivated.  To turn it on use /creepattackon")
+		if errortextmode is True:
+			xchat.prnt("Error Text Mode Activated.  To turn it off use /errortextoff")
 		if expbuy is True:
 			xchat.prnt("Experience Buying Mode Activated.  To turn it off use /expbuyoff")
 		if expbuy is False:
@@ -1130,28 +1131,28 @@ def logoutchar(word, word_eol, userdata):
 	global gameactive
 
 	if charcount == 4:
-		xchat.prnt("Character {0} Logged Out".format(name4))
+		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name4, netname4))
 		char4 = False
 		netname4 = None
 		game_chan4 = None
 		name4 = None
 		pswd4 = None
 	if charcount == 3:
-		xchat.prnt("Character {0} Logged Out".format(name3))
+		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name3. netname3))
 		char3 = False
 		netname3 = None
 		game_chan3 = None
 		name3 = None
 		pswd3 = None
 	if charcount == 2:
-		xchat.prnt("Character {0} Logged Out".format(name2))
+		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name2, netname2))
 		char2 = False
 		netname2 = None
 		game_chan2 = None
 		name2 = None
 		pswd2 = None
 	if charcount == 1:
-		xchat.prnt("Character {0} Logged Out".format(name))
+		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name, netname))
 		char1 = False
 		netname = None
 		game_chan = None
@@ -1621,6 +1622,34 @@ def fighton(word, word_eol, userdata):
 
 xchat.hook_command("fighton", fighton, help="/fighton - Turns Fighting on")
 
+def bottextoff(word, word_eol, userdata):
+	global bottextmode
+	global gameactive
+
+	if gameactive is True:
+		bottextmode = False
+		xchat.prnt("Bot Text Mode Deactivated.  To turn it back on use /bottexton")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("bottextoff", bottextoff, help="/bottextoff - Turns off Bot Text")
+
+def bottexton(word, word_eol, userdata):
+	global bottextmode
+	global gameactive
+
+	if gameactive is True:
+		bottextmode = True
+		xchat.prnt("Bot Text Mode Activated.  To turn it back off use /bottextoff")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("bottexton", bottexton, help="/bottexton - Turns on Bot Text")
+
 def intervaltextoff(word, word_eol, userdata):
 	global intervaltext
 	global gameactive
@@ -1648,6 +1677,34 @@ def intervaltexton(word, word_eol, userdata):
 	return xchat.EAT_ALL
 
 xchat.hook_command("intervaltexton", intervaltexton, help="/intervaltexton - Turns on Interval Text")
+
+def errortextoff(word, word_eol, userdata):
+	global errortextmode
+	global gameactive
+
+	if gameactive is True:
+		errortextmode = False
+		xchat.prnt("Error Text Mode Deactivated.  To turn it back on use /errortexton")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("errortextoff", errortextoff, help="/errortextoff - Turns off Error Text")
+
+def errortexton(word, word_eol, userdata):
+	global errortextmode
+	global gameactive
+
+	if gameactive is True:
+		errortextmode = True
+		xchat.prnt("Error Text Mode Activated.  To turn it back off use /errortextoff")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("errortexton", errortexton, help="/errortexton - Turns on Error Text")
 
 def townwork(word, word_eol, userdata):
 	global townworkswitch
@@ -1690,6 +1747,8 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("BlackBuy Spend Mode On      - /blackbuyon")
 	xchat.prnt("BlackBuy 14 Spend Mode Off  - /blackbuy14off")
 	xchat.prnt("BlackBuy 14 Spend Mode On   - /blackbuy14on")
+	xchat.prnt("Bot Text Mode Off           - /bottextoff")
+	xchat.prnt("Bot Text Mode On            - /bottexton")
 	xchat.prnt("Buy Life Mode Off           - /buylifeoff")
 	xchat.prnt("Buy Life Mode On            - /buylifeon")
 	xchat.prnt("Buy Luck Potion Mode Off    - /buyluckoff")
@@ -1698,6 +1757,8 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("Buy Power Potion Mode On    - /buypoweron")
 	xchat.prnt("CreepAttack Mode Off        - /creepattackoff")
 	xchat.prnt("CreepAttack Mode On         - /creepattackon")
+	xchat.prnt("Error Text Mode Off         - /errortextoff")
+	xchat.prnt("Error Text Mode On          - /errortexton")
 	xchat.prnt("Experince Buying Mode Off   - /expbuyoff")
 	xchat.prnt("Experince Buying Mode On    - /expbuyon")
 	xchat.prnt("Fighting Mode Off           - /fightoff")
@@ -1744,7 +1805,6 @@ def settings(word, word_eol, userdata):
 	global name2
 	global name3
 	global name4
-	global gameactive
 	global fightmode
 	global ZNC
 	global ZNC2
@@ -1758,6 +1818,8 @@ def settings(word, word_eol, userdata):
 	global scrollssum
 	global xpspend
 	global xpupgrade
+	global bottextmode
+	global errortextmode
 	global intervaltext
 	global townworkswitch
 	global goldsave
@@ -1768,40 +1830,39 @@ def settings(word, word_eol, userdata):
 	global expbuy
 	global slaysum
 	
-	if gameactive is True:
-		xchat.prnt("Playbot Settings List")
-		xchat.prnt("")
-		if townworkswitch is True:
-			xchat.prnt("Area Switch Mode - Town/Work")
-		if townworkswitch is False:
-			xchat.prnt("Area Switch Mode - Town/Forest")
-		xchat.prnt("BlackBuy Spend Mode - {0}".format(blackbuyspend))
-		xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
-		xchat.prnt("Buy Life Mode - {0}".format(buylife))
-		xchat.prnt("Buy Luck Mode - {0}".format(buyluck))
-		xchat.prnt("Buy Power Potion Mode - {0}".format(buypower))
-		xchat.prnt("CreepAttack Mode - {0}".format(creepattack))
-		xchat.prnt("Experience Buying Mode - {0}".format(expbuy))
-		xchat.prnt("Fighting Mode - {0}".format(fightmode))
-		xchat.prnt("GetGems Mode - {0}".format(getgems))
-		xchat.prnt("Goldsave - {0}".format(goldsave))
-		xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
-		xchat.prnt("Item Buy Level - {0}".format(setbuy))
-		xchat.prnt("Player Character 1 - {0}, {1}.  Network {2}".format(char1, name, netname))
-		xchat.prnt("Player Character 2 - {0}, {1}.  Network {2}".format(char2, name2, netname2))
-		xchat.prnt("Player Character 3 - {0}, {1}.  Network {2}".format(char3, name3, netname3))
-		xchat.prnt("Player Character 4 - {0}, {1}.  Network {2}".format(char4, name4, netname4))
-		xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
-		xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
-		xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
-		xchat.prnt("XPSpend Upgrade Amount - {0}".format(xpspend))
-		xchat.prnt("XPUpgrade Mode - {0}".format(xpupgrade))
-		xchat.prnt("ZNC Mode - {0}".format(ZNC))
-		xchat.prnt("ZNC2 Mode - {0}".format(ZNC2))
-		xchat.prnt("ZNC3 Mode - {0}".format(ZNC3))
-		xchat.prnt("ZNC4 Mode - {0}".format(ZNC4))
-	if gameactive is False:
-		xchat.prnt("You are not logged in")
+	xchat.prnt("Playbot Settings List")
+	xchat.prnt("")
+	if townworkswitch is True:
+		xchat.prnt("Area Switch Mode - Town/Work")
+	if townworkswitch is False:
+		xchat.prnt("Area Switch Mode - Town/Forest")
+	xchat.prnt("BlackBuy Spend Mode - {0}".format(blackbuyspend))
+	xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
+	xchat.prnt("Bot Text Mode - {0}".format(bottextmode))
+	xchat.prnt("Buy Life Mode - {0}".format(buylife))
+	xchat.prnt("Buy Luck Mode - {0}".format(buyluck))
+	xchat.prnt("Buy Power Potion Mode - {0}".format(buypower))
+	xchat.prnt("CreepAttack Mode - {0}".format(creepattack))
+	xchat.prnt("Error Text Mode - {0}".format(errortextmode))
+	xchat.prnt("Experience Buying Mode - {0}".format(expbuy))
+	xchat.prnt("Fighting Mode - {0}".format(fightmode))
+	xchat.prnt("GetGems Mode - {0}".format(getgems))
+	xchat.prnt("Goldsave - {0}".format(goldsave))
+	xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
+	xchat.prnt("Item Buy Level - {0}".format(setbuy))
+	xchat.prnt("Player Character 1 - {0}, {1}.  Network {2}".format(char1, name, netname))
+	xchat.prnt("Player Character 2 - {0}, {1}.  Network {2}".format(char2, name2, netname2))
+	xchat.prnt("Player Character 3 - {0}, {1}.  Network {2}".format(char3, name3, netname3))
+	xchat.prnt("Player Character 4 - {0}, {1}.  Network {2}".format(char4, name4, netname4))
+	xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
+	xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
+	xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
+	xchat.prnt("XPSpend Upgrade Amount - {0}".format(xpspend))
+	xchat.prnt("XPUpgrade Mode - {0}".format(xpupgrade))
+	xchat.prnt("ZNC Mode - {0}".format(ZNC))
+	xchat.prnt("ZNC2 Mode - {0}".format(ZNC2))
+	xchat.prnt("ZNC3 Mode - {0}".format(ZNC3))
+	xchat.prnt("ZNC4 Mode - {0}".format(ZNC4))
 	return xchat.EAT_ALL
 
 xchat.hook_command("settings", settings, help="/settings - Gives a list of settings which you can change")
@@ -1821,7 +1882,6 @@ def newlister(num):
 	global webworksB
 	global webworksC
 	global webworksD
-	global charcount
 	global website
 	global website2
 	global website3
@@ -1831,11 +1891,12 @@ def newlister(num):
 	global fightlevellimit2
 	global fightlevellimit3
 	global fightlevellimit4
-	global netname
-	global netname2
-	global netname3
-	global netname4
-	
+	global webssl
+	global webssl2
+	global webssl3
+	global webssl4
+	global errortextmode
+
 	test = []
 	test2 = []
 	test3 = []
@@ -1847,30 +1908,29 @@ def newlister(num):
 		playerspagelists = playerspagelist
 		websites = website
 		fightlevellimits = fightlevellimit
-		netnames = netname
+		webssls = webssl
 	if num == 2:
 		newlist2 = []
 		webworkslist = webworksB
 		playerspagelists = playerspagelist2
 		websites = website2
 		fightlevellimits = fightlevellimit2
-		netnames = netname2
+		webssls = webssl2
 	if num == 3:
 		newlist3 = []
 		webworkslist = webworksC
 		playerspagelists = playerspagelist3
 		websites = website3
 		fightlevellimits = fightlevellimit3
-		netnames = netname3
+		webssls = webssl3
 	if num == 4:
 		newlist4 = []
 		webworkslist = webworksD
 		playerspagelists = playerspagelist4
 		websites = website4
 		fightlevellimits = fightlevellimit4
-		netnames = netname4
-	if charcount >= 2:
-		getitems(num)
+		webssls = webssl4
+	getitems2(num)
 
 	if webworkslist is True:
 		testnum = 0
@@ -1904,7 +1964,7 @@ def newlister(num):
 
 			# get raw player data from web, parse for relevant entry
 			try:
-				if "dalnet" in netnames.lower():
+				if webssls is True:
 					context = ssl._create_unverified_context()
 					if python3 is False:
 						text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(name_), context=context)
@@ -1922,12 +1982,14 @@ def newlister(num):
 			except:
 				weberror = True
 			if weberror is True:
-				xchat.prnt( "Could not access {0}".format(websites))
+				if errortextmode is True:
+					xchat.prnt( "Could not access {0}".format(websites))
 				webworks2 = False
 
 			# build list for player records
 			if(playerview20 is None):
-				xchat.prnt( "Could not access {0}, unknown error.".format(websites) )
+				if errortextmode is True:
+					xchat.prnt( "Could not access {0}, unknown error.".format(websites) )
 				webworks2 = False
 			else:
 				playerlist20 = playerview20.split("\n")
@@ -2144,16 +2206,20 @@ def newlister(num):
 	if newlistererror is True:
 		if num == 1:
 			webworks = False
-			xchat.prnt("Newlister Error 1")
+			if errortextmode is True:
+				xchat.prnt("Newlister Error 1")
 		if num == 2:
 			webworksB = False
-			xchat.prnt("Newlister Error 2")
+			if errortextmode is True:
+				xchat.prnt("Newlister Error 2")
 		if num == 3:
 			webworksC = False
-			xchat.prnt("Newlister Error 3")
+			if errortextmode is True:
+				xchat.prnt("Newlister Error 3")
 		if num == 4:
 			webworksD = False
-			xchat.prnt("Newlister Error 4")
+			if errortextmode is True:
+				xchat.prnt("Newlister Error 4")
 
 	if num == 1:
 		newlist.sort( key=operator.itemgetter(1), reverse=True )
@@ -2222,20 +2288,12 @@ def status(word, word_eol, userdata):
 xchat.hook_command("status", status, help="/status - Gives a list of character stats")
 
 def characterstats(num):
-	global charcount
-	
 	global level
 	global ttl
 	global atime
 	global stime
 	global location
 	global locationtime
-	global location2
-	global locationtime2
-	global location3
-	global locationtime3
-	global location4
-	global locationtime4
 
 	global powerpots
 	global fights
@@ -2264,67 +2322,37 @@ def characterstats(num):
 	global rank2
 	global rank3
 	global rank4
-	global lottonuma1
-	global lottonuma2
-	global lottonuma3
-	global lottonumb1
-	global lottonumb2
-	global lottonumb3
-	global lottonumc1
-	global lottonumc2
-	global lottonumc3
-	global lottonumd1
-	global lottonumd2
-	global lottonumd3
+	global lottonum1
+	global lottonum2
+	global lottonum3
 	global align
 	global eatused
 	
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 
 	if num == 1:
 		itemSums = itemSum
 		attackslaySums = attackslaySum
 		expertSums = expertSum
 		ranks = rank
-		locations = location
-		locationtimes = locationtime
-		lottonums1 = lottonuma1
-		lottonums2 = lottonuma2
-		lottonums3 = lottonuma3
 	if num == 2:
 		itemSums = itemSum2
 		attackslaySums = attackslaySum2
 		expertSums = expertSum2
 		ranks = rank2
-		locations = location2
-		locationtimes = locationtime2
-		lottonums1 = lottonumb1
-		lottonums2 = lottonumb2
-		lottonums3 = lottonumb3
 	if num == 3:
 		itemSums = itemSum3
 		attackslaySums = attackslaySum3
 		expertSums = expertSum3
 		ranks = rank3
-		locations = location3
-		locationtimes = locationtime3
-		lottonums1 = lottonumc1
-		lottonums2 = lottonumc2
-		lottonums3 = lottonumc3
 	if num == 4:
 		itemSums = itemSum4
 		attackslaySums = attackslaySum4
 		expertSums = expertSum4
 		ranks = rank4
-		locations = location4
-		locationtimes = locationtime4
-		lottonums1 = lottonumd1
-		lottonums2 = lottonumd2
-		lottonums3 = lottonumd3
 		
 	xchat.prnt("Rank: {0}".format(ranks))
-	xchat.prnt("Location: {0}  Time: {1} secs".format(locations, locationtimes))
+	xchat.prnt("Location: {0}  Time: {1} secs".format(location, locationtime))
 	if align == "n":
 		xchat.prnt("Alignment: Neutral")
 	if align == "g":
@@ -2351,7 +2379,7 @@ def characterstats(num):
 	xchat.prnt("Gold: {0}".format(gold))
 	xchat.prnt("XP: {0}".format(xp))
 	xchat.prnt("Gems: {0}".format(gems))
-	xchat.prnt("Lotto1: {0}  Lotto2: {1}  Lotto3: {2}".format(lottonums1, lottonums2, lottonums3))
+	xchat.prnt("Lotto1: {0}  Lotto2: {1}  Lotto3: {2}".format(lottonum1, lottonum2, lottonum3))
 	xchat.prnt("Life: {0}".format(life))
 	xchat.prnt("Scrolls: {0} of 5".format(scrolls))
 	xchat.prnt("Exp Used: {0} of 5".format(exp))
@@ -2415,7 +2443,6 @@ def items(word, word_eol, userdata):
 xchat.hook_command("items", items, help="/items - Gives a list of character item scores")
 
 def characteritems(num):
-	global charcount
 	global amulet
 	global charm
 	global helm
@@ -2449,8 +2476,7 @@ def characteritems(num):
 	global expertitemd2
 	global expertitemd3
 
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 
 	if num == 1:
 		itemSums = itemSum
@@ -2527,15 +2553,10 @@ def on_message(word, word_eol, userdata):
 	global nickname3
 	global nickname4
 	global life
-	global life2
-	global life3
-	global life4
 	global level
-	global level2
-	global level3
-	global level4
 	global buylife
 	global gameactive
+	global itemslists
 	
 	if gameactive is True:
 		checknet = xchat.get_info("network")
@@ -2545,6 +2566,11 @@ def on_message(word, word_eol, userdata):
 		    
 		if char1 is True:
 			if(checknet == netname and checknick == nickname):
+				if itemslists != None:
+					for entry in itemslists:
+						if(entry[0] == 1):
+							level = entry[2]
+							life = entry[3]
 				lifebuy = False
 				if botname in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name) in word[1]: #rand challenge
 					lifebuy = True
@@ -2566,6 +2592,13 @@ def on_message(word, word_eol, userdata):
 						life = 100
 		if char2 is True:
 			if(checknet == netname2 and checknick == nickname2):
+				life2 = 0
+				level2 = 0
+				if itemslists != None:
+					for entry in itemslists:
+						if(entry[0] == 2):
+							level2 = entry[2]
+							life2 = entry[3]
 				lifebuyb = False
 				if botname2 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name2) in word[1]:
 					lifebuyb = True
@@ -2587,6 +2620,13 @@ def on_message(word, word_eol, userdata):
 						life2 = 100
 		if char3 is True:
 			if(checknet == netname3 and checknick == nickname3):
+				life3 = 0
+				level3 = 0
+				if itemslists != None:
+					for entry in itemslists:
+						if(entry[0] == 3):
+							level3 = entry[2]
+							life3 = entry[3]
 				lifebuyc = False
 				if botname3 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name3) in word[1]:
 					lifebuyc = True
@@ -2608,6 +2648,13 @@ def on_message(word, word_eol, userdata):
 						life3 = 100
 		if char4 is True:
 			if(checknet == netname4 and checknick == nickname4):
+				life4 = 0
+				level4 = 0
+				if itemslists != None:
+					for entry in itemslists:
+						if(entry[0] == 4):
+							level4 = entry[2]
+							life4 = entry[3]
 				lifebuyd = False
 				if botname4 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name4) in word[1]:
 					lifebuyd = True
@@ -2731,11 +2778,12 @@ def webdata2(num):
 	global playerspage4
 	global playerspagelist4
 	global website4
-	global netname
-	global netname2
-	global netname3
-	global netname4
-	
+	global webssl
+	global webssl2
+	global webssl3
+	global webssl4
+	global errortextmode
+
 	webworks = True
 	webworksB = True
 	webworksC = True
@@ -2746,23 +2794,23 @@ def webdata2(num):
 	if num == 1:
 		websites = website
 		names = name
-		netnames = netname
+		webssls = webssl
 	if num == 2:
 		websites = website2
 		names = name2
-		netnames = netname2
+		webssls = webssl2
 	if num == 3:
 		websites = website3
 		names = name3
-		netnames = netname3
+		webssls = webssl3
 	if num == 4:
 		websites = website4
 		names = name4
-		netnames = netname4
+		webssls = webssl4
 	# get raw player data from web, parse for relevant entry
 	if python3 is False:
 		try:
-			if "dalnet" in netnames.lower():
+			if webssls is True:
 				text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(names), context=context)
 			else:
 				text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(names))
@@ -2775,7 +2823,7 @@ def webdata2(num):
 			if num == 4:
 				playerview4 = text.read()
 			text.close()
-			if "dalnet" in netnames.lower():
+			if webssls is True:
 				text2 = urllib2.urlopen(websites + "/players.php", context=context)
 			else:
 				text2 = urllib2.urlopen(websites + "/players.php")
@@ -2792,7 +2840,7 @@ def webdata2(num):
 			weberror = True
 	if python3 is True:
 		try:
-			if "dalnet" in netnames.lower():
+			if webssls is True:
 				text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(names), context=context)
 			else:
 				text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(names))
@@ -2800,7 +2848,7 @@ def webdata2(num):
 				playerview = text.read()
 				text.close()
 				playerview = playerview.decode("UTF-8")
-				if "dalnet" in netnames.lower():
+				if webssls is True:
 					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
 				else:
 					text2 = urllib.request.urlopen(websites + "/players.php")
@@ -2811,7 +2859,7 @@ def webdata2(num):
 				playerview2 = text.read()
 				text.close()
 				playerview2 = playerview2.decode("UTF-8")
-				if "dalnet" in netnames.lower():
+				if webssls is True:
 					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
 				else:
 					text2 = urllib.request.urlopen(websites + "/players.php")
@@ -2822,7 +2870,7 @@ def webdata2(num):
 				playerview3 = text.read()
 				text.close()
 				playerview3 = playerview3.decode("UTF-8")
-				if "dalnet" in netnames.lower():
+				if webssls is True:
 					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
 				else:
 					text2 = urllib.request.urlopen(websites + "/players.php")
@@ -2833,7 +2881,7 @@ def webdata2(num):
 				playerview4 = text.read()
 				text.close()
 				playerview4 = playerview4.decode("UTF-8")
-				if "dalnet" in netnames.lower():
+				if webssls is True:
 					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
 				else:
 					text2 = urllib.request.urlopen(websites + "/players.php")
@@ -2844,7 +2892,8 @@ def webdata2(num):
 			weberror = True
 
 	if weberror is True:
-		xchat.prnt( "Could not access {0}".format(websites))
+		if errortextmode is True:
+			xchat.prnt( "Could not access {0}".format(websites))
 		if num == 1:
 			webworks = False
 		if num == 2:
@@ -2857,210 +2906,80 @@ def webdata2(num):
 	# build list for player records
 	if num == 1:
 		if(playerview is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
 			webworks = False
 		else:
 			playerlist = playerview.split("\n")
 			playerlist = playerlist[:-1]
 		if(playerspage is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
 			webworks = False
 		else:
 			playerspagelist = playerspage.split("\n")
 			playerspagelist = playerspagelist[:-1]
 	if num == 2:
 		if(playerview2 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
 			webworksB = False
 		else:
 			playerlist2 = playerview2.split("\n")
 			playerlist2 = playerlist2[:-1]
 		if(playerspage2 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
 			webworksB = False
 		else:
 			playerspagelist2 = playerspage2.split("\n")
 			playerspagelist2 = playerspagelist2[:-1]
 	if num == 3:
 		if(playerview3 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
 			webworksC = False
 		else:
 			playerlist3 = playerview3.split("\n")
 			playerlist3 = playerlist3[:-1]
 		if(playerspage3 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
 			webworksC = False
 		else:
 			playerspagelist3 = playerspage3.split("\n")
 			playerspagelist3 = playerspagelist3[:-1]
 	if num == 4:
 		if(playerview4 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
 			webworksD = False
 		else:
 			playerlist4 = playerview4.split("\n")
 			playerlist4 = playerlist4[:-1]
 		if(playerspage4 is None):
-			xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
+			if errortextmode is True:
+				xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
 			webworksD = False
 		else:
 			playerspagelist4 = playerspage4.split("\n")
 			playerspagelist4 = playerspagelist4[:-1]
 
 def playerarea(num):
-	global playerlist
-	global playerlist2
-	global playerlist3
-	global playerlist4
 	global level
 	global mysum
-	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
-	global charcount
 	global location
 	global locationtime
-	global location2
-	global locationtime2
-	global location3
-	global locationtime3
-	global location4
-	global locationtime4
 	global townworkswitch
 	
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 	
-	playeris = None
-
-	atwork = False
-	intown = False
-	intheforest = False
-	worktext = None
-	towntext = None
-	foresttext = None
-	
-	if num == 1:
-		location = None
-		locationtime = 0
-		playerlists = playerlist
-		webworkslist = webworks
-	if num == 2:
-		location2 = None
-		locationtime2 = 0
-		playerlists = playerlist2
-		webworkslist = webworksB
-	if num == 3:
-		location3 = None
-		locationtime3 = 0
-		playerlists = playerlist3
-		webworkslist = webworksC
-	if num == 4:
-		location4 = None
-		locationtime4 = 0
-		playerlists = playerlist4
-		webworkslist = webworksD
-
-	if webworkslist is True:
-		for entry in playerlists:
-			if "Player is:" in entry:
-				playeris = entry
-			if "Work Time:" in entry:
-				worktext = entry
-			if "Town Time:" in entry:
-				towntext = entry
-			if "Forest Time:" in entry:
-				foresttext = entry
-				
-		if "at work" in playeris:
-			atwork = True
-		if "in town" in playeris:
-			intown = True
-		if "in the forest" in playeris:
-			intheforest = True
-
 	if townworkswitch is True:
 		area = "work"
 	if townworkswitch is False:
 		area = "forest"
-
-	if atwork is True:
-		try:
-			worktext = worktext.split(" ")
-			workdays = int(worktext[8])
-			worksplittime = worktext[10]
-			worksplittime = worksplittime.strip("<br")
-			if num == 1:
-				locationtime = timetosecs(workdays, worksplittime)
-				location = "At Work"
-			if num == 2:
-				locationtime2 = timetosecs(workdays, worksplittime)
-				location2 = "At Work"
-			if num == 3:
-				locationtime3 = timetosecs(workdays, worksplittime)
-				location3 = "At Work"
-			if num == 4:
-				locationtime4 = timetosecs(workdays, worksplittime)
-				location4 = "At Work"
-		except ValueError:
-			usecommand("goto town", num)
-	if intown is True:
-		try:
-			towntext = towntext.split(" ")
-			towndays = int(towntext[8])
-			townsplittime = towntext[10]
-			townsplittime = townsplittime.strip("<br")
-			if num == 1:
-				locationtime = timetosecs(towndays, townsplittime)
-				location = "In Town"
-			if num == 2:
-				locationtime2 = timetosecs(towndays, townsplittime)
-				location2 = "In Town"
-			if num == 3:
-				locationtime3 = timetosecs(towndays, townsplittime)
-				location3 = "In Town"
-			if num == 4:
-				locationtime4 = timetosecs(towndays, townsplittime)
-				location4 = "In Town"
-		except ValueError:
-			usecommand("goto {0}".format(area), num)
-	if intheforest is True:
-		try:
-			foresttext = foresttext.split(" ")
-			forestdays = int(foresttext[8])
-			forestsplittime = foresttext[10]
-			forestsplittime = forestsplittime.strip("<br")
-			if num == 1:
-				locationtime = timetosecs(forestdays, forestsplittime)
-				location = "In The Forest"
-			if num == 2:
-				locationtime2 = timetosecs(forestdays, forestsplittime)
-				location2 = "In The Forest"
-			if num == 3:
-				locationtime3 = timetosecs(forestdays, forestsplittime)
-				location3 = "In The Forest"
-			if num == 4:
-				locationtime4 = timetosecs(forestdays, forestsplittime)
-				location4 = "In The Forest"
-		except ValueError:
-			usecommand("goto town", num)
-
-	if num == 1:
-		locations = location
-		locationtimes = locationtime
-	if num == 2:
-		locations = location2
-		locationtimes = locationtime2
-	if num == 3:
-		locations = location3
-		locationtimes = locationtime3
-	if num == 4:
-		locations = location4
-		locationtimes = locationtime4
-		
-#	xchat.prnt("{0} {1} Time: {2} seconds".format(num, locations, locationtimes))
+	
+#	xchat.prnt("{0} {1} Time: {2} seconds".format(num, location, locationtime))
 
 	if (level <= 25):
 		mintime = (3 * 60 * 60)
@@ -3071,73 +2990,37 @@ def playerarea(num):
 	if (level > 50):
 		mintime = (24 * 60 * 60)
 
-	if(intown is True and locationtimes >= mintime and mysum < 6000 and mysum != 0):
+	if locationtime == 0:
 		usecommand("goto {0}".format(area), num)
-	if(intown is True and mysum >= 6000):
+		
+	if(location == "In Town" and locationtime >= mintime and mysum < 6000 and mysum != 0):
 		usecommand("goto {0}".format(area), num)
-	if(atwork is True and locationtimes >= mintime):
+	if(location == "In Town" and mysum >= 6000):
+		usecommand("goto {0}".format(area), num)
+	if(location == "At Work" and locationtime >= mintime):
 		usecommand("goto town", num)
-	if(intheforest is True and locationtimes >= (24 * 60 * 60)):
+	if(location == "In The Forest" and locationtime >= (24 * 60 * 60)):
 		usecommand("goto town", num)
        
-def getvariables():
-	global level
-	global ttl
-	global level2
-	global level3
-	global level4
+def itemsbuilder():
+	global char1
+	global char2
+	global char3
+	global char4
+	global itemslists
 
-	global ring
-	global amulet
-	global charm
-	global weapon
-	global helm
-	global tunic
-	global gloves
-	global leggings
-	global shield
-	global boots
+	itemslists = []
 
-	global mysum
-	global gold
-	global upgradelevel
-	global gems
-	global ability
-	global xp
-	global life
-	global fights
-	global life2
-	global fights2
-	global life3
-	global fights3
-	global life4
-	global fights4
-	global scrolls
-	global exp
-	global luck
-	global mana
-	global powerpots
-	global align
-	global eatused
+	if char1 is True:
+		itemslists.append( ( getvariables2(1) ) )
+	if char2 is True:
+		itemslists.append( ( getvariables2(2) ) )
+	if char3 is True:
+		itemslists.append( ( getvariables2(3) ) )
+	if char4 is True:
+		itemslists.append( ( getvariables2(4) ) )
 
-	global stone1
-	global stone2
-	global stone3
-	global stoneb1
-	global stoneb2
-	global stoneb3
-	global stonec1
-	global stonec2
-	global stonec3
-	global stoned1
-	global stoned2
-	global stoned3
-	global expert1
-	global expert2
-	global expert3
-
-	global atime
-	global stime
+def getvariables2(num):
 	global playerlist
 	global playerlist2
 	global playerlist3
@@ -3146,116 +3029,17 @@ def getvariables():
 	global webworksB
 	global webworksC
 	global webworksD
-	global itemslist
-	global char1
-	global char2
-	global char3
-	global char4
-	global lottonuma1
-	global lottonuma2
-	global lottonuma3
-	global lottonumb1
-	global lottonumb2
-	global lottonumb3
-	global lottonumc1
-	global lottonumc2
-	global lottonumc3
-	global lottonumd1
-	global lottonumd2
-	global lottonumd3
-
-	itemslist = []
-	ttl2 = 0
-	mysum2 = 0
-	ring2 = 0
-	amulet2 = 0
-	charm2 = 0
-	weapon2 = 0
-	helm2 = 0
-	tunic2 = 0
-	gloves2 = 0
-	leggings2 = 0
-	shield2 = 0
-	boots2 = 0
-	ttl3 = 0
-	mysum3 = 0
-	ring3 = 0
-	amulet3 = 0
-	charm3 = 0
-	weapon3 = 0
-	helm3 = 0
-	tunic3 = 0
-	gloves3 = 0
-	leggings3 = 0
-	shield3 = 0
-	boots3 = 0
-	ttl4 = 0
-	mysum4 = 0
-	ring4 = 0
-	amulet4 = 0
-	charm4 = 0
-	weapon4 = 0
-	helm4 = 0
-	tunic4 = 0
-	gloves4 = 0
-	leggings4 = 0
-	shield4 = 0
-	boots4 = 0
-
-	gold2 = 0
-	upgradelevel2 = 0
-	gems2 = 0
-	ability2 = None
-	xp2 = 0
-	scrolls2 = 0
-	exp2 = 0
-	luck2 = 0
-	mana2 = 0 
-	powerpots2 = 0
-	align2 = None
-	gold3 = 0
-	upgradelevel3 = 0
-	gems3 = 0
-	ability3 = None
-	xp3 = 0
-	scrolls3 = 0
-	exp3 = 0
-	luck3 = 0
-	mana3 = 0 
-	powerpots3 = 0
-	align3 = None
-	gold4 = 0
-	upgradelevel4 = 0
-	gems4 = 0
-	ability4 = None
-	xp4 = 0
-	scrolls4 = 0
-	exp4 = 0
-	luck4 = 0
-	mana4 = 0 
-	powerpots4 = 0
-	align4 = None
-	eatused2 = 0
-	eatused3 = 0
-	eatused4 = 0
-
-	expertb1 = None
-	expertb2 = None
-	expertb3 = None
-	expertc1 = None
-	expertc2 = None
-	expertc3 = None
-	expertd1 = None
-	expertd2 = None
-	expertd3 = None
-
-	atime2 = 0
-	stime2 = 0
-	atime3 = 0
-	stime3 = 0
-	atime4 = 0
-	stime4 = 0
+	global errortextmode
 	
+	if num == 1:
+		playerlists = playerlist
+	if num == 2:
+		playerlists = playerlist2
+	if num == 3:
+		playerlists = playerlist3
+	if num == 4:
+		playerlists = playerlist4
+		
 	aligntext = None
 	leveltext = None
 	ttltext = None
@@ -3297,1033 +3081,325 @@ def getvariables():
 	lottonumtext2 = None
 	lottonumtext3 = None
 
-	if webworks is True:
-		if char1 is True and playerlist != None:
-			for entry in playerlist:
-				if "Alignment:" in entry:
-					aligntext = entry
-				if "Level:" in entry:
-					leveltext = entry
-				if "Next level:" in entry:
-					ttltext = entry
-				if "Gold:" in entry:
-					goldtext = entry
-				if "Gems:" in entry:
-					gemstext = entry
-				if "Upgrade level:" in entry:
-					upgradetext = entry
-				if "Ability:" in entry:
-					abilitytext = entry
-				if "XP:" in entry:
-					xptext = entry
-				if "Exp Used:" in entry:
-					exptext = entry
-				if "Life:" in entry:
-					lifetext = entry
-				if "Scrolls Used:" in entry:
-					scrollstext = entry
-				if "Eat Used:" in entry:
-					eatusedtext = entry
-				if "Power Potion:" in entry:
-					powerpotstext = entry
-				if "Mana Potion:" in entry:
-					manatext = entry
-				if "Luck Potion:" in entry:
-					lucktext = entry
-				if "Creep Attack in:" in entry:
-					atimetext = entry
-				if "Dragon Slay in:" in entry:
-					stimetext = entry
+	playeris = None
+	worktext = None
+	towntext = None
+	foresttext = None
+	location_ = None
+	locationtime_ = 0
+	atwork = False
+	intown = False
+	intheforest = False                       
 
-				if "amulet:" in entry:
-					amulettext = entry
-				if "boots:" in entry:
-					bootstext = entry
-				if "charm:" in entry:
-					charmtext = entry
-				if "gloves:" in entry:
-					glovestext = entry
-				if "helm:" in entry:
-					helmtext = entry
-				if "leggings:" in entry:
-					leggingstext = entry
-				if "ring:" in entry:
-					ringtext = entry
-				if "shield:" in entry:
-					shieldtext = entry
-				if "tunic:" in entry:
-					tunictext = entry
-				if "weapon:" in entry:
-					weapontext = entry
+	if playerlists != None:
+		for entry in playerlists:
+			if "Alignment:" in entry:
+				aligntext = entry
+			if "Level:" in entry:
+				leveltext = entry
+			if "Next level:" in entry:
+				ttltext = entry
+			if "Gold:" in entry:
+				goldtext = entry
+			if "Gems:" in entry:
+				gemstext = entry
+			if "Upgrade level:" in entry:
+				upgradetext = entry
+			if "Ability:" in entry:
+				abilitytext = entry
+			if "XP:" in entry:
+				xptext = entry
+			if "Exp Used:" in entry:
+				exptext = entry
+			if "Life:" in entry:
+				lifetext = entry
+			if "Scrolls Used:" in entry:
+				scrollstext = entry
+			if "Eat Used:" in entry:
+				eatusedtext = entry
+			if "Power Potion:" in entry:
+				powerpotstext = entry
+			if "Mana Potion:" in entry:
+				manatext = entry
+			if "Luck Potion:" in entry:
+				lucktext = entry
+			if "Creep Attack in:" in entry:
+				atimetext = entry
+			if "Dragon Slay in:" in entry:
+				stimetext = entry
 
-				if "Sum:" in entry:
-					sumtext = entry
-				if "Expert 1:" in entry:
-					experttext1 = entry
-				if "Expert 2:" in entry:
-					experttext2 = entry
-				if "Expert 3:" in entry:
-					experttext3 = entry
-				if "Stone 1:" in entry:
-					stonetext1 = entry
-				if "Stone 2:" in entry:
-					stonetext2 = entry
-				if "Stone 3:" in entry:
-					stonetext3 = entry
-				if "Manual FIGHT commands used (out of 5):" in entry:
-					fightstext = entry
-				if "Lotto Numbers 1:" in entry:
-					lottonumtext1 = entry
-				if "Lotto Numbers 2:" in entry:
-					lottonumtext2 = entry
-				if "Lotto Numbers 3:" in entry:
-					lottonumtext3 = entry
+			if "amulet:" in entry:
+				amulettext = entry
+			if "boots:" in entry:
+				bootstext = entry
+			if "charm:" in entry:
+				charmtext = entry
+			if "gloves:" in entry:
+				glovestext = entry
+			if "helm:" in entry:
+				helmtext = entry
+			if "leggings:" in entry:
+				leggingstext = entry
+			if "ring:" in entry:
+				ringtext = entry
+			if "shield:" in entry:
+				shieldtext = entry
+			if "tunic:" in entry:
+				tunictext = entry
+			if "weapon:" in entry:
+				weapontext = entry
+
+			if "Sum:" in entry:
+				sumtext = entry
+			if "Expert 1:" in entry:
+				experttext1 = entry
+			if "Expert 2:" in entry:
+				experttext2 = entry
+			if "Expert 3:" in entry:
+				experttext3 = entry
+			if "Stone 1:" in entry:
+				stonetext1 = entry
+			if "Stone 2:" in entry:
+				stonetext2 = entry
+			if "Stone 3:" in entry:
+				stonetext3 = entry
+			if "Manual FIGHT commands used (out of 5):" in entry:
+				fightstext = entry
+			if "Lotto Numbers 1:" in entry:
+				lottonumtext1 = entry
+			if "Lotto Numbers 2:" in entry:
+				lottonumtext2 = entry
+			if "Lotto Numbers 3:" in entry:
+				lottonumtext3 = entry
+
+			if "Player is:" in entry:
+				playeris = entry
+			if "Work Time:" in entry:
+				worktext = entry
+			if "Town Time:" in entry:
+				towntext = entry
+			if "Forest Time:" in entry:
+				foresttext = entry
+
+		try:
+			try:
+				if "Neutral" in aligntext:
+					align_ = "n"
+				if "Evil" in aligntext:
+					align_ = "e"
+				if "Good" in aligntext:
+					align_ = "g"
+			except TypeError:
+				align_ = "n"
+			leveltext = leveltext.split(" ")
+			levelsplit = leveltext[7]
+			level_ = int(levelsplit.strip("<br"))
+			ttltext = ttltext.split(" ")
+			daystext = int(ttltext[8])
+			timetext = ttltext[10].strip("<br")
+			ttl_ = timetosecs(daystext, timetext)
+			goldtext = goldtext.split(" ")
+			goldsplit = goldtext[7]
+			gold_ = int(goldsplit.strip("<br"))
+			gemstext = gemstext.split(" ")
+			gemssplit = gemstext[7]
+			gems_ = int(gemssplit.strip("<br"))
+			upgradetext = upgradetext.split(" ")
+			upgradesplit = upgradetext[8]
+			upgradelevel_ = int(upgradesplit.strip("<br"))
+
+			if "Barbarian" in abilitytext:
+				ability_ = "b"
+			if "Rogue" in abilitytext:
+				ability_ = "r"
+			if "Paladin" in abilitytext:
+				ability_ = "p"
+			if "Wizard" in abilitytext:
+				ability_ = "w"
+
+			xptext = xptext.split(" ")
+			xpsplit = xptext[7]
+			xp_ = int(xpsplit.strip("<br"))
+			exptext = exptext.split(" ")
+			expsplit = exptext[8]
+			expsplit = expsplit.split("/")
+			try:
+				exp_ = int(expsplit[0])
+			except:
+				exp_ = 0
+			lifetext = lifetext.split(" ")
+			lifesplit = lifetext[7]
+			life_ = int(lifesplit.strip("<br"))
+			scrollstext = scrollstext.split(" ")
+			scrollssplit = scrollstext[8]
+			scrollssplit = scrollssplit.split("/")
+			try:
+				scrolls_ = int(scrollssplit[0])
+			except ValueError:
+				scrolls_ = 0
+			eatusedtext = eatusedtext.split(" ")
+			eatusedsplit = eatusedtext[8]
+			eatusedsplit = eatusedsplit.split("/")
+			try:
+				eatused_ = int(eatusedsplit[0])
+			except ValueError:
+				eatused_ = 0
+			powerpotstext = powerpotstext.split(" ")
+			powerpotssplit = powerpotstext[8]
+			powerpotssplit = powerpotssplit.split("/")
+			powerpots_ = int(powerpotssplit[0])
+			manatext = manatext.split(" ")
+			manasplit = manatext[8]
+			manasplit = manasplit.split("/")
+			mana_ = int(manasplit[0])
+			lucktext = lucktext.split(" ")
+			lucksplit = lucktext[8]
+			lucksplit = lucksplit.split("/")
+			luck_ = int(lucksplit[0])
 
 			try:
-				try:
-					if "Neutral" in aligntext:
-						align = "n"
-					if "Evil" in aligntext:
-						align = "e"
-					if "Good" in aligntext:
-						align = "g"
-				except TypeError:
-					align = "n"
-				leveltext = leveltext.split(" ")
-				levelsplit = leveltext[7]
-				level = int(levelsplit.strip("<br"))
-				ttltext = ttltext.split(" ")
-				daystext = int(ttltext[8])
-				timetext = ttltext[10].strip("<br")
-				ttl = timetosecs(daystext, timetext)
-				goldtext = goldtext.split(" ")
-				goldsplit = goldtext[7]
-				gold = int(goldsplit.strip("<br"))
-				gemstext = gemstext.split(" ")
-				gemssplit = gemstext[7]
-				gems = int(gemssplit.strip("<br"))
-				upgradetext = upgradetext.split(" ")
-				upgradesplit = upgradetext[8]
-				upgradelevel = int(upgradesplit.strip("<br"))
+				atimetext = atimetext.split(" ")
+				daystext = int(atimetext[9])
+				timetext = atimetext[11].strip("<br")
+				atime_ = timetosecs(daystext, timetext)
+			except ValueError:
+				atime_ = 0
+			try:
+				stimetext = stimetext.split(" ")
+				daystext = int(stimetext[9])
+				timetext = stimetext[11].strip("<br")
+				stime_ = timetosecs(daystext, timetext)
+			except ValueError:
+				stime_ = 0
 
-				if "Barbarian" in abilitytext:
-					ability = "b"
-				if "Rogue" in abilitytext:
-					ability = "r"
-				if "Paladin" in abilitytext:
-					ability = "p"
-				if "Wizard" in abilitytext:
-					ability = "w"
+			amulettext = amulettext.split(" ")
+			amuletsplit = amulettext[7]
+			amulet_ = int(amuletsplit.strip("<br"))
+			bootstext = bootstext.split(" ")
+			bootssplit = bootstext[7]
+			boots_ = int(bootssplit.strip("<br"))
+			charmtext = charmtext.split(" ")
+			charmsplit = charmtext[7]
+			charm_ = int(charmsplit.strip("<br"))
+			glovestext = glovestext.split(" ")
+			glovessplit = glovestext[7]
+			gloves_ = int(glovessplit.strip("<br"))
+			helmtext = helmtext.split(" ")
+			helmsplit = helmtext[7]
+			helm_ = int(helmsplit.strip("<br"))
+			leggingstext = leggingstext.split(" ")
+			leggingssplit = leggingstext[7]
+			leggings_ = int(leggingssplit.strip("<br"))
+			ringtext = ringtext.split(" ")
+			ringsplit = ringtext[7]
+			ring_ = int(ringsplit.strip("<br"))
+			shieldtext = shieldtext.split(" ")
+			shieldsplit = shieldtext[7]
+			shield_ = int(shieldsplit.strip("<br"))
+			tunictext = tunictext.split(" ")
+			tunicsplit = tunictext[7]
+			tunic_ = int(tunicsplit.strip("<br"))
+			weapontext = weapontext.split(" ")
+			weaponsplit = weapontext[7]
+			weapon_ = int(weaponsplit.strip("<br"))
 
-				xptext = xptext.split(" ")
-				xpsplit = xptext[7]
-				xp = int(xpsplit.strip("<br"))
-				exptext = exptext.split(" ")
-				expsplit = exptext[8]
-				expsplit = expsplit.split("/")
+			sumtext = sumtext.split(" ")
+			sumsplit = sumtext[7]
+			mysum_ = int(sumsplit.strip("<br"))
+			experttext1 = experttext1.split(" ")
+			expertsplit1 = experttext1[8]
+			expertsplitsplit1 = expertsplit1.split("<")
+			expert1_ = expertsplitsplit1[0]
+			experttext2 = experttext2.split(" ")
+			expertsplit2 = experttext2[8]
+			expertsplitsplit2 = expertsplit2.split("<")
+			expert2_ = expertsplitsplit2[0]
+			experttext3 = experttext3.split(" ")
+			expertsplit3 = experttext3[8]
+			expertsplitsplit3 = expertsplit3.split("<")
+			expert3_ = expertsplitsplit3[0]
+			stonetext1 = stonetext1.split(" ")
+			stonesplit1 = stonetext1[8]
+			stonesplitsplit1 = stonesplit1.split("<")
+			stone1_ = stonesplitsplit1[0]
+			stonetext2 = stonetext2.split(" ")
+			stonesplit2 = stonetext2[8]
+			stonesplitsplit2 = stonesplit2.split("<")
+			stone2_ = stonesplitsplit2[0]
+			stonetext3 = stonetext3.split(" ")
+			stonesplit3 = stonetext3[8]
+			stonesplitsplit3 = stonesplit3.split("<")
+			stone3_ = stonesplitsplit3[0]
+			fightstext = fightstext.split(" ")
+			fightssplit = fightstext[13]
+			fights_ = int(fightssplit.strip("<br"))
+			lottonumtext1 = re.sub(r'<.*?>', ' ', lottonumtext1)
+			lottonumtext1 = lottonumtext1.split(" ")
+			lottonumtext2 = re.sub(r'<.*?>', ' ', lottonumtext2)
+			lottonumtext2 = lottonumtext2.split(" ")
+			lottonumtext3 = re.sub(r'<.*?>', ' ', lottonumtext3)
+			lottonumtext3 = lottonumtext3.split(" ")
+			lottonum1_ = "{0} {1} and {2}".format(lottonumtext1[11], lottonumtext1[12], lottonumtext1[13])                        
+			lottonum2_ = "{0} {1} and {2}".format(lottonumtext2[11], lottonumtext2[12], lottonumtext2[13])                        
+			lottonum3_ = "{0} {1} and {2}".format(lottonumtext3[11], lottonumtext3[12], lottonumtext3[13])                        
+
+			if "at work" in playeris:
+				atwork = True
+			if "in town" in playeris:
+				intown = True
+			if "in the forest" in playeris:
+				intheforest = True
+			if atwork is True:
 				try:
-					exp = int(expsplit[0])
-				except:
-					exp = 0
-				lifetext = lifetext.split(" ")
-				lifesplit = lifetext[7]
-				life = int(lifesplit.strip("<br"))
-				scrollstext = scrollstext.split(" ")
-				scrollssplit = scrollstext[8]
-				scrollssplit = scrollssplit.split("/")
-				try:
-					scrolls = int(scrollssplit[0])
+					worktext = worktext.split(" ")
+					workdays = int(worktext[8])
+					worksplittime = worktext[10]
+					worksplittime = worksplittime.strip("<br")
+					locationtime_ = timetosecs(workdays, worksplittime)
+					location_ = "At Work"
 				except ValueError:
-					scrolls = 0
-				eatusedtext = eatusedtext.split(" ")
-				eatusedsplit = eatusedtext[8]
-				eatusedsplit = eatusedsplit.split("/")
+					locationtime_ = 0
+					location_ = "At Work"
+			if intown is True:
 				try:
-					eatused = int(eatusedsplit[0])
+					towntext = towntext.split(" ")
+					towndays = int(towntext[8])
+					townsplittime = towntext[10]
+					townsplittime = townsplittime.strip("<br")
+					locationtime_ = timetosecs(towndays, townsplittime)
+					location_ = "In Town"
 				except ValueError:
-					eatused = 0
-				powerpotstext = powerpotstext.split(" ")
-				powerpotssplit = powerpotstext[8]
-				powerpotssplit = powerpotssplit.split("/")
-				powerpots = int(powerpotssplit[0])
-				manatext = manatext.split(" ")
-				manasplit = manatext[8]
-				manasplit = manasplit.split("/")
-				mana = int(manasplit[0])
-				lucktext = lucktext.split(" ")
-				lucksplit = lucktext[8]
-				lucksplit = lucksplit.split("/")
-				luck = int(lucksplit[0])
-
+					locationtime_ = 0
+					location_ = "In Town"
+			if intheforest is True:
 				try:
-					atimetext = atimetext.split(" ")
-					daystext = int(atimetext[9])
-					timetext = atimetext[11].strip("<br")
-					atime = timetosecs(daystext, timetext)
+					foresttext = foresttext.split(" ")
+					forestdays = int(foresttext[8])
+					forestsplittime = foresttext[10]
+					forestsplittime = forestsplittime.strip("<br")
+					locationtime_ = timetosecs(forestdays, forestsplittime)
+					location_ = "In The Forest"
 				except ValueError:
-					atime = 0
-				try:
-					stimetext = stimetext.split(" ")
-					daystext = int(stimetext[9])
-					timetext = stimetext[11].strip("<br")
-					stime = timetosecs(daystext, timetext)
-				except ValueError:
-					stime = 0
-
-				amulettext = amulettext.split(" ")
-				amuletsplit = amulettext[7]
-				amulet = int(amuletsplit.strip("<br"))
-				bootstext = bootstext.split(" ")
-				bootssplit = bootstext[7]
-				boots = int(bootssplit.strip("<br"))
-				charmtext = charmtext.split(" ")
-				charmsplit = charmtext[7]
-				charm = int(charmsplit.strip("<br"))
-				glovestext = glovestext.split(" ")
-				glovessplit = glovestext[7]
-				gloves = int(glovessplit.strip("<br"))
-				helmtext = helmtext.split(" ")
-				helmsplit = helmtext[7]
-				helm = int(helmsplit.strip("<br"))
-				leggingstext = leggingstext.split(" ")
-				leggingssplit = leggingstext[7]
-				leggings = int(leggingssplit.strip("<br"))
-				ringtext = ringtext.split(" ")
-				ringsplit = ringtext[7]
-				ring = int(ringsplit.strip("<br"))
-				shieldtext = shieldtext.split(" ")
-				shieldsplit = shieldtext[7]
-				shield = int(shieldsplit.strip("<br"))
-				tunictext = tunictext.split(" ")
-				tunicsplit = tunictext[7]
-				tunic = int(tunicsplit.strip("<br"))
-				weapontext = weapontext.split(" ")
-				weaponsplit = weapontext[7]
-				weapon = int(weaponsplit.strip("<br"))
-
-				sumtext = sumtext.split(" ")
-				sumsplit = sumtext[7]
-				mysum = int(sumsplit.strip("<br"))
-				experttext1 = experttext1.split(" ")
-				expertsplit1 = experttext1[8]
-				expertsplitsplit1 = expertsplit1.split("<")
-				expert1 = expertsplitsplit1[0]
-				experttext2 = experttext2.split(" ")
-				expertsplit2 = experttext2[8]
-				expertsplitsplit2 = expertsplit2.split("<")
-				expert2 = expertsplitsplit2[0]
-				experttext3 = experttext3.split(" ")
-				expertsplit3 = experttext3[8]
-				expertsplitsplit3 = expertsplit3.split("<")
-				expert3 = expertsplitsplit3[0]
-				stonetext1 = stonetext1.split(" ")
-				stonesplit1 = stonetext1[8]
-				stonesplitsplit1 = stonesplit1.split("<")
-				stone1 = stonesplitsplit1[0]
-				stonetext2 = stonetext2.split(" ")
-				stonesplit2 = stonetext2[8]
-				stonesplitsplit2 = stonesplit2.split("<")
-				stone2 = stonesplitsplit2[0]
-				stonetext3 = stonetext3.split(" ")
-				stonesplit3 = stonetext3[8]
-				stonesplitsplit3 = stonesplit3.split("<")
-				stone3 = stonesplitsplit3[0]
-				fightstext = fightstext.split(" ")
-				fightssplit = fightstext[13]
-				fights = int(fightssplit.strip("<br"))
-				lottonumtext1 = re.sub(r'<.*?>', ' ', lottonumtext1)
-				lottonumtext1 = lottonumtext1.split(" ")
-				lottonumtext2 = re.sub(r'<.*?>', ' ', lottonumtext2)
-				lottonumtext2 = lottonumtext2.split(" ")
-				lottonumtext3 = re.sub(r'<.*?>', ' ', lottonumtext3)
-				lottonumtext3 = lottonumtext3.split(" ")
-				lottonuma1 = "{0} {1} and {2}".format(lottonumtext1[11], lottonumtext1[12], lottonumtext1[13])                        
-				lottonuma2 = "{0} {1} and {2}".format(lottonumtext2[11], lottonumtext2[12], lottonumtext2[13])                        
-				lottonuma3 = "{0} {1} and {2}".format(lottonumtext3[11], lottonumtext3[12], lottonumtext3[13])                        
-			except:
+					locationtime_ = 0
+					location_ = "In The Forest"
+		except:
+			if num == 1:
 				webworks = False
-				xchat.prnt("1 Variable Error")
-
-	if webworksB is True:
-		if char2 is True and playerlist2 != None:
-			for entry in playerlist2:
-				if "Alignment:" in entry:
-					aligntext = entry
-				if "Level:" in entry:
-					leveltext = entry
-				if "Next level:" in entry:
-					ttltext = entry
-				if "Gold:" in entry:
-					goldtext = entry
-				if "Gems:" in entry:
-					gemstext = entry
-				if "Upgrade level:" in entry:
-					upgradetext = entry
-				if "Ability:" in entry:
-					abilitytext = entry
-				if "XP:" in entry:
-					xptext = entry
-				if "Exp Used:" in entry:
-					exptext = entry
-				if "Life:" in entry:
-					lifetext = entry
-				if "Scrolls Used:" in entry:
-					scrollstext = entry
-				if "Eat Used:" in entry:
-					eatusedtext = entry
-				if "Power Potion:" in entry:
-					powerpotstext = entry
-				if "Mana Potion:" in entry:
-					manatext = entry
-				if "Luck Potion:" in entry:
-					lucktext = entry
-				if "Creep Attack in:" in entry:
-					atimetext = entry
-				if "Dragon Slay in:" in entry:
-					stimetext = entry
-
-				if "amulet:" in entry:
-					amulettext = entry
-				if "boots:" in entry:
-					bootstext = entry
-				if "charm:" in entry:
-					charmtext = entry
-				if "gloves:" in entry:
-					glovestext = entry
-				if "helm:" in entry:
-					helmtext = entry
-				if "leggings:" in entry:
-					leggingstext = entry
-				if "ring:" in entry:
-					ringtext = entry
-				if "shield:" in entry:
-					shieldtext = entry
-				if "tunic:" in entry:
-					tunictext = entry
-				if "weapon:" in entry:
-					weapontext = entry
-
-				if "Sum:" in entry:
-					sumtext = entry
-				if "Expert 1:" in entry:
-					experttext1 = entry
-				if "Expert 2:" in entry:
-					experttext2 = entry
-				if "Expert 3:" in entry:
-					experttext3 = entry
-				if "Stone 1:" in entry:
-					stonetext1 = entry
-				if "Stone 2:" in entry:
-					stonetext2 = entry
-				if "Stone 3:" in entry:
-					stonetext3 = entry
-				if "Manual FIGHT commands used (out of 5):" in entry:
-					fightstext = entry
-				if "Lotto Numbers 1:" in entry:
-					lottonumtext1 = entry
-				if "Lotto Numbers 2:" in entry:
-					lottonumtext2 = entry
-				if "Lotto Numbers 3:" in entry:
-					lottonumtext3 = entry
-
-			try:
-				try:
-					if "Neutral" in aligntext:
-						align2 = "n"
-					if "Evil" in aligntext:
-						align2 = "e"
-					if "Good" in aligntext:
-						align2 = "g"
-				except TypeError:
-					align2 = "n"
-				leveltext = leveltext.split(" ")
-				levelsplit = leveltext[7]
-				level2 = int(levelsplit.strip("<br"))
-				ttltext = ttltext.split(" ")
-				daystext = int(ttltext[8])
-				timetext = ttltext[10].strip("<br")
-				ttl2 = timetosecs(daystext, timetext)
-				goldtext = goldtext.split(" ")
-				goldsplit = goldtext[7]
-				gold2 = int(goldsplit.strip("<br"))
-				gemstext = gemstext.split(" ")
-				gemssplit = gemstext[7]
-				gems2 = int(gemssplit.strip("<br"))
-				upgradetext = upgradetext.split(" ")
-				upgradesplit = upgradetext[8]
-				upgradelevel2 = int(upgradesplit.strip("<br"))
-
-				if "Barbarian" in abilitytext:
-					ability2 = "b"
-				if "Rogue" in abilitytext:
-					ability2 = "r"
-				if "Paladin" in abilitytext:
-					ability2 = "p"
-				if "Wizard" in abilitytext:
-					ability2 = "w"
-
-				xptext = xptext.split(" ")
-				xpsplit = xptext[7]
-				xp2 = int(xpsplit.strip("<br"))
-				exptext = exptext.split(" ")
-				expsplit = exptext[8]
-				expsplit = expsplit.split("/")
-				try:
-					exp2 = int(expsplit[0])
-				except:
-					exp2 = 0
-				lifetext = lifetext.split(" ")
-				lifesplit = lifetext[7]
-				life2 = int(lifesplit.strip("<br"))
-				scrollstext = scrollstext.split(" ")
-				scrollssplit = scrollstext[8]
-				scrollssplit = scrollssplit.split("/")
-				try:
-					scrolls2 = int(scrollssplit[0])
-				except ValueError:
-					scrolls2 = 0
-				eatusedtext = eatusedtext.split(" ")
-				eatusedsplit = eatusedtext[8]
-				eatusedsplit = eatusedsplit.split("/")
-				try:
-					eatused2 = int(eatusedsplit[0])
-				except ValueError:
-					eatused2 = 0
-				powerpotstext = powerpotstext.split(" ")
-				powerpotssplit = powerpotstext[8]
-				powerpotssplit = powerpotssplit.split("/")
-				powerpots2 = int(powerpotssplit[0])
-				manatext = manatext.split(" ")
-				manasplit = manatext[8]
-				manasplit = manasplit.split("/")
-				mana2 = int(manasplit[0])
-				lucktext = lucktext.split(" ")
-				lucksplit = lucktext[8]
-				lucksplit = lucksplit.split("/")
-				luck2 = int(lucksplit[0])
-
-				try:
-					atimetext = atimetext.split(" ")
-					daystext = int(atimetext[9])
-					timetext = atimetext[11].strip("<br")
-					atime2 = timetosecs(daystext, timetext)
-				except ValueError:
-					atime2 = 0
-				try:
-					stimetext = stimetext.split(" ")
-					daystext = int(stimetext[9])
-					timetext = stimetext[11].strip("<br")
-					stime2 = timetosecs(daystext, timetext)
-				except ValueError:
-					stime2 = 0
-
-				amulettext = amulettext.split(" ")
-				amuletsplit = amulettext[7]
-				amulet2 = int(amuletsplit.strip("<br"))
-				bootstext = bootstext.split(" ")
-				bootssplit = bootstext[7]
-				boots2 = int(bootssplit.strip("<br"))
-				charmtext = charmtext.split(" ")
-				charmsplit = charmtext[7]
-				charm2 = int(charmsplit.strip("<br"))
-				glovestext = glovestext.split(" ")
-				glovessplit = glovestext[7]
-				gloves2 = int(glovessplit.strip("<br"))
-				helmtext = helmtext.split(" ")
-				helmsplit = helmtext[7]
-				helm2 = int(helmsplit.strip("<br"))
-				leggingstext = leggingstext.split(" ")
-				leggingssplit = leggingstext[7]
-				leggings2 = int(leggingssplit.strip("<br"))
-				ringtext = ringtext.split(" ")
-				ringsplit = ringtext[7]
-				ring2 = int(ringsplit.strip("<br"))
-				shieldtext = shieldtext.split(" ")
-				shieldsplit = shieldtext[7]
-				shield2 = int(shieldsplit.strip("<br"))
-				tunictext = tunictext.split(" ")
-				tunicsplit = tunictext[7]
-				tunic2 = int(tunicsplit.strip("<br"))
-				weapontext = weapontext.split(" ")
-				weaponsplit = weapontext[7]
-				weapon2 = int(weaponsplit.strip("<br"))
-
-				sumtext = sumtext.split(" ")
-				sumsplit = sumtext[7]
-				mysum2 = int(sumsplit.strip("<br"))
-				experttext1 = experttext1.split(" ")
-				expertsplit1 = experttext1[8]
-				expertsplitsplit1 = expertsplit1.split("<")
-				expertb1 = expertsplitsplit1[0]
-				experttext2 = experttext2.split(" ")
-				expertsplit2 = experttext2[8]
-				expertsplitsplit2 = expertsplit2.split("<")
-				expertb2 = expertsplitsplit2[0]
-				experttext3 = experttext3.split(" ")
-				expertsplit3 = experttext3[8]
-				expertsplitsplit3 = expertsplit3.split("<")
-				expertb3 = expertsplitsplit3[0]
-				stonetext1 = stonetext1.split(" ")
-				stonesplit1 = stonetext1[8]
-				stonesplitsplit1 = stonesplit1.split("<")
-				stoneb1 = stonesplitsplit1[0]
-				stonetext2 = stonetext2.split(" ")
-				stonesplit2 = stonetext2[8]
-				stonesplitsplit2 = stonesplit2.split("<")
-				stoneb2 = stonesplitsplit2[0]
-				stonetext3 = stonetext3.split(" ")
-				stonesplit3 = stonetext3[8]
-				stonesplitsplit3 = stonesplit3.split("<")
-				stoneb3 = stonesplitsplit3[0]
-				fightstext = fightstext.split(" ")
-				fightssplit = fightstext[13]
-				fights2 = int(fightssplit.strip("<br"))
-				lottonumtext1 = re.sub(r'<.*?>', ' ', lottonumtext1)
-				lottonumtext1 = lottonumtext1.split(" ")
-				lottonumtext2 = re.sub(r'<.*?>', ' ', lottonumtext2)
-				lottonumtext2 = lottonumtext2.split(" ")
-				lottonumtext3 = re.sub(r'<.*?>', ' ', lottonumtext3)
-				lottonumtext3 = lottonumtext3.split(" ")
-				lottonumb1 = "{0} {1} and {2}".format(lottonumtext1[11], lottonumtext1[12], lottonumtext1[13])                        
-				lottonumb2 = "{0} {1} and {2}".format(lottonumtext2[11], lottonumtext2[12], lottonumtext2[13])                        
-				lottonumb3 = "{0} {1} and {2}".format(lottonumtext3[11], lottonumtext3[12], lottonumtext3[13])                        
-			except:
+			if num == 2:
 				webworksB = False
-				xchat.prnt("2 Variable Error")
-
-	if webworksC is True:
-		if char3 is True and playerlist3 != None:
-			for entry in playerlist3:
-				if "Alignment:" in entry:
-					aligntext = entry
-				if "Level:" in entry:
-					leveltext = entry
-				if "Next level:" in entry:
-					ttltext = entry
-				if "Gold:" in entry:
-					goldtext = entry
-				if "Gems:" in entry:
-					gemstext = entry
-				if "Upgrade level:" in entry:
-					upgradetext = entry
-				if "Ability:" in entry:
-					abilitytext = entry
-				if "XP:" in entry:
-					xptext = entry
-				if "Exp Used:" in entry:
-					exptext = entry
-				if "Life:" in entry:
-					lifetext = entry
-				if "Scrolls Used:" in entry:
-					scrollstext = entry
-				if "Eat Used:" in entry:
-					eatusedtext = entry
-				if "Power Potion:" in entry:
-					powerpotstext = entry
-				if "Mana Potion:" in entry:
-					manatext = entry
-				if "Luck Potion:" in entry:
-					lucktext = entry
-				if "Creep Attack in:" in entry:
-					atimetext = entry
-				if "Dragon Slay in:" in entry:
-					stimetext = entry
-
-				if "amulet:" in entry:
-					amulettext = entry
-				if "boots:" in entry:
-					bootstext = entry
-				if "charm:" in entry:
-					charmtext = entry
-				if "gloves:" in entry:
-					glovestext = entry
-				if "helm:" in entry:
-					helmtext = entry
-				if "leggings:" in entry:
-					leggingstext = entry
-				if "ring:" in entry:
-					ringtext = entry
-				if "shield:" in entry:
-					shieldtext = entry
-				if "tunic:" in entry:
-					tunictext = entry
-				if "weapon:" in entry:
-					weapontext = entry
-
-				if "Sum:" in entry:
-					sumtext = entry
-				if "Expert 1:" in entry:
-					experttext1 = entry
-				if "Expert 2:" in entry:
-					experttext2 = entry
-				if "Expert 3:" in entry:
-					experttext3 = entry
-				if "Stone 1:" in entry:
-					stonetext1 = entry
-				if "Stone 2:" in entry:
-					stonetext2 = entry
-				if "Stone 3:" in entry:
-					stonetext3 = entry
-				if "Manual FIGHT commands used (out of 5):" in entry:
-					fightstext = entry
-				if "Lotto Numbers 1:" in entry:
-					lottonumtext1 = entry
-				if "Lotto Numbers 2:" in entry:
-					lottonumtext2 = entry
-				if "Lotto Numbers 3:" in entry:
-					lottonumtext3 = entry
-
-			try:
-				try:
-					if "Neutral" in aligntext:
-						align3 = "n"
-					if "Evil" in aligntext:
-						align3 = "e"
-					if "Good" in aligntext:
-						align3 = "g"
-				except TypeError:
-					align3 = "n"
-				leveltext = leveltext.split(" ")
-				levelsplit = leveltext[7]
-				level3 = int(levelsplit.strip("<br"))
-				ttltext = ttltext.split(" ")
-				daystext = int(ttltext[8])
-				timetext = ttltext[10].strip("<br")
-				ttl3 = timetosecs(daystext, timetext)
-				goldtext = goldtext.split(" ")
-				goldsplit = goldtext[7]
-				gold3 = int(goldsplit.strip("<br"))
-				gemstext = gemstext.split(" ")
-				gemssplit = gemstext[7]
-				gems3 = int(gemssplit.strip("<br"))
-				upgradetext = upgradetext.split(" ")
-				upgradesplit = upgradetext[8]
-				upgradelevel3 = int(upgradesplit.strip("<br"))
-
-				if "Barbarian" in abilitytext:
-					ability3 = "b"
-				if "Rogue" in abilitytext:
-					ability3 = "r"
-				if "Paladin" in abilitytext:
-					ability3 = "p"
-				if "Wizard" in abilitytext:
-					ability3 = "w"
-
-				xptext = xptext.split(" ")
-				xpsplit = xptext[7]
-				xp3 = int(xpsplit.strip("<br"))
-				exptext = exptext.split(" ")
-				expsplit = exptext[8]
-				expsplit = expsplit.split("/")
-				try:
-					exp3 = int(expsplit[0])
-				except:
-					exp3 = 0
-				lifetext = lifetext.split(" ")
-				lifesplit = lifetext[7]
-				life3 = int(lifesplit.strip("<br"))
-				scrollstext = scrollstext.split(" ")
-				scrollssplit = scrollstext[8]
-				scrollssplit = scrollssplit.split("/")
-				try:
-					scrolls3 = int(scrollssplit[0])
-				except ValueError:
-					scrolls3 = 0
-				eatusedtext = eatusedtext.split(" ")
-				eatusedsplit = eatusedtext[8]
-				eatusedsplit = eatusedsplit.split("/")
-				try:
-					eatused3 = int(eatusedsplit[0])
-				except ValueError:
-					eatused3 = 0
-				powerpotstext = powerpotstext.split(" ")
-				powerpotssplit = powerpotstext[8]
-				powerpotssplit = powerpotssplit.split("/")
-				powerpots3 = int(powerpotssplit[0])
-				manatext = manatext.split(" ")
-				manasplit = manatext[8]
-				manasplit = manasplit.split("/")
-				mana3 = int(manasplit[0])
-				lucktext = lucktext.split(" ")
-				lucksplit = lucktext[8]
-				lucksplit = lucksplit.split("/")
-				luck3 = int(lucksplit[0])
-
-				try:
-					atimetext = atimetext.split(" ")
-					daystext = int(atimetext[9])
-					timetext = atimetext[11].strip("<br")
-					atime3 = timetosecs(daystext, timetext)
-				except ValueError:
-					atime3 = 0
-				try:
-					stimetext = stimetext.split(" ")
-					daystext = int(stimetext[9])
-					timetext = stimetext[11].strip("<br")
-					stime3 = timetosecs(daystext, timetext)
-				except ValueError:
-					stime3 = 0
-
-				amulettext = amulettext.split(" ")
-				amuletsplit = amulettext[7]
-				amulet3 = int(amuletsplit.strip("<br"))
-				bootstext = bootstext.split(" ")
-				bootssplit = bootstext[7]
-				boots3 = int(bootssplit.strip("<br"))
-				charmtext = charmtext.split(" ")
-				charmsplit = charmtext[7]
-				charm3 = int(charmsplit.strip("<br"))
-				glovestext = glovestext.split(" ")
-				glovessplit = glovestext[7]
-				gloves3 = int(glovessplit.strip("<br"))
-				helmtext = helmtext.split(" ")
-				helmsplit = helmtext[7]
-				helm3 = int(helmsplit.strip("<br"))
-				leggingstext = leggingstext.split(" ")
-				leggingssplit = leggingstext[7]
-				leggings3 = int(leggingssplit.strip("<br"))
-				ringtext = ringtext.split(" ")
-				ringsplit = ringtext[7]
-				ring3 = int(ringsplit.strip("<br"))
-				shieldtext = shieldtext.split(" ")
-				shieldsplit = shieldtext[7]
-				shield3 = int(shieldsplit.strip("<br"))
-				tunictext = tunictext.split(" ")
-				tunicsplit = tunictext[7]
-				tunic3 = int(tunicsplit.strip("<br"))
-				weapontext = weapontext.split(" ")
-				weaponsplit = weapontext[7]
-				weapon3 = int(weaponsplit.strip("<br"))
-
-				sumtext = sumtext.split(" ")
-				sumsplit = sumtext[7]
-				mysum3 = int(sumsplit.strip("<br"))
-				experttext1 = experttext1.split(" ")
-				expertsplit1 = experttext1[8]
-				expertsplitsplit1 = expertsplit1.split("<")
-				expertc1 = expertsplitsplit1[0]
-				experttext2 = experttext2.split(" ")
-				expertsplit2 = experttext2[8]
-				expertsplitsplit2 = expertsplit2.split("<")
-				expertc2 = expertsplitsplit2[0]
-				experttext3 = experttext3.split(" ")
-				expertsplit3 = experttext3[8]
-				expertsplitsplit3 = expertsplit3.split("<")
-				expertc3 = expertsplitsplit3[0]
-				stonetext1 = stonetext1.split(" ")
-				stonesplit1 = stonetext1[8]
-				stonesplitsplit1 = stonesplit1.split("<")
-				stonec1 = stonesplitsplit1[0]
-				stonetext2 = stonetext2.split(" ")
-				stonesplit2 = stonetext2[8]
-				stonesplitsplit2 = stonesplit2.split("<")
-				stonec2 = stonesplitsplit2[0]
-				stonetext3 = stonetext3.split(" ")
-				stonesplit3 = stonetext3[8]
-				stonesplitsplit3 = stonesplit3.split("<")
-				stonec3 = stonesplitsplit3[0]
-				fightstext = fightstext.split(" ")
-				fightssplit = fightstext[13]
-				fights3 = int(fightssplit.strip("<br"))
-				lottonumtext1 = re.sub(r'<.*?>', ' ', lottonumtext1)
-				lottonumtext1 = lottonumtext1.split(" ")
-				lottonumtext2 = re.sub(r'<.*?>', ' ', lottonumtext2)
-				lottonumtext2 = lottonumtext2.split(" ")
-				lottonumtext3 = re.sub(r'<.*?>', ' ', lottonumtext3)
-				lottonumtext3 = lottonumtext3.split(" ")
-				lottonumc1 = "{0} {1} and {2}".format(lottonumtext1[11], lottonumtext1[12], lottonumtext1[13])                        
-				lottonumc2 = "{0} {1} and {2}".format(lottonumtext2[11], lottonumtext2[12], lottonumtext2[13])                        
-				lottonumc3 = "{0} {1} and {2}".format(lottonumtext3[11], lottonumtext3[12], lottonumtext3[13])                        
-			except:
+			if num == 3:
 				webworksC = False
-				xchat.prnt("3 Variable Error")
-
-	if webworksD is True:
-		if char4 is True and playerlist4 != None:
-			for entry in playerlist4:
-				if "Alignment:" in entry:
-					aligntext = entry
-				if "Level:" in entry:
-					leveltext = entry
-				if "Next level:" in entry:
-					ttltext = entry
-				if "Gold:" in entry:
-					goldtext = entry
-				if "Gems:" in entry:
-					gemstext = entry
-				if "Upgrade level:" in entry:
-					upgradetext = entry
-				if "Ability:" in entry:
-					abilitytext = entry
-				if "XP:" in entry:
-					xptext = entry
-				if "Exp Used:" in entry:
-					exptext = entry
-				if "Life:" in entry:
-					lifetext = entry
-				if "Scrolls Used:" in entry:
-					scrollstext = entry
-				if "Eat Used:" in entry:
-					eatusedtext = entry
-				if "Power Potion:" in entry:
-					powerpotstext = entry
-				if "Mana Potion:" in entry:
-					manatext = entry
-				if "Luck Potion:" in entry:
-					lucktext = entry
-				if "Creep Attack in:" in entry:
-					atimetext = entry
-				if "Dragon Slay in:" in entry:
-					stimetext = entry
-
-				if "amulet:" in entry:
-					amulettext = entry
-				if "boots:" in entry:
-					bootstext = entry
-				if "charm:" in entry:
-					charmtext = entry
-				if "gloves:" in entry:
-					glovestext = entry
-				if "helm:" in entry:
-					helmtext = entry
-				if "leggings:" in entry:
-					leggingstext = entry
-				if "ring:" in entry:
-					ringtext = entry
-				if "shield:" in entry:
-					shieldtext = entry
-				if "tunic:" in entry:
-					tunictext = entry
-				if "weapon:" in entry:
-					weapontext = entry
-
-				if "Sum:" in entry:
-					sumtext = entry
-				if "Expert 1:" in entry:
-					experttext1 = entry
-				if "Expert 2:" in entry:
-					experttext2 = entry
-				if "Expert 3:" in entry:
-					experttext3 = entry
-				if "Stone 1:" in entry:
-					stonetext1 = entry
-				if "Stone 2:" in entry:
-					stonetext2 = entry
-				if "Stone 3:" in entry:
-					stonetext3 = entry
-				if "Manual FIGHT commands used (out of 5):" in entry:
-					fightstext = entry
-				if "Lotto Numbers 1:" in entry:
-					lottonumtext1 = entry
-				if "Lotto Numbers 2:" in entry:
-					lottonumtext2 = entry
-				if "Lotto Numbers 3:" in entry:
-					lottonumtext3 = entry
-
-			try:
-				try:
-					if "Neutral" in aligntext:
-						align4 = "n"
-					if "Evil" in aligntext:
-						align4 = "e"
-					if "Good" in aligntext:
-						align4 = "g"
-				except TypeError:
-					align4 = "n"
-				leveltext = leveltext.split(" ")
-				levelsplit = leveltext[7]
-				level4 = int(levelsplit.strip("<br"))
-				ttltext = ttltext.split(" ")
-				daystext = int(ttltext[8])
-				timetext = ttltext[10].strip("<br")
-				ttl4 = timetosecs(daystext, timetext)
-				goldtext = goldtext.split(" ")
-				goldsplit = goldtext[7]
-				gold4 = int(goldsplit.strip("<br"))
-				gemstext = gemstext.split(" ")
-				gemssplit = gemstext[7]
-				gems4 = int(gemssplit.strip("<br"))
-				upgradetext = upgradetext.split(" ")
-				upgradesplit = upgradetext[8]
-				upgradelevel4 = int(upgradesplit.strip("<br"))
-
-				if "Barbarian" in abilitytext:
-					ability4 = "b"
-				if "Rogue" in abilitytext:
-					ability4 = "r"
-				if "Paladin" in abilitytext:
-					ability4 = "p"
-				if "Wizard" in abilitytext:
-					ability4 = "w"
-
-				xptext = xptext.split(" ")
-				xpsplit = xptext[7]
-				xp4 = int(xpsplit.strip("<br"))
-				exptext = exptext.split(" ")
-				expsplit = exptext[8]
-				expsplit = expsplit.split("/")
-				try:
-					exp4 = int(expsplit[0])
-				except:
-					exp4 = 0
-				lifetext = lifetext.split(" ")
-				lifesplit = lifetext[7]
-				life4 = int(lifesplit.strip("<br"))
-				scrollstext = scrollstext.split(" ")
-				scrollssplit = scrollstext[8]
-				scrollssplit = scrollssplit.split("/")
-				try:
-					scrolls4 = int(scrollssplit[0])
-				except ValueError:
-					scrolls4 = 0
-				eatusedtext = eatusedtext.split(" ")
-				eatusedsplit = eatusedtext[8]
-				eatusedsplit = eatusedsplit.split("/")
-				try:
-					eatused4 = int(eatusedsplit[0])
-				except ValueError:
-					eatused4 = 0
-				powerpotstext = powerpotstext.split(" ")
-				powerpotssplit = powerpotstext[8]
-				powerpotssplit = powerpotssplit.split("/")
-				powerpots4 = int(powerpotssplit[0])
-				manatext = manatext.split(" ")
-				manasplit = manatext[8]
-				manasplit = manasplit.split("/")
-				mana4 = int(manasplit[0])
-				lucktext = lucktext.split(" ")
-				lucksplit = lucktext[8]
-				lucksplit = lucksplit.split("/")
-				luck4 = int(lucksplit[0])
-
-				try:
-					atimetext = atimetext.split(" ")
-					daystext = int(atimetext[9])
-					timetext = atimetext[11].strip("<br")
-					atime4 = timetosecs(daystext, timetext)
-				except ValueError:
-					atime4 = 0
-				try:
-					stimetext = stimetext.split(" ")
-					daystext = int(stimetext[9])
-					timetext = stimetext[11].strip("<br")
-					stime4 = timetosecs(daystext, timetext)
-				except ValueError:
-					stime4 = 0
-
-				amulettext = amulettext.split(" ")
-				amuletsplit = amulettext[7]
-				amulet4 = int(amuletsplit.strip("<br"))
-				bootstext = bootstext.split(" ")
-				bootssplit = bootstext[7]
-				boots4 = int(bootssplit.strip("<br"))
-				charmtext = charmtext.split(" ")
-				charmsplit = charmtext[7]
-				charm4 = int(charmsplit.strip("<br"))
-				glovestext = glovestext.split(" ")
-				glovessplit = glovestext[7]
-				gloves4 = int(glovessplit.strip("<br"))
-				helmtext = helmtext.split(" ")
-				helmsplit = helmtext[7]
-				helm4 = int(helmsplit.strip("<br"))
-				leggingstext = leggingstext.split(" ")
-				leggingssplit = leggingstext[7]
-				leggings4 = int(leggingssplit.strip("<br"))
-				ringtext = ringtext.split(" ")
-				ringsplit = ringtext[7]
-				ring4 = int(ringsplit.strip("<br"))
-				shieldtext = shieldtext.split(" ")
-				shieldsplit = shieldtext[7]
-				shield4 = int(shieldsplit.strip("<br"))
-				tunictext = tunictext.split(" ")
-				tunicsplit = tunictext[7]
-				tunic4 = int(tunicsplit.strip("<br"))
-				weapontext = weapontext.split(" ")
-				weaponsplit = weapontext[7]
-				weapon4 = int(weaponsplit.strip("<br"))
-
-				sumtext = sumtext.split(" ")
-				sumsplit = sumtext[7]
-				mysum4 = int(sumsplit.strip("<br"))
-				experttext1 = experttext1.split(" ")
-				expertsplit1 = experttext1[8]
-				expertsplitsplit1 = expertsplit1.split("<")
-				expertd1 = expertsplitsplit1[0]
-				experttext2 = experttext2.split(" ")
-				expertsplit2 = experttext2[8]
-				expertsplitsplit2 = expertsplit2.split("<")
-				expertd2 = expertsplitsplit2[0]
-				experttext3 = experttext3.split(" ")
-				expertsplit3 = experttext3[8]
-				expertsplitsplit3 = expertsplit3.split("<")
-				expertd3 = expertsplitsplit3[0]
-				stonetext1 = stonetext1.split(" ")
-				stonesplit1 = stonetext1[8]
-				stonesplitsplit1 = stonesplit1.split("<")
-				stoned1 = stonesplitsplit1[0]
-				stonetext2 = stonetext2.split(" ")
-				stonesplit2 = stonetext2[8]
-				stonesplitsplit2 = stonesplit2.split("<")
-				stoned2 = stonesplitsplit2[0]
-				stonetext3 = stonetext3.split(" ")
-				stonesplit3 = stonetext3[8]
-				stonesplitsplit3 = stonesplit3.split("<")
-				stoned3 = stonesplitsplit3[0]
-				fightstext = fightstext.split(" ")
-				fightssplit = fightstext[13]
-				fights4 = int(fightssplit.strip("<br"))
-				lottonumtext1 = re.sub(r'<.*?>', ' ', lottonumtext1)
-				lottonumtext1 = lottonumtext1.split(" ")
-				lottonumtext2 = re.sub(r'<.*?>', ' ', lottonumtext2)
-				lottonumtext2 = lottonumtext2.split(" ")
-				lottonumtext3 = re.sub(r'<.*?>', ' ', lottonumtext3)
-				lottonumtext3 = lottonumtext3.split(" ")
-				lottonumd1 = "{0} {1} and {2}".format(lottonumtext1[11], lottonumtext1[12], lottonumtext1[13])                        
-				lottonumd2 = "{0} {1} and {2}".format(lottonumtext2[11], lottonumtext2[12], lottonumtext2[13])                        
-				lottonumd3 = "{0} {1} and {2}".format(lottonumtext3[11], lottonumtext3[12], lottonumtext3[13])                        
-			except:
+			if num == 4:
 				webworksD = False
-				xchat.prnt("4 Variable Error")
+			if errortextmode is True:
+				xchat.prnt("{0} Variable Error".format(num))
 
-	itemslist.append( ( "align", align, "align", align2, "align", align3, "align", align4 ) )
-	itemslist.append( ( "level", level, "level", level2, "level", level3, "level", level4 ) )
-	itemslist.append( ( "ttl", ttl, "ttl", ttl2, "ttl", ttl3, "ttl", ttl4 ) )
-	itemslist.append( ( "gold", gold, "gold", gold2, "gold", gold3, "gold", gold4 ) )
-	itemslist.append( ( "gems", gems, "gems", gems2, "gems", gems3, "gems", gems4 ) )
-	itemslist.append( ( "upgradelevel", upgradelevel, "upgradelevel", upgradelevel2, "upgradelevel", upgradelevel3, "upgradelevel", upgradelevel4 ) )
-	itemslist.append( ( "ability", ability, "ability", ability2, "ability", ability3, "ability", ability4 ) )
-	itemslist.append( ( "xp", xp, "xp", xp2, "xp", xp3, "xp", xp4 ) )
-	itemslist.append( ( "exp", exp, "exp", exp2, "exp", exp3, "exp", exp4 ) )
-	itemslist.append( ( "life", life, "life", life2, "life", life3, "life", life4 ) )
-	itemslist.append( ( "scrolls", scrolls, "scrolls", scrolls2, "scrolls", scrolls3, "scrolls", scrolls4 ) )
-	itemslist.append( ( "eatused", eatused, "eatused", eatused2, "eatused", eatused3, "eatused", eatused4 ) )
-	itemslist.append( ( "powerpots", powerpots, "powerpots", powerpots2, "powerpots", powerpots3, "powerpots", powerpots4 ) )
-	itemslist.append( ( "mana", mana, "mana", mana2, "mana", mana3, "mana", mana4 ) )
-	itemslist.append( ( "luck", luck, "luck", luck2, "luck", luck3, "luck", luck4 ) )
-	itemslist.append( ( "atime", atime, "atime", atime2, "atime", atime3, "atime", atime4 ) )
-	itemslist.append( ( "stime", stime, "stime", stime2, "stime", stime3, "stime", stime4 ) )
+				  # num  mysum   level   life   ability   ttl 
+		itemslist = ( num, mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, eatused_, powerpots_, luck_, location_, locationtime_ )
 
-	itemslist.append( ( "amulet", amulet, "amulet", amulet2, "amulet", amulet3, "amulet", amulet4 ) )
-	itemslist.append( ( "boots", boots, "boots", boots2, "boots", boots3, "boots", boots4 ) )
-	itemslist.append( ( "charm", charm, "charm", charm2, "charm", charm3, "charm", charm4 ) )
-	itemslist.append( ( "gloves", gloves, "gloves", gloves2, "gloves", gloves3, "gloves", gloves4 ) )
-	itemslist.append( ( "helm", helm, "helm", helm2, "helm", helm3, "helm", helm4 ) )
-	itemslist.append( ( "leggings", leggings, "leggings", leggings2, "leggings", leggings3, "leggings", leggings4 ) )
-	itemslist.append( ( "ring", ring, "ring", ring2, "ring", ring3, "ring", ring4 ) )
-	itemslist.append( ( "shield", shield, "shield", shield2, "shield", shield3, "shield", shield4 ) )
-	itemslist.append( ( "tunic", tunic, "tunic", tunic2, "tunic", tunic3, "tunic", tunic4 ) )
-	itemslist.append( ( "weapon", weapon, "weapon", weapon2, "weapon", weapon3, "weapon", weapon4 ) )
+	return itemslist
 
-	itemslist.append( ( "mysum", mysum, "mysum", mysum2, "mysum", mysum3, "mysum", mysum4 ) )
-	itemslist.append( ( "expert1", expert1, "expert1", expertb1, "expert1", expertc1, "expert1", expertd1 ) )
-	itemslist.append( ( "expert2", expert2, "expert2", expertb2, "expert2", expertc2, "expert2", expertd2 ) )
-	itemslist.append( ( "expert3", expert3, "expert3", expertb3, "expert3", expertc3, "expert3", expertd3 ) )
-	itemslist.append( ( "stone1", stone1, "stone1", stoneb1, "stone1", stonec1, "stone1", stoned1 ) )
-	itemslist.append( ( "stone2", stone2, "stone2", stoneb2, "stone2", stonec2, "stone2", stoned2 ) )
-	itemslist.append( ( "stone3", stone3, "stone3", stoneb3, "stone3", stonec3, "stone3", stoned3 ) )
-	itemslist.append( ( "fights", fights, "fights", fights2, "fights", fights3, "fights", fights4 ) )
-	
-def getitems(num):
+def getitems2(num):
 	global align
 	global level
 	global ttl
@@ -4335,10 +3411,7 @@ def getitems(num):
 	global exp
 	global life
 	global scrolls
-	global eatused
-	global powerpots
 	global mana
-	global luck
 	global atime
 	global stime
 
@@ -4362,128 +3435,65 @@ def getitems(num):
 	global stone3
 	global fights
 
-	global itemslist
+	global itemslists
+	global name
+	global name2
+	global name3
+	global name4
+	global lottonum1
+	global lottonum2
+	global lottonum3
+	global eatused
+	global powerpots
+	global luck
+	global location
+	global locationtime
 	
-	if num == 1:
-		itemname = 0
-		itemscore = 1
-	if num == 2:
-		itemname = 2
-		itemscore = 3
-	if num == 3:
-		itemname = 4
-		itemscore = 5
-	if num == 4:
-		itemname = 6
-		itemscore = 7
+#itemslists.append( ( player[5], mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, rank_, eatused_, powerpots_, luck_, location_, locationtime_ ) )
 		
-	for entry in itemslist:
-		if(entry[itemname] == "align"):
-			align = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "level"):
-			level = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "ttl"):
-			ttl = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "gold"):
-			gold = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "gems"):
-			gems = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "upgradelevel"):
-			upgradelevel = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "ability"):
-			ability = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "xp"):
-			xp = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "exp"):
-			exp = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "life"):
-			life = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "scrolls"):
-			scrolls = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "eatused"):
-			eatused = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "powerpots"):
-			powerpots = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "mana"):
-			mana = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "luck"):
-			luck = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "atime"):
-			atime = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "stime"):
-			stime = entry[itemscore]
-
-	for entry in itemslist:
-		if(entry[itemname] == "amulet"):
-			amulet = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "charm"):
-			charm = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "helm"):
-			helm = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "boots"):
-			boots = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "gloves"):
-			gloves = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "ring"):
-			ring = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "leggings"):
-			leggings = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "shield"):
-			shield = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "tunic"):
-			tunic = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "weapon"):
-			weapon = entry[itemscore]
-
-	for entry in itemslist:
-		if(entry[itemname] == "mysum"):
-			mysum = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "expert1"):
-			expert1 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "expert2"):
-			expert2 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "expert3"):
-			expert3 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "stone1"):
-			stone1 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "stone2"):
-			stone2 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "stone3"):
-			stone3 = entry[itemscore]
-	for entry in itemslist:
-		if(entry[itemname] == "fights"):
-			fights = entry[itemscore]
+	if itemslists != None:
+		for entry in itemslists:
+			if(entry[0] == num):
+				mysum = entry[1]
+				level = entry[2]
+				life = entry[3]
+				ability = entry[4]
+				ttl = entry[5]
+				gold = entry[6]
+				gems = entry[7]
+				upgradelevel = entry[8]
+				xp = entry[9]
+				exp = entry[10]
+				scrolls = entry[11]
+				mana = entry[12]
+				atime = entry[13]
+				stime = entry[14]
+				amulet = entry[15]
+				boots = entry[16]
+				charm = entry[17]
+				gloves = entry[18]
+				helm = entry[19]
+				leggings = entry[20]
+				ring = entry[21]
+				shield = entry[22]
+				tunic = entry[23]
+				weapon = entry[24]
+				expert1 = entry[25]
+				expert2 = entry[26]
+				expert3 = entry[27]
+				stone1 = entry[28]
+				stone2 = entry[29]
+				stone3 = entry[30]
+				fights = entry[31]
+				align = entry[32]
+				lottonum1 = entry[33]
+				lottonum2 = entry[34]
+				lottonum3 = entry[35]
+				eatused = entry[36]
+				powerpots = entry[37]
+				luck = entry[38]
+				location = entry[39]
+				locationtime = entry[40]
 
 def timetosecs(days,time):
 	timesecs = 0
@@ -4572,43 +3582,49 @@ def main(userdata):
 	global pswd4
 	global level
 	global fights
-	global level2
-	global fights2
-	global level3
-	global fights3
-	global level4
-	global fights4
-	global gameactive
 	global char1
 	global char2
 	global char3
 	global char4
 	global chanmessagecount
 	global life
-	global life2
-	global life3
-	global life4
 	global charcount
 	global intervaltext
-	
+	global itemslists
+	global bottextmode
+	global errortextmode
+	global botdisable1
+	global botdisable2
+	global botdisable3
+	global botdisable4
+
 	if intervaltext is True:
 		xchat.prnt( "INTERVAL {0}".format(time.asctime()) )
 	if chanmessage is True:
 		chanmessagecount += 1
 
-	if char1 is True:
-		botcheck = False
-		chancheck = True
-	if char2 is True:
-		botcheck2 = False
-		chancheck2 = True
-	if char3 is True:
-		botcheck3 = False
-		chancheck3 = True
-	if char4 is True:
-		botcheck4 = False
-		chancheck4 = True
+	botcheck = False
+	chancheck = True
+	botcheck2 = False
+	chancheck2 = True
+	botcheck3 = False
+	chancheck3 = True
+	botcheck4 = False
+	chancheck4 = True
+	botdisable1 = False
+	botdisable2 = False
+	botdisable3 = False
+	botdisable4 = False
 	intervaldisable = False
+
+	if char1 is True:
+		bottester(1)
+	if char2 is True:
+		bottester(2)
+	if char3 is True:
+		bottester(3)
+	if char4 is True:
+		bottester(4)
 
 	if char1 is True:
 		if game_chan.get_info("channel").lower() != channame:
@@ -4624,7 +3640,8 @@ def main(userdata):
 				if botname in user.nick:
 					botcheck = True
 			if botcheck is False:
-				 xchat.prnt( "1 Game Bot not in channel" )
+				 if errortextmode is True:
+					 xchat.prnt( "1 Game Bot not in channel" )
 	if char2 is True:
 		if game_chan2.get_info("channel").lower() != channame2:
 			chancheck2 = False
@@ -4639,7 +3656,8 @@ def main(userdata):
 				if botname2 in user.nick:
 					botcheck2 = True
 			if botcheck2 is False:
-				 xchat.prnt( "2 Game Bot not in channel" )
+				 if errortextmode is True:
+					 xchat.prnt( "2 Game Bot not in channel" )
 	if char3 is True:
 		if game_chan3.get_info("channel").lower() != channame3:
 			chancheck3 = False
@@ -4654,7 +3672,8 @@ def main(userdata):
 				if botname3 in user.nick:
 					botcheck3 = True
 			if botcheck3 is False:
-				 xchat.prnt( "3 Game Bot not in channel" )
+				 if errortextmode is True:
+					 xchat.prnt( "3 Game Bot not in channel" )
 	if char4 is True:
 		if game_chan4.get_info("channel").lower() != channame4:
 			chancheck4 = False
@@ -4669,7 +3688,8 @@ def main(userdata):
 				if botname4 in user.nick:
 					botcheck4 = True
 			if botcheck4 is False:
-				 xchat.prnt( "4 Game Bot not in channel" )
+				 if errortextmode is True:
+					 xchat.prnt( "4 Game Bot not in channel" )
 
 	if private is True and chanmessagecount == 1:
 		xchat.hook_print("Private Message", private_cb)
@@ -4688,7 +3708,7 @@ def main(userdata):
 	if(char4 is True and botcheck4 is True):
 		webdata2(4)
 	if((webworks is True and botcheck is True) or (webworksB is True and botcheck2 is True) or (webworksC is True and botcheck3 is True) or (webworksD is True and botcheck4 is True)):
-		getvariables()
+		itemsbuilder()
 
 	test = []
 	offline = False
@@ -4749,22 +3769,27 @@ def main(userdata):
 				rank4 = int(ranktext[0])
 	if char1 is True and botcheck is True:
 		if(webworks is True and offline is True):
-			xchat.prnt("1 Player Offline")
+			if errortextmode is True:
+				xchat.prnt("1 Player Offline")
 	if char2 is True and botcheck2 is True:
 		if(webworksB is True and offline2 is True):
-			xchat.prnt("2 Player Offline")
+			if errortextmode is True:
+				xchat.prnt("2 Player Offline")
 	if char3 is True and botcheck3 is True:
 		if(webworksC is True and offline3 is True):
-			xchat.prnt("3 Player Offline")
+			if errortextmode is True:
+				xchat.prnt("3 Player Offline")
 	if char4 is True and botcheck4 is True:
 		if(webworksD is True and offline4 is True):
-			xchat.prnt("4 Player Offline")
+			if errortextmode is True:
+				xchat.prnt("4 Player Offline")
 
 	if char1 is True:
 		nickname = game_chan.get_info("nick")
 		netname = game_chan.get_info("network")
 		if game_chan.get_info("server") is None:
-			xchat.prnt( "1 Not connected!" )
+			if errortextmode is True:
+				xchat.prnt( "1 Not connected!" )
 			if ZNC is False:
 				game_chan.command( "server {0}".format(servername) )
 			if ZNC is True:
@@ -4782,7 +3807,8 @@ def main(userdata):
 		nickname2 = game_chan2.get_info("nick")
 		netname2 = game_chan2.get_info("network")
 		if game_chan2.get_info("server") is None:
-			xchat.prnt( "2 Not connected!" )
+			if errortextmode is True:
+				xchat.prnt( "2 Not connected!" )
 			if ZNC2 is False:
 				game_chan2.command( "server {0}".format(servername2) )
 			if ZNC2 is True:
@@ -4800,7 +3826,8 @@ def main(userdata):
 		nickname3 = game_chan3.get_info("nick")
 		netname3 = game_chan3.get_info("network")
 		if game_chan3.get_info("server") is None:
-			xchat.prnt( "3 Not connected!" )
+			if errortextmode is True:
+				xchat.prnt( "3 Not connected!" )
 			if ZNC3 is False:
 				game_chan3.command( "server {0}".format(servername3) )
 			if ZNC3 is True:
@@ -4818,7 +3845,8 @@ def main(userdata):
 		nickname4 = game_chan4.get_info("nick")
 		netname4 = game_chan4.get_info("network")
 		if game_chan4.get_info("server") is None:
-			xchat.prnt( "4 Not connected!" )
+			if errortextmode is True:
+				xchat.prnt( "4 Not connected!" )
 			if ZNC4 is False:
 				game_chan4.command( "server {0}".format(servername4) )
 			if ZNC4 is True:
@@ -4852,13 +3880,53 @@ def main(userdata):
 			interval = 300
 			hookmain()
 
+	life2 = 0
+	level2 = 0
+	fight2 = 0
+	life3 = 0
+	level3 = 0
+	fight3 = 0
+	life4 = 0
+	level4 = 0
+	fight4 = 0
+	
+	if char1 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 1):
+					level = entry[2]
+					fights = entry[31]
+					life = entry[3]
+	if char2 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 2):
+					level2 = entry[2]
+					fights2 = entry[31]
+					life2 = entry[3]
+	if char3 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 3):
+					level3 = entry[2]
+					fights3 = entry[31]
+					life3 = entry[3]
+	if char4 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 4):
+					level4 = entry[2]
+					fights4 = entry[31]
+					life4 = entry[3]
+
 	if webworks is True:
 		if char1 is True and offline is False and botcheck is True:
 			playerarea(1)
 			spendmoney(1)
 			timercheck(1)
 			if(level >= 25 and fights >= 0 and fights < 5 and life > 0):
-				xchat.prnt("Fights available")
+				if bottextmode is True:
+					xchat.prnt("Fights available")
 			if(level >= 25 and fights >= 0 and fights < 5 and life > 10):
 				newlister(1)
 				fight_fight(1)
@@ -4868,7 +3936,8 @@ def main(userdata):
 			spendmoney(2)
 			timercheck(2)
 			if(level2 >= 25 and fights2 >= 0 and fights2 < 5 and life2 > 0):
-				xchat.prnt("Fights available")
+				if bottextmode is True:
+					xchat.prnt("Fights available")
 			if(level2 >= 25 and fights2 >= 0 and fights2 < 5 and life2 > 10):
 				newlister(2)
 				fight_fight(2)
@@ -4878,7 +3947,8 @@ def main(userdata):
 			spendmoney(3)
 			timercheck(3)
 			if(level3 >= 25 and fights3 >= 0 and fights3 < 5 and life3 > 0):
-				xchat.prnt("Fights available")
+				if bottextmode is True:
+					xchat.prnt("Fights available")
 			if(level3 >= 25 and fights3 >= 0 and fights3 < 5 and life3 > 10):
 				newlister(3)
 				fight_fight(3)
@@ -4888,7 +3958,8 @@ def main(userdata):
 			spendmoney(4)
 			timercheck(4)
 			if(level4 >= 25 and fights4 >= 0 and fights4 < 5 and life4 > 0):
-				xchat.prnt("Fights available")
+				if bottextmode is True:
+					xchat.prnt("Fights available")
 			if(level4 >= 25 and fights4 >= 0 and fights4 < 5 and life4 > 10):
 				newlister(4)
 				fight_fight(4)
@@ -4899,12 +3970,6 @@ def intervalcalc():
 	global interval
 	global level
 	global fights
-	global level2
-	global fights2
-	global level3
-	global fights3
-	global level4
-	global fights4
 	global botcheck
 	global offline
 	global botcheck2
@@ -4918,16 +3983,53 @@ def intervalcalc():
 	global char3
 	global char4
 	global life
-	global life2
-	global life3
-	global life4
 	global fightmode
+	global itemslists
 	
 	sixty = 60
 	onetwenty = 120
 	interval = 5
 	interval *= 60			# conv from min to sec
 	intervallist = []
+
+	level2 = 0
+	fights2 = 0
+	life2 = 0
+	level3 = 0
+	fights3 = 0
+	life3 = 0
+	level4 = 0
+	fights4 = 0
+	life4 = 0
+	
+	if char1 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 1):
+					level = entry[2]
+					fights = entry[31]
+					life = entry[3]
+	if char2 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 2):
+					level2 = entry[2]
+					fights2 = entry[31]
+					life2 = entry[3]
+	if char3 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 3):
+					level3 = entry[2]
+					fights3 = entry[31]
+					life3 = entry[3]
+	if char4 is True:
+		if itemslists != None:
+			for entry in itemslists:
+				if(entry[0] == 4):
+					level4 = entry[2]
+					fights4 = entry[31]
+					life4 = entry[3]
 
 	if char1 is True:
 		if botcheck is False or offline is True:
@@ -4980,13 +4082,12 @@ def timercheck(num):
 	global mana
 	global powerpots
 	global gold
-	global charcount
 	global life
 	global buypower
 	global slaysum
-	
-	if charcount >= 2:
-		getitems(num)
+	global bottextmode
+
+	getitems2(num)
 
 	if num == 1:
 		attackslaySumlist = attackslaySum
@@ -5008,7 +4109,8 @@ def timercheck(num):
 	
 	if(ttl <= interval):
 		timer = (ttl+10)*1000
-		xchat.prnt("Set lvlup {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
+		if bottextmode is True:
+			xchat.prnt("Set lvlup {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
 		if num == 1:
 			xchat.hook_timer(timer, lvlup)
 		if num == 2:
@@ -5026,7 +4128,8 @@ def timercheck(num):
 			powerpots = 1
 
 		timer = (atime+10)*1000
-		xchat.prnt("Set attack {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
+		if bottextmode is True:
+			xchat.prnt("Set attack {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
 		slaydisable = True
 
 		if powerpots == 0:
@@ -5047,6 +4150,7 @@ def timercheck(num):
 				xchat.hook_timer(timer, attackb3)
 			if num == 4:
 				xchat.hook_timer(timer, attackb4)
+			powerpots = 0
 
 	if(level >= 30 and attackslaySumlist >= 1000 and stime <= interval and stime <= ttl and slaydisable is False and life > 10):
 		if(mana == 0 and gold >= 1100 and attackslaySumlist < 6300000):
@@ -5055,7 +4159,8 @@ def timercheck(num):
 			mana = 1
 		timer = (stime+10)*1000
 		if mana == 0 and attackslaySumlist >= slaysum:
-			xchat.prnt("Set slay {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
+			if bottextmode is True:
+				xchat.prnt("Set slay {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
 			if num == 1:
 				xchat.hook_timer(timer, slay)
 			if num == 2:
@@ -5065,7 +4170,9 @@ def timercheck(num):
 			if num == 4:
 				xchat.hook_timer(timer, slay4)
 		if mana == 1:
-			xchat.prnt("Set slay {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
+			if bottextmode is True:
+				xchat.prnt("Set slay {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
+			mana = 0
 			if num == 1:
 				xchat.hook_timer(timer, slayb)
 			if num == 2:
@@ -5142,7 +4249,6 @@ def spendmoney(num):
 	global interval
 	global scrolls
 	global exp
-	global charcount
 	global luck
 	global getgems
 	global goldsave
@@ -5168,8 +4274,7 @@ def spendmoney(num):
 	# xpget 20xp minimum
 	# buy exp - 1000 gold - 10% off TTL
 	
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 
 	lowestitem = worstitem(num)
 #	xchat.prnt("{0} Worst item {1}".format(num, lowestitem))
@@ -5192,29 +4297,6 @@ def spendmoney(num):
 		gold -= lifebuy
 		life = 100
 
-	if(level >= 15 and buyluck is True):
-		if(luck == 0 and gold >= 2100):
-			usecommand("buy luck", num)
-			luck = 1
-			gold -= 1000
-
-	if(expbuy is True and exp < 5):
-		expdiff = 5 - exp
-		expcost = expdiff * 1000
-		if(gold >= (expcost + 1100)):
-			for i in range(expdiff):
-				usecommand("buy exp", num)
-				gold -= 1000
-				exp += 1
-		elif(gold >= 1000 + 1100):
-			golddiff = gold - 1100
-			expcalc = golddiff // 1000
-			if expcalc >= 1:
-				for i in range(expcalc):
-					usecommand("buy exp", num)
-					gold -= 1000
-					exp += 1
-					
 	gembuy = True
 	if(level >= 35):
 		if upgradelevel == 0 and gold < 600:
@@ -5252,6 +4334,29 @@ def spendmoney(num):
 			gold -= 8000
 			upgradelevel = 5
 		
+	if(gembuy is True and level >= 15 and buyluck is True):
+		if(luck == 0 and gold >= 2100):
+			usecommand("buy luck", num)
+			luck = 1
+			gold -= 1000
+
+	if(gembuy is True and expbuy is True and exp < 5):
+		expdiff = 5 - exp
+		expcost = expdiff * 1000
+		if(gold >= (expcost + 1100)):
+			for i in range(expdiff):
+				usecommand("buy exp", num)
+				gold -= 1000
+				exp += 1
+		elif(gold >= 1000 + 1100):
+			golddiff = gold - 1100
+			expcalc = golddiff // 1000
+			if expcalc >= 1:
+				for i in range(expcalc):
+					usecommand("buy exp", num)
+					gold -= 1000
+					exp += 1
+					
 #        xchat.prnt("{0} goldsave: {1}  gembuy: {2}  level: {3}  upgradelevel: {4}  align: {5}".format(num, goldsave, gembuy, level, upgradelevel, align))
 
 	if(level >= setbuy):
@@ -5453,12 +4558,11 @@ def lvlupmulti(num):
 	global interval
 	global gold
 	global powerpots
-	global charcount
 	global life
 	global buypower
+	global bottextmode
 
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 	if num == 1:
 		namelist = name
 	if num == 2:
@@ -5473,7 +4577,8 @@ def lvlupmulti(num):
 
 	level += 1
 	
-	xchat.prnt("{0} has reached level {1}!".format(namelist, level))
+	if bottextmode is True:
+		xchat.prnt("{0} {1} has reached level {2}!".format(num, namelist, level))
 
 	if(level >= 16 and life > 10):
 		if powerpots == 0 and gold >= 1100 and buypower is True:
@@ -5499,6 +4604,7 @@ def lvlupmulti(num):
 				xchat.hook_timer(0, attackb3)
 			if num == 4:
 				xchat.hook_timer(0, attackb4)
+			powerpots = 0
 
 def fight_fight(num):
 	global name
@@ -5527,10 +4633,9 @@ def fight_fight(num):
 	global upgradelevel
 	global life
 	global fightmode
-	global charcount
+	global bottextmode
 
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 
 	if num == 1:
 		ufight = testfight(1)
@@ -5597,7 +4702,8 @@ def fight_fight(num):
 			ufightcalclist = ufightcalc3
 		if num == 4:
 			ufightcalclist = ufightcalc4
-		xchat.prnt("{0} Best fight for Rank {1}:  {2}  [{3}]  Opponent: Rank {4}:  {5}  [{6}], Odds {7}".format(num, ranklist, namelist, int(fightAdj), ufight[6], ufight[0], int(ufight[2]), ufightcalclist))
+		if bottextmode is True:
+			xchat.prnt("{0} Best fight for Rank {1}:  {2}  [{3}]  Opponent: Rank {4}:  {5}  [{6}], Odds {7}".format(num, ranklist, namelist, int(fightAdj), ufight[6], ufight[0], int(ufight[2]), ufightcalclist))
 		if(ufightcalclist >= 0.9 and fightmode is True):
 			usecommand("fight {0}".format( ufight[0] ),num)
 			fights += 1
@@ -5627,10 +4733,8 @@ def testfight(num):
 	global fightlevellimit2
 	global fightlevellimit3
 	global fightlevellimit4
-	global charcount
 
-	if charcount >= 2:
-		getitems(num)
+	getitems2(num)
 	
 	if num == 1:
 		newlists = newlist

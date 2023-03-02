@@ -4,10 +4,14 @@ BlackBuy Spend Mode Off		- /blackbuyoff
 BlackBuy Spend Mode On      	- /blackbuyon  
 BlackBuy 14 Spend Mode Off  	- /blackbuy14off  
 BlackBuy 14 Spend Mode On   	- /blackbuy14on  
+Bot Text Mode Off               - /bottextoff
+Bot Text Mode On                - /bottexton
 Buy Life Mode Off           	- /buylifeoff  
 Buy Life Mode On            	- /buylifeon  
 CreepAttack Mode Off        	- /creepattackoff  
 CreepAttack Mode On         	- /creepattackon  
+Error Text Mode Off             - /errortextoff
+Error Text Mode On              - /errortexton
 Experince Buying Mode Off   	- /expbuyoff  
 Experince Buying Mode On    	- /expbuyon  
 Fighting Mode Off           	- /fightoff  
