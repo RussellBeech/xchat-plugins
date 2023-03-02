@@ -10,7 +10,7 @@ import socket
 import ssl
 
 __module_name__ = "Multirpg Playbot Script"
-__module_version__ = "9.6"
+__module_version__ = "9.7"
 __module_description__ = "Multirpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -104,6 +104,7 @@ monsters.reverse()
 multirpgweb = "https://www.multirpg.net/"
 idlerpgweb = "http://www.idlerpg.org/"
 russweb = "https://russellb.000webhostapp.com/"
+gitweb = "https://github.com/RussellBeech/xchat-plugins"
 rawplayers3 = None
 interval = 300
 newlist = None
@@ -291,6 +292,7 @@ def versionchecker():
 	global currentversion
 	global python3
 	global russweb
+	global gitweb
 
 	webversion = None
 	try:
@@ -312,7 +314,7 @@ def versionchecker():
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < webversion):
 			xchat.prnt("You have an old version of PlayBot")
-			xchat.prnt("You can download a new version from {0}".format(russweb))
+			xchat.prnt("You can download a new version from {0} or {1}".format(russweb, gitweb))
 		if(currentversion > webversion):
 			xchat.prnt("Give me, Give me")
 
