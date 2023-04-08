@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.5"
+__module_version__ = "1.6"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -110,15 +110,12 @@ playerspage2 = None
 playerspage3 = None
 playerspage4 = None
 playerspagelist = None
-playerspagelist2 = None
-playerspagelist3 = None
-playerspagelist4 = None
 mainhook = None
 itemslists = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
-CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamemultimulti"
+CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamemulti"
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
 	configList = pickle.load(f)
@@ -129,25 +126,25 @@ except:
 
 # ZNC settings
 ZNC = False # ZNC Server Mode - True = On, False = Off
-ZNCServer = "*******" # ZNC Server Address
+ZNCServer = "*********" # ZNC Server Address
 ZNCPort = "+8080" # ZNC Port Number - For SSL put + before and in " " "+8080"
 ZNCUser = "***/***" # ZNC Username/Network
-ZNCPass = "*******" # ZNC Password
+ZNCPass = "*********" # ZNC Password
 ZNC2 = False # ZNC Server Mode - True = On, False = Off
-ZNCServer2 = "*******" # ZNC Server Address
+ZNCServer2 = "*********" # ZNC Server Address
 ZNCPort2 = "+8080" # ZNC Port Number - For SSL put + before and in " " "+8080"
 ZNCUser2 = "***/***" # ZNC Username/Network
-ZNCPass2 = "*******" # ZNC Password
+ZNCPass2 = "*********" # ZNC Password
 ZNC3 = False # ZNC Server Mode - True = On, False = Off
-ZNCServer3 = "*******" # ZNC Server Address
+ZNCServer3 = "*********" # ZNC Server Address
 ZNCPort3 = "+8080" # ZNC Port Number - For SSL put + before and in " " "+8080"
 ZNCUser3 = "***/***" # ZNC Username/Network
-ZNCPass3 = "*******" # ZNC Password
+ZNCPass3 = "*********" # ZNC Password
 ZNC4 = False # ZNC Server Mode - True = On, False = Off
-ZNCServer4 = "*******" # ZNC Server Address
+ZNCServer4 = "*********" # ZNC Server Address
 ZNCPort4 = "+8080" # ZNC Port Number - For SSL put + before and in " " "+8080"
 ZNCUser4 = "***/***" # ZNC Username/Network
-ZNCPass4 = "*******" # ZNC Password
+ZNCPass4 = "*********" # ZNC Password
 
 # Changeable settings
 setbuy = 15 # level to start buying items from
@@ -159,7 +156,7 @@ getgems = True
 fightmode = True
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
-scrollssum = 3000 # item score you start buying scrolls
+scrollssum = 3000 # Itemscore you start buying scrolls at
 xpupgrade = True # Upgrade Items with XP
 xpspend = 20 # Amount you use with xpget to upgrade items
 bottextmode = True # True = on, False = off
@@ -173,9 +170,6 @@ slaysum = 1000 # minimum sum you start slaying without mana from
 
 # declare stats as global
 fightlevellimit = None
-fightlevellimit2 = None
-fightlevellimit3 = None
-fightlevellimit4 = None
 channame = None
 botname = None
 channame2 = None
@@ -186,20 +180,11 @@ channame4 = None
 botname4 = None
 servername = None
 website = None
-servername2 = None
-website2 = None
-servername3 = None
-website3 = None
-servername4 = None
-website4 = None
 gameid = 0
 gameid2 = 0
 gameid3 = 0
 gameid4 = 0
 webssl = None
-webssl2 = None
-webssl3 = None
-webssl4 = None
 name = None
 pswd = None
 name2 = None
@@ -304,9 +289,6 @@ botcheck2 = None
 botcheck3 = None
 botcheck4 = None
 webworks = None 
-webworksB = None 
-webworksC = None 
-webworksD = None 
 gameactive = None
 lottonum1 = None
 lottonum2 = None
@@ -322,6 +304,7 @@ botdisable1 = False
 botdisable2 = False
 botdisable3 = False
 botdisable4 = False
+networkname = None
 
 for entry in configList:
 	if(entry[0] == "blackbuyspend"):
@@ -436,7 +419,7 @@ def configwrite():
 	global ZNC4
 	global bottextmode
 	global errortextmode
-
+	
 	configList = []
 	configList.append( ( "blackbuyspend", blackbuyspend ) )
 	configList.append( ( "blackbuyspend14", blackbuyspend14 ) )
@@ -617,7 +600,7 @@ def usecommand(commanded, num):
 	if num == 4:
 		bottester(4)
 
-	if(num == 1 and botdisable1 is False):
+	if num == 1 and botdisable1 is False:
 		try:
 			game_chan.command( "msg {0} {1}".format(botname, commanded) )
 		except AttributeError:
@@ -669,11 +652,11 @@ def login(word, word_eol, userdata):
 	global game_chan4
 	global gameactive
 	global fightmode
+	global charcount
 	global char1
 	global char2
 	global char3
 	global char4
-	global charcount
 	global blackbuyspend
 	global blackbuyspend14
 	global getgems
@@ -689,17 +672,8 @@ def login(word, word_eol, userdata):
 	global servername
 	global fightlevellimit
 	global botname
-	global website2
-	global servername2
-	global fightlevellimit2
 	global botname2
-	global website3
-	global servername3
-	global fightlevellimit3
 	global botname3
-	global website4
-	global servername4
-	global fightlevellimit4
 	global botname4
 	global buyluck
 	global buypower
@@ -709,18 +683,10 @@ def login(word, word_eol, userdata):
 	global gameid3
 	global gameid4
 	global playerspagelist
-	global playerspagelist2
-	global playerspagelist3
-	global playerspagelist4
 	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
+	global networkname
 	global slaysum
 	global webssl
-	global webssl2
-	global webssl3
-	global webssl4
 	global bottextmode
 	global errortextmode
 
@@ -738,6 +704,7 @@ def login(word, word_eol, userdata):
 
 		for entry in gamelist:
 			if entry[0] in netname.lower():
+				networkname = entry[0]
 				website = entry[1]
 				servername = entry[2]
 				fightlevellimit = entry[3]
@@ -746,7 +713,7 @@ def login(word, word_eol, userdata):
 				gameid = entry[6]
 				webssl = entry[7]
 				netcheck = True
-				
+
 		# find context
 		game_chan = xchat.find_context(channel=channame)
 
@@ -761,10 +728,9 @@ def login(word, word_eol, userdata):
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 0
 		if netcheck is True:
-			webdata2(1)
+			webdata()
 		if netcheck is False:
-			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
-			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
+			xchat.prnt("Networks supported: {0}".format(netlist))
 			if "quakenet" in netname.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name is None or pswd is None or netcheck is False):
@@ -800,13 +766,9 @@ def login(word, word_eol, userdata):
 
 		for entry in gamelist:
 			if entry[0] in netname2.lower():
-				website2 = entry[1]
-				servername2 = entry[2]
-				fightlevellimit2 = entry[3]
 				channame2 = entry[4]
 				botname2 = entry[5]
 				gameid2 = entry[6]
-				webssl2 = entry[7]
 				netcheck = True
 
 		# find context
@@ -823,34 +785,33 @@ def login(word, word_eol, userdata):
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 1
 		if netcheck is True:
-			webdata2(2)
+			webdata()
 		if netcheck is False:
-			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
-			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname2))
+			xchat.prnt("Networks supported: {0}".format(netlist))
 			if "quakenet" in netname2.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name2 is None or pswd2 is None or netcheck is False):
 			charcount = 1
 			xchat.prnt("Login Failed")
 		if charcount == 2:
-			try:
-				for entry in playerspagelist2:
-					if ">{0}<".format(name2) in entry:
-						namecheck2 = True
-			except TypeError:
-				webworksB = False
-			if(namecheck2 is False and webworksB is True):
-				xchat.prnt("LOGIN ERROR: {0} does not exist".format(name2))
+			if gameid2 != gameid:
 				charcount = 1
-			if charcount == 2:
-				if gameid2 != gameid:
-					char2 = True
-					usecommand("login {0} {1}".format(name2, pswd2), 2 )
-				if gameid2 == gameid:
-					if nickname2 == nickname:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid2 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name2) in entry:
+							namecheck2 = True
+				except TypeError:
+					webworks = False
+				if(namecheck2 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name2))
+					charcount = 1
+				if charcount == 2:
+					if(nickname2 == nickname):
 						charcount = 1
 						xchat.prnt("Character {0} is already logged in".format(name))
-					if nickname2 != nickname:                                        
+					if(nickname2 != nickname):
 						if name2 != name:
 							char2 = True
 							usecommand("login {0} {1}".format(name2, pswd2), 2 )
@@ -864,7 +825,6 @@ def login(word, word_eol, userdata):
 			game_chan2 = None
 			name2 = None
 			pswd2 = None
-			gameid2 = 0
 			return
 
 	if charcount == 3:
@@ -875,13 +835,9 @@ def login(word, word_eol, userdata):
 
 		for entry in gamelist:
 			if entry[0] in netname3.lower():
-				website3 = entry[1]
-				servername3 = entry[2]
-				fightlevellimit3 = entry[3]
 				channame3 = entry[4]
 				botname3 = entry[5]
 				gameid3 = entry[6]
-				webssl3 = entry[7]
 				netcheck = True
 
 		# find context
@@ -898,44 +854,38 @@ def login(word, word_eol, userdata):
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 2
 		if netcheck is True:
-			webdata2(3)
+			webdata()
 		if netcheck is False:
-			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
-			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname3))
+			xchat.prnt("Networks supported: {0}".format(netlist))
 			if "quakenet" in netname3.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name3 is None or pswd3 is None or netcheck is False):
 			charcount = 2
 			xchat.prnt("Login Failed")
 		if charcount == 3:
-			try:
-				for entry in playerspagelist3:
-					if ">{0}<".format(name3) in entry:
-						namecheck3 = True
-			except TypeError:
-				webworksC = False
-			if(namecheck3 is False and webworksC is True):
-				xchat.prnt("LOGIN ERROR: {0} does not exist".format(name3))
+			if gameid3 != gameid:
 				charcount = 2
-			if charcount == 3:
-				if gameid3 != gameid and gameid3 != gameid2: 
-					char3 = True
-					usecommand("login {0} {1}".format(name3, pswd3), 3 )
-				if gameid3 == gameid:
-					if nickname3 == nickname or name3 == name:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid3 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name3) in entry:
+							namecheck3 = True
+				except TypeError:
+					webworks = False
+				if(namecheck3 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name3))
+					charcount = 2
+				if charcount == 3:
+					if(nickname3 != nickname and name3 != name and nickname3 != nickname2 and name3 != name2):
+						char3 = True
+						usecommand("login {0} {1}".format(name3, pswd3), 3 )
+					if(nickname3 == nickname or name3 == name):
 						charcount = 2
 						xchat.prnt("Character {0} is already logged in".format(name))
-					if nickname3 != nickname and name3 != name:
-						char3 = True
-						usecommand("login {0} {1}".format(name3, pswd3), 3 )
-				if gameid3 == gameid2:
-					if nickname3 == nickname2 or name3 == name2:
+					if(nickname3 == nickname2 or name3 == name2):
 						charcount = 2
 						xchat.prnt("Character {0} is already logged in".format(name2))
-					if nickname3 != nickname2 and name3 != name2:
-						char3 = True
-						usecommand("login {0} {1}".format(name3, pswd3), 3 )
-					
 		if charcount == 2:
 			char3 = False
 			netname3 = None
@@ -943,7 +893,6 @@ def login(word, word_eol, userdata):
 			game_chan3 = None
 			name3 = None
 			pswd3 = None
-			gameid3 = 0
 			return
 
 	if charcount == 4:
@@ -954,13 +903,9 @@ def login(word, word_eol, userdata):
 
 		for entry in gamelist:
 			if entry[0] in netname4.lower():
-				website4 = entry[1]
-				servername4 = entry[2]
-				fightlevellimit4 = entry[3]
 				channame4 = entry[4]
 				botname4 = entry[5]
 				gameid4 = entry[6]
-				webssl4 = entry[7]
 				netcheck = True
 
 		# find context
@@ -977,50 +922,41 @@ def login(word, word_eol, userdata):
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 3
 		if netcheck is True:
-			webdata2(4)
+			webdata()
 		if netcheck is False:
-			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
-			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname4))
+			xchat.prnt("Networks supported: {0}".format(netlist))
 			if "quakenet" in netname4.lower():
 				xchat.prnt("You need to use the QuakeNet version of PlayBot")
 		if(name4 is None or pswd4 is None or netcheck is False):
 			charcount = 3
 			xchat.prnt("Login Failed")
 		if charcount == 4:
-			try:
-				for entry in playerspagelist4:
-					if ">{0}<".format(name4) in entry:
-						namecheck4 = True
-			except TypeError:
-				webworksD = False
-			if(namecheck4 is False and webworksD is True):
-				xchat.prnt("LOGIN ERROR: {0} does not exist".format(name4))
+			if gameid4 != gameid:
 				charcount = 3
-			if charcount == 4:
-				if gameid4 != gameid and gameid4 != gameid2 and gameid4 != gameid3: 
-					char4 = True
-					usecommand("login {0} {1}".format(name4, pswd4), 4 )
-				if gameid4 == gameid:
-					if nickname4 == nickname or name4 == name:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid4 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name4) in entry:
+							namecheck4 = True
+				except TypeError:
+					webworks = False
+				if(namecheck4 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name4))
+					charcount = 3
+				if charcount == 4:
+					if(nickname4 != nickname and name4 != name and nickname4 != nickname2 and name4 != name2 and nickname4 != nickname3 and name4 != name3):
+						char4 = True
+						usecommand("login {0} {1}".format(name4, pswd4), 4 )
+					if(nickname4 == nickname or name4 == name):
 						charcount = 3
 						xchat.prnt("Character {0} is already logged in".format(name))
-					if nickname4 != nickname and name4 != name:
-						char4 = True
-						usecommand("login {0} {1}".format(name4, pswd4), 4 )
-				if gameid4 == gameid2:
-					if nickname4 == nickname2 or name4 == name2:
+					if(nickname4 == nickname2 or name4 == name2):
 						charcount = 3
 						xchat.prnt("Character {0} is already logged in".format(name2))
-					if nickname4 != nickname2 and name4 != name2:
-						char4 = True
-						usecommand("login {0} {1}".format(name4, pswd4), 4 )
-				if gameid4 == gameid3:
-					if nickname4 == nickname3 or name4 == name3:
+					if(nickname4 == nickname3 or name4 == name3):
 						charcount = 3
 						xchat.prnt("Character {0} is already logged in".format(name3))
-					if nickname4 != nickname3 and name4 != name3:
-						char4 = True
-						usecommand("login {0} {1}".format(name4, pswd4), 4 )
 		if charcount == 3:
 			char4 = False
 			netname4 = None
@@ -1028,7 +964,6 @@ def login(word, word_eol, userdata):
 			game_chan4 = None
 			name4 = None
 			pswd4 = None
-			gameid4 = 0
 			return
 
 	if (charcount >= 1 and charcount <= 4):        
@@ -1088,7 +1023,7 @@ def login(word, word_eol, userdata):
 			xchat.prnt("XPUpgrade Mode Deactivated.  To turn it on use /xpupgradeon")
 		xchat.prnt("Current Goldsave: {0}.  If you want to change it use /setgoldsave number".format(goldsave))
 		xchat.prnt("Current Item Buy Level: {0}.  If you want to change it use /setitembuy number".format(setbuy))
-		xchat.prnt("Current Scroll Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
+		xchat.prnt("Current Scrolls Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
 		xchat.prnt("Current SlaySum Minimum ItemScore: {0}.  If you want to change it use /setslaysum number".format(slaysum))
 		xchat.prnt("Current XPSpend for xpget item upgrades: {0}.  If you want to change it use /setxpspend number".format(xpspend))
 		xchat.prnt("")
@@ -1129,36 +1064,38 @@ def logoutchar(word, word_eol, userdata):
 	global pswd3
 	global pswd4
 	global gameactive
+	global networkname
 
 	if charcount == 4:
-		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name4, netname4))
+		xchat.prnt("Character {0} Logged Out".format(name4))
 		char4 = False
 		netname4 = None
 		game_chan4 = None
 		name4 = None
 		pswd4 = None
 	if charcount == 3:
-		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name3. netname3))
+		xchat.prnt("Character {0} Logged Out".format(name3))
 		char3 = False
 		netname3 = None
 		game_chan3 = None
 		name3 = None
 		pswd3 = None
 	if charcount == 2:
-		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name2, netname2))
+		xchat.prnt("Character {0} Logged Out".format(name2))
 		char2 = False
 		netname2 = None
 		game_chan2 = None
 		name2 = None
 		pswd2 = None
 	if charcount == 1:
-		xchat.prnt("Character {0} on Network {1}. Logged Out".format(name, netname))
+		xchat.prnt("Character {0} Logged Out".format(name))
 		char1 = False
 		netname = None
 		game_chan = None
 		name = None
 		pswd = None
 		gameactive = False
+		networkname = None
 	if(charcount == 0):
 		xchat.prnt("All Characters have already been Logged Out")
 	if(charcount >= 1 and charcount <= 4):
@@ -1775,7 +1712,7 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("Set Creep Target            - /setcreep creep")
 	xchat.prnt("Set Goldsave                - /setgoldsave number")
 	xchat.prnt("Set Item Buy Level          - /setitembuy number")
-	xchat.prnt("Set Scroll Buy ItemScore    - /setscrolls number")
+	xchat.prnt("Set Scrolls Buy ItemScore   - /setscrolls number")
 	xchat.prnt("Set SlaySum Min ItemScore   - /setslaysum number")
 	xchat.prnt("Set XPSpend for upgrades    - /setxpspend number")
 	xchat.prnt("Settings List               - /settings")
@@ -1823,10 +1760,6 @@ def settings(word, word_eol, userdata):
 	global intervaltext
 	global townworkswitch
 	global goldsave
-	global netname
-	global netname2
-	global netname3
-	global netname4
 	global expbuy
 	global slaysum
 	
@@ -1850,10 +1783,10 @@ def settings(word, word_eol, userdata):
 	xchat.prnt("Goldsave - {0}".format(goldsave))
 	xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
 	xchat.prnt("Item Buy Level - {0}".format(setbuy))
-	xchat.prnt("Player Character 1 - {0}, {1}.  Network {2}".format(char1, name, netname))
-	xchat.prnt("Player Character 2 - {0}, {1}.  Network {2}".format(char2, name2, netname2))
-	xchat.prnt("Player Character 3 - {0}, {1}.  Network {2}".format(char3, name3, netname3))
-	xchat.prnt("Player Character 4 - {0}, {1}.  Network {2}".format(char4, name4, netname4))
+	xchat.prnt("Player Character 1 - {0}, {1}".format(char1, name))
+	xchat.prnt("Player Character 2 - {0}, {1}".format(char2, name2))
+	xchat.prnt("Player Character 3 - {0}, {1}".format(char3, name3))
+	xchat.prnt("Player Character 4 - {0}, {1}".format(char4, name4))
 	xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
 	xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
 	xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
@@ -1869,9 +1802,6 @@ xchat.hook_command("settings", settings, help="/settings - Gives a list of setti
 
 def newlister(num):
 	global playerspagelist
-	global playerspagelist2
-	global playerspagelist3
-	global playerspagelist4
 	global newlist
 	global newlist2
 	global newlist3
@@ -1879,24 +1809,12 @@ def newlister(num):
 	global ability
 	global python3
 	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
 	global website
-	global website2
-	global website3
-	global website4
 	global level
 	global fightlevellimit
-	global fightlevellimit2
-	global fightlevellimit3
-	global fightlevellimit4
 	global webssl
-	global webssl2
-	global webssl3
-	global webssl4
 	global errortextmode
-
+	
 	test = []
 	test2 = []
 	test3 = []
@@ -1904,37 +1822,17 @@ def newlister(num):
 
 	if num == 1:
 		newlist = []
-		webworkslist = webworks
-		playerspagelists = playerspagelist
-		websites = website
-		fightlevellimits = fightlevellimit
-		webssls = webssl
 	if num == 2:
 		newlist2 = []
-		webworkslist = webworksB
-		playerspagelists = playerspagelist2
-		websites = website2
-		fightlevellimits = fightlevellimit2
-		webssls = webssl2
 	if num == 3:
 		newlist3 = []
-		webworkslist = webworksC
-		playerspagelists = playerspagelist3
-		websites = website3
-		fightlevellimits = fightlevellimit3
-		webssls = webssl3
 	if num == 4:
 		newlist4 = []
-		webworkslist = webworksD
-		playerspagelists = playerspagelist4
-		websites = website4
-		fightlevellimits = fightlevellimit4
-		webssls = webssl4
 	getitems2(num)
 
-	if webworkslist is True:
+	if webworks is True:
 		testnum = 0
-		for entry in playerspagelists:
+		for entry in playerspagelist:
 			if "playerview.php" in entry:
 				testnum += 1
 				test = entry
@@ -1948,11 +1846,11 @@ def newlister(num):
 						del test[0:14]
 					test2.append(test)        
 
-		if fightlevellimits is True:
+		if fightlevellimit is True:
 			for entry in test2:
 				if(int(entry[8]) >= level):
 					test3.append(entry)
-		if fightlevellimits is False:
+		if fightlevellimit is False:
 			test3 = test2
 		for player in test3:
 			name_ = player[5]
@@ -1964,17 +1862,17 @@ def newlister(num):
 
 			# get raw player data from web, parse for relevant entry
 			try:
-				if webssls is True:
+				if webssl is True:
 					context = ssl._create_unverified_context()
 					if python3 is False:
-						text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(name_), context=context)
+						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
 					if python3 is True:
-						text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(name_), context=context)
+						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
 				else:
 					if python3 is False:
-						text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(name_))
+						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_))
 					if python3 is True:
-						text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(name_))
+						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_))
 				playerview20 = text.read()
 				text.close()
 				if python3 is True:
@@ -1983,13 +1881,13 @@ def newlister(num):
 				weberror = True
 			if weberror is True:
 				if errortextmode is True:
-					xchat.prnt( "Could not access {0}".format(websites))
+					xchat.prnt( "Could not access {0}".format(website))
 				webworks2 = False
 
 			# build list for player records
 			if(playerview20 is None):
 				if errortextmode is True:
-					xchat.prnt( "Could not access {0}, unknown error.".format(websites) )
+					xchat.prnt( "Could not access {0}, unknown error.".format(website) )
 				webworks2 = False
 			else:
 				playerlist20 = playerview20.split("\n")
@@ -2168,7 +2066,7 @@ def newlister(num):
 					ulevel = int(player[16])
 					ulevelcalc = ulevel * 100
 					ability_ = player[20]
-					abilityadj = 0					
+					abilityadj = 0
 					if ability == "b":
 						if ability_ == "w":
 							abilityadj = math.floor((sum_ + expertcalcsumtotal) * 0.30)
@@ -2184,12 +2082,14 @@ def newlister(num):
 					if ability == "w":
 						if ability_ == "r":
 							abilityadj = math.floor((sum_ + expertcalcsumtotal) * 0.30)
+						
 					life_ = float(player[28])
 					lifecalc = life_ / 100
 					adjSum = math.floor((sum_ + ulevelcalc + abilityadj + expertcalcsumtotal) * lifecalc)
 					
+					
 					if num == 1:
-								# name       sum   adjsum       level   life   ability   rank   
+								# name       sum   adjsum       level   life   ability   rank 
 						newlist.append( ( player[5], sum_, int(adjSum), level_, life_, ability_, rank_ ) )
 					if num == 2:
 								 # name       sum   adjsum       level   life   ability   rank
@@ -2204,22 +2104,9 @@ def newlister(num):
 					newlistererror = True
 
 	if newlistererror is True:
-		if num == 1:
-			webworks = False
-			if errortextmode is True:
-				xchat.prnt("Newlister Error 1")
-		if num == 2:
-			webworksB = False
-			if errortextmode is True:
-				xchat.prnt("Newlister Error 2")
-		if num == 3:
-			webworksC = False
-			if errortextmode is True:
-				xchat.prnt("Newlister Error 3")
-		if num == 4:
-			webworksD = False
-			if errortextmode is True:
-				xchat.prnt("Newlister Error 4")
+		webworks = False
+		if errortextmode is True:
+			xchat.prnt("Newlister Error")
 
 	if num == 1:
 		newlist.sort( key=operator.itemgetter(1), reverse=True )
@@ -2233,7 +2120,7 @@ def newlister(num):
 	if num == 4:
 		newlist4.sort( key=operator.itemgetter(1), reverse=True )
 		newlist4.sort( key=operator.itemgetter(3) )
-	
+
 def status(word, word_eol, userdata):
 	global char1
 	global char2
@@ -2303,7 +2190,7 @@ def characterstats(num):
 	global mana
 	global luck
 	global upgradelevel
-	global expertSum1
+	global expertSum
 	global expertSum2
 	global expertSum3
 	global expertSum4
@@ -2327,7 +2214,7 @@ def characterstats(num):
 	global lottonum3
 	global align
 	global eatused
-	
+
 	getitems2(num)
 
 	if num == 1:
@@ -2500,12 +2387,12 @@ def characteritems(num):
 		expertitems3 = expertitemd3
 
 	xchat.prnt("Amulet: {0}".format(amulet))
-	xchat.prnt("Boots: {0}".format(boots))
 	xchat.prnt("Charm: {0}".format(charm))
-	xchat.prnt("Gloves: {0}".format(gloves))
 	xchat.prnt("Helm: {0}".format(helm))
-	xchat.prnt("Leggings: {0}".format(leggings))
+	xchat.prnt("Boots: {0}".format(boots))
+	xchat.prnt("Gloves: {0}".format(gloves))
 	xchat.prnt("Ring: {0}".format(ring))
+	xchat.prnt("Leggings: {0}".format(leggings))
 	xchat.prnt("Shield: {0}".format(shield))
 	xchat.prnt("Tunic: {0}".format(tunic))
 	xchat.prnt("Weapon: {0}".format(weapon))
@@ -2748,7 +2635,7 @@ def private_cb(word, word_eol, userdata):
 					interval = 60
 					hookmain()
 
-def webdata2(num):
+def webdata():
 	global playerlist
 	global playerlist2
 	global playerlist3
@@ -2758,153 +2645,114 @@ def webdata2(num):
 	global name3
 	global name4
 	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
 	global playerview
 	global playerview2
 	global playerview3
 	global playerview4
+	global char1
+	global char2
+	global char3
+	global char4
 	global python3
 	global playerspage
 	global playerspagelist
 	global website
-	global playerspage2
-	global playerspagelist2
-	global website2
-	global playerspage3
-	global playerspagelist3
-	global website3
-	global playerspage4
-	global playerspagelist4
-	global website4
 	global webssl
-	global webssl2
-	global webssl3
-	global webssl4
 	global errortextmode
-
+	
 	webworks = True
-	webworksB = True
-	webworksC = True
-	webworksD = True
 	weberror = False
-	context = ssl._create_unverified_context()
 
-	if num == 1:
-		websites = website
-		names = name
-		webssls = webssl
-	if num == 2:
-		websites = website2
-		names = name2
-		webssls = webssl2
-	if num == 3:
-		websites = website3
-		names = name3
-		webssls = webssl3
-	if num == 4:
-		websites = website4
-		names = name4
-		webssls = webssl4
+	context = ssl._create_unverified_context()
 	# get raw player data from web, parse for relevant entry
 	if python3 is False:
 		try:
-			if webssls is True:
-				text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(names), context=context)
-			else:
-				text = urllib2.urlopen(websites + "/playerview.php?player={0}".format(names))
-			if num == 1:
+			if char1 is True:
+				if webssl is True:
+					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				else:
+					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name))
 				playerview = text.read()
-			if num == 2:
-				playerview2 = text.read()
-			if num == 3:
-				playerview3 = text.read()
-			if num == 4:
-				playerview4 = text.read()
-			text.close()
-			if webssls is True:
-				text2 = urllib2.urlopen(websites + "/players.php", context=context)
+				text.close()
+			if char2 is True:
+				if webssl is True:
+					textb = urllib2.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
+				else:
+					textb = urllib2.urlopen(website + "/playerview.php?player={0}".format(name2))
+				playerview2 = textb.read()
+				textb.close()
+			if char3 is True:
+				if webssl is True:
+					textc = urllib2.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
+				else:
+					textc = urllib2.urlopen(website + "/playerview.php?player={0}".format(name3))
+				playerview3 = textc.read()
+				textc.close()
+			if char4 is True:
+				if webssl is True:
+					textd = urllib2.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
+				else:
+					textd = urllib2.urlopen(website + "/playerview.php?player={0}".format(name4))
+				playerview4 = textd.read()
+				textd.close()
+			if webssl is True:
+				text2 = urllib2.urlopen(website + "/players.php", context=context)
 			else:
-				text2 = urllib2.urlopen(websites + "/players.php")
-			if num == 1:
-				playerspage = text2.read()
-			if num == 2:
-				playerspage2 = text2.read()
-			if num == 3:
-				playerspage3 = text2.read()
-			if num == 4:
-				playerspage4 = text2.read()
+				text2 = urllib2.urlopen(website + "/players.php")
+			playerspage = text2.read()
 			text2.close()
 		except:
 			weberror = True
 	if python3 is True:
 		try:
-			if webssls is True:
-				text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(names), context=context)
-			else:
-				text = urllib.request.urlopen(websites + "/playerview.php?player={0}".format(names))
-			if num == 1:
+			if char1 is True:
+				if webssl is True:
+					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				else:
+					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name))
 				playerview = text.read()
 				text.close()
 				playerview = playerview.decode("UTF-8")
-				if webssls is True:
-					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
+			if char2 is True:
+				if webssl is True:
+					textb = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
 				else:
-					text2 = urllib.request.urlopen(websites + "/players.php")
-				playerspage = text2.read()
-				text2.close()
-				playerspage = playerspage.decode("UTF-8")
-			if num == 2:
-				playerview2 = text.read()
-				text.close()
+					textb = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name2))
+				playerview2 = textb.read()
+				textb.close()
 				playerview2 = playerview2.decode("UTF-8")
-				if webssls is True:
-					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
+			if char3 is True:
+				if webssl is True:
+					textc = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
 				else:
-					text2 = urllib.request.urlopen(websites + "/players.php")
-				playerspage2 = text2.read()
-				text2.close()
-				playerspage2 = playerspage2.decode("UTF-8")
-			if num == 3:
-				playerview3 = text.read()
-				text.close()
+					textc = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name3))
+				playerview3 = textc.read()
+				textc.close()
 				playerview3 = playerview3.decode("UTF-8")
-				if webssls is True:
-					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
+			if char4 is True:
+				if webssl is True:
+					textd = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
 				else:
-					text2 = urllib.request.urlopen(websites + "/players.php")
-				playerspage3 = text2.read()
-				text2.close()
-				playerspage3 = playerspage3.decode("UTF-8")
-			if num == 4:
-				playerview4 = text.read()
-				text.close()
+					textd = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name4))
+				playerview4 = textd.read()
+				textd.close()
 				playerview4 = playerview4.decode("UTF-8")
-				if webssls is True:
-					text2 = urllib.request.urlopen(websites + "/players.php", context=context)
-				else:
-					text2 = urllib.request.urlopen(websites + "/players.php")
-				playerspage4 = text2.read()
-				text2.close()
-				playerspage4 = playerspage4.decode("UTF-8")
+			if webssl is True:
+				text2 = urllib.request.urlopen(website + "/players.php", context=context)
+			else:
+				text2 = urllib.request.urlopen(website + "/players.php")
+			playerspage = text2.read()
+			text2.close()
+			playerspage = playerspage.decode("UTF-8")
 		except:
 			weberror = True
-
 	if weberror is True:
 		if errortextmode is True:
-			xchat.prnt( "Could not access {0}".format(websites))
-		if num == 1:
-			webworks = False
-		if num == 2:
-			webworksB = False
-		if num == 3:
-			webworksC = False
-		if num == 4:
-			webworksD = False
+			xchat.prnt( "Could not access {0}".format(website))
+		webworks = False
 
 	# build list for player records
-	if num == 1:
+	if char1 is True:
 		if(playerview is None):
 			if errortextmode is True:
 				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
@@ -2912,58 +2760,37 @@ def webdata2(num):
 		else:
 			playerlist = playerview.split("\n")
 			playerlist = playerlist[:-1]
-		if(playerspage is None):
+	if char2 is True:
+		if(playerview2 is None):
 			if errortextmode is True:
 				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
 			webworks = False
 		else:
-			playerspagelist = playerspage.split("\n")
-			playerspagelist = playerspagelist[:-1]
-	if num == 2:
-		if(playerview2 is None):
-			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
-			webworksB = False
-		else:
 			playerlist2 = playerview2.split("\n")
 			playerlist2 = playerlist2[:-1]
-		if(playerspage2 is None):
-			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website2) )
-			webworksB = False
-		else:
-			playerspagelist2 = playerspage2.split("\n")
-			playerspagelist2 = playerspagelist2[:-1]
-	if num == 3:
+	if char3 is True:
 		if(playerview3 is None):
 			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
-			webworksC = False
+				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
+			webworks = False
 		else:
 			playerlist3 = playerview3.split("\n")
 			playerlist3 = playerlist3[:-1]
-		if(playerspage3 is None):
-			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website3) )
-			webworksC = False
-		else:
-			playerspagelist3 = playerspage3.split("\n")
-			playerspagelist3 = playerspagelist3[:-1]
-	if num == 4:
+	if char4 is True:
 		if(playerview4 is None):
 			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
-			webworksD = False
+				xchat.prnt( "Could not access {0}, unknown error.".format(website) )
+			webworks = False
 		else:
 			playerlist4 = playerview4.split("\n")
 			playerlist4 = playerlist4[:-1]
-		if(playerspage4 is None):
-			if errortextmode is True:
-				xchat.prnt( "Could not access {0}, unknown error.".format(website4) )
-			webworksD = False
-		else:
-			playerspagelist4 = playerspage4.split("\n")
-			playerspagelist4 = playerspagelist4[:-1]
+	if(playerspage is None):
+		if errortextmode is True:
+			xchat.prnt( "Could not access {0}, unknown error.".format(website) )
+		webworks = False
+	else:
+		playerspagelist = playerspage.split("\n")
+		playerspagelist = playerspagelist[:-1]
 
 def playerarea(num):
 	global level
@@ -2978,9 +2805,8 @@ def playerarea(num):
 		area = "work"
 	if townworkswitch is False:
 		area = "forest"
-	
-#	xchat.prnt("{0} {1} Time: {2} seconds".format(num, location, locationtime))
 
+#	xchat.prnt("{0} {1} Time: {2} seconds".format(num, location, locationtime))
 	if (level <= 25):
 		mintime = (3 * 60 * 60)
 	if (level > 25 and level <= 40):
@@ -3026,11 +2852,8 @@ def getvariables2(num):
 	global playerlist3
 	global playerlist4
 	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
 	global errortextmode
-	
+
 	if num == 1:
 		playerlists = playerlist
 	if num == 2:
@@ -3039,7 +2862,7 @@ def getvariables2(num):
 		playerlists = playerlist3
 	if num == 4:
 		playerlists = playerlist4
-		
+
 	aligntext = None
 	leveltext = None
 	ttltext = None
@@ -3383,14 +3206,7 @@ def getvariables2(num):
 					locationtime_ = 0
 					location_ = "In The Forest"
 		except:
-			if num == 1:
-				webworks = False
-			if num == 2:
-				webworksB = False
-			if num == 3:
-				webworksC = False
-			if num == 4:
-				webworksD = False
+			webworks = False
 			if errortextmode is True:
 				xchat.prnt("{0} Variable Error".format(num))
 
@@ -3522,9 +3338,6 @@ def main(userdata):
 	global nickname4
 	global netname4
 	global servername
-	global servername2
-	global servername3
-	global servername4
 	global game_chan
 	global game_chan2
 	global game_chan3
@@ -3557,9 +3370,6 @@ def main(userdata):
 	global botcheck4
 	global interval
 	global webworks
-	global webworksB
-	global webworksC
-	global webworksD
 	global rank
 	global rank2
 	global rank3
@@ -3569,9 +3379,6 @@ def main(userdata):
 	global offline3
 	global offline4
 	global playerspagelist
-	global playerspagelist2
-	global playerspagelist3
-	global playerspagelist4
 	global name
 	global pswd
 	global name2
@@ -3588,7 +3395,6 @@ def main(userdata):
 	global char4
 	global chanmessagecount
 	global life
-	global charcount
 	global intervaltext
 	global itemslists
 	global bottextmode
@@ -3597,7 +3403,7 @@ def main(userdata):
 	global botdisable2
 	global botdisable3
 	global botdisable4
-
+	
 	if intervaltext is True:
 		xchat.prnt( "INTERVAL {0}".format(time.asctime()) )
 	if chanmessage is True:
@@ -3699,16 +3505,10 @@ def main(userdata):
 		xchat.hook_print("Channel Message", on_message)
 		xchat.hook_print("Channel Msg Hilight", on_message)
 
-	if(char1 is True and botcheck is True):
-		webdata2(1)
-	if(char2 is True and botcheck2 is True):
-		webdata2(2)
-	if(char3 is True and botcheck3 is True):
-		webdata2(3)
-	if(char4 is True and botcheck4 is True):
-		webdata2(4)
-	if((webworks is True and botcheck is True) or (webworksB is True and botcheck2 is True) or (webworksC is True and botcheck3 is True) or (webworksD is True and botcheck4 is True)):
-		itemsbuilder()
+	if botcheck is True or botcheck2 is True or botcheck3 is True or botcheck4 is True:
+		webdata()
+		if webworks is True:
+			itemsbuilder()
 
 	test = []
 	offline = False
@@ -3727,60 +3527,69 @@ def main(userdata):
 			if "offline" in test:
 				offline = True
 			if offline is False:
-				test = test.split('">')
-				ranktext = test[1]
-				ranktext = ranktext.split("</")
-				rank = int(ranktext[0])
-	if webworksB is True:
+                                try:
+                                        test = test.split('">')
+                                        ranktext = test[1]
+                                        ranktext = ranktext.split("</")
+                                        rank = int(ranktext[0])
+                                except:
+                                        offline = True
 		if char2 is True and botcheck2 is True:
-			for entry in playerspagelist2:
+			for entry in playerspagelist:
 				if "playerview.php" in entry and name2 in entry:
 					test = entry
 			if "offline" in test:
 				offline2 = True
 			if offline2 is False:
-				test = test.split('">')
-				ranktext = test[1]
-				ranktext = ranktext.split("</")
-				rank2 = int(ranktext[0])
-	if webworksC is True:
+                                try:
+                                        test = test.split('">')
+                                        ranktext = test[1]
+                                        ranktext = ranktext.split("</")
+                                        rank2 = int(ranktext[0])
+                                except:
+                                        offline2 = True
 		if char3 is True and botcheck3 is True:
-			for entry in playerspagelist3:
+			for entry in playerspagelist:
 				if "playerview.php" in entry and name3 in entry:
 					test = entry
 			if "offline" in test:
 				offline3 = True
 			if offline3 is False:
-				test = test.split('">')
-				ranktext = test[1]
-				ranktext = ranktext.split("</")
-				rank3 = int(ranktext[0])
-	if webworksD is True:
+                                try:
+                                        test = test.split('">')
+                                        ranktext = test[1]
+                                        ranktext = ranktext.split("</")
+                                        rank3 = int(ranktext[0])
+                                except:
+                                        offline3 = True
 		if char4 is True and botcheck4 is True:
-			for entry in playerspagelist4:
+			for entry in playerspagelist:
 				if "playerview.php" in entry and name4 in entry:
 					test = entry
 			if "offline" in test:
 				offline4 = True
 			if offline4 is False:
-				test = test.split('">')
-				ranktext = test[1]
-				ranktext = ranktext.split("</")
-				rank4 = int(ranktext[0])
+                                try:
+                                        test = test.split('">')
+                                        ranktext = test[1]
+                                        ranktext = ranktext.split("</")
+                                        rank4 = int(ranktext[0])
+                                except:
+                                        offline4 = True
 	if char1 is True and botcheck is True:
 		if(webworks is True and offline is True):
 			if errortextmode is True:
 				xchat.prnt("1 Player Offline")
 	if char2 is True and botcheck2 is True:
-		if(webworksB is True and offline2 is True):
+		if(webworks is True and offline2 is True):
 			if errortextmode is True:
 				xchat.prnt("2 Player Offline")
 	if char3 is True and botcheck3 is True:
-		if(webworksC is True and offline3 is True):
+		if(webworks is True and offline3 is True):
 			if errortextmode is True:
 				xchat.prnt("3 Player Offline")
 	if char4 is True and botcheck4 is True:
-		if(webworksD is True and offline4 is True):
+		if(webworks is True and offline4 is True):
 			if errortextmode is True:
 				xchat.prnt("4 Player Offline")
 
@@ -3799,10 +3608,10 @@ def main(userdata):
 			intervaldisable = True
 
 		if webworks is True and offline is True and botcheck is True:
-			usecommand("login {0} {1}".format(name, pswd),1)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+				usecommand("login {0} {1}".format(name, pswd),1)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char2 is True:
 		nickname2 = game_chan2.get_info("nick")
 		netname2 = game_chan2.get_info("network")
@@ -3810,18 +3619,18 @@ def main(userdata):
 			if errortextmode is True:
 				xchat.prnt( "2 Not connected!" )
 			if ZNC2 is False:
-				game_chan2.command( "server {0}".format(servername2) )
+				game_chan2.command( "server {0}".format(servername) )
 			if ZNC2 is True:
 				game_chan2.command( "server {0} {1}".format(ZNCServer2, ZNCPort2) )
 			interval = 45
 			hookmain()
 			intervaldisable = True
 
-		if webworksB is True and offline2 is True and botcheck2 is True:
-			usecommand("login {0} {1}".format(name2, pswd2),2)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+		if webworks is True and offline2 is True and botcheck2 is True:
+				usecommand("login {0} {1}".format(name2, pswd2),2)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char3 is True:
 		nickname3 = game_chan3.get_info("nick")
 		netname3 = game_chan3.get_info("network")
@@ -3829,18 +3638,18 @@ def main(userdata):
 			if errortextmode is True:
 				xchat.prnt( "3 Not connected!" )
 			if ZNC3 is False:
-				game_chan3.command( "server {0}".format(servername3) )
+				game_chan3.command( "server {0}".format(servername) )
 			if ZNC3 is True:
 				game_chan3.command( "server {0} {1}".format(ZNCServer3, ZNCPort3) )
 			interval = 45
 			hookmain()
 			intervaldisable = True
 
-		if webworksC is True and offline3 is True and botcheck3 is True:
-			usecommand("login {0} {1}".format(name3, pswd3),3)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+		if webworks is True and offline3 is True and botcheck3 is True:
+				usecommand("login {0} {1}".format(name3, pswd3),3)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char4 is True:
 		nickname4 = game_chan4.get_info("nick")
 		netname4 = game_chan4.get_info("network")
@@ -3848,47 +3657,34 @@ def main(userdata):
 			if errortextmode is True:
 				xchat.prnt( "4 Not connected!" )
 			if ZNC4 is False:
-				game_chan4.command( "server {0}".format(servername4) )
+				game_chan4.command( "server {0}".format(servername) )
 			if ZNC4 is True:
 				game_chan4.command( "server {0} {1}".format(ZNCServer4, ZNCPort4) )
 			interval = 45
 			hookmain()
 			intervaldisable = True
 
-		if webworksD is True and offline4 is True and botcheck4 is True:
-			usecommand("login {0} {1}".format(name4, pswd4),4)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+		if webworks is True and offline4 is True and botcheck4 is True:
+				usecommand("login {0} {1}".format(name4, pswd4),4)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 
-	if (webworks is True or webworksB is True or webworksC is True or webworksD is True) and intervaldisable is False:
+	if webworks is True and intervaldisable is False:
 		intervalcalc()
-	if charcount == 1:
-		if webworks is False and intervaldisable is False:
-			interval = 300
-			hookmain()
-	if charcount == 2:
-		if webworks is False and webworksB is False and intervaldisable is False:
-			interval = 300
-			hookmain()
-	if charcount == 3:
-		if webworks is False and webworksB is False and webworksC is False and intervaldisable is False:
-			interval = 300
-			hookmain()
-	if charcount == 4:
-		if webworks is False and webworksB is False and webworksC is False and webworksD is False and intervaldisable is False:
-			interval = 300
-			hookmain()
+	if webworks is False and intervaldisable is False:
+		interval = 300
+		hookmain()
 
 	life2 = 0
 	level2 = 0
-	fight2 = 0
+	fights2 = 0
 	life3 = 0
 	level3 = 0
-	fight3 = 0
+	fights3 = 0
 	life4 = 0
 	level4 = 0
-	fight4 = 0
+	fights4 = 0
 	
 	if char1 is True:
 		if itemslists != None:
@@ -3926,40 +3722,37 @@ def main(userdata):
 			timercheck(1)
 			if(level >= 25 and fights >= 0 and fights < 5 and life > 0):
 				if bottextmode is True:
-					xchat.prnt("Fights available")
+					xchat.prnt("1 Fights available")
 			if(level >= 25 and fights >= 0 and fights < 5 and life > 10):
 				newlister(1)
 				fight_fight(1)
-	if webworksB is True:
 		if char2 is True and offline2 is False and botcheck2 is True:
 			playerarea(2)
 			spendmoney(2)
 			timercheck(2)
 			if(level2 >= 25 and fights2 >= 0 and fights2 < 5 and life2 > 0):
 				if bottextmode is True:
-					xchat.prnt("Fights available")
+					xchat.prnt("2 Fights available")
 			if(level2 >= 25 and fights2 >= 0 and fights2 < 5 and life2 > 10):
 				newlister(2)
 				fight_fight(2)
-	if webworksC is True:
 		if char3 is True and offline3 is False and botcheck3 is True:
 			playerarea(3)
 			spendmoney(3)
 			timercheck(3)
 			if(level3 >= 25 and fights3 >= 0 and fights3 < 5 and life3 > 0):
 				if bottextmode is True:
-					xchat.prnt("Fights available")
+					xchat.prnt("3 Fights available")
 			if(level3 >= 25 and fights3 >= 0 and fights3 < 5 and life3 > 10):
 				newlister(3)
 				fight_fight(3)
-	if webworksD is True:
 		if char4 is True and offline4 is False and botcheck4 is True:
 			playerarea(4)
 			spendmoney(4)
 			timercheck(4)
 			if(level4 >= 25 and fights4 >= 0 and fights4 < 5 and life4 > 0):
 				if bottextmode is True:
-					xchat.prnt("Fights available")
+					xchat.prnt("4 Fights available")
 			if(level4 >= 25 and fights4 >= 0 and fights4 < 5 and life4 > 10):
 				newlister(4)
 				fight_fight(4)
@@ -3991,7 +3784,7 @@ def intervalcalc():
 	interval = 5
 	interval *= 60			# conv from min to sec
 	intervallist = []
-
+			
 	level2 = 0
 	fights2 = 0
 	life2 = 0
@@ -4031,31 +3824,31 @@ def intervalcalc():
 					fights4 = entry[31]
 					life4 = entry[3]
 
-	if char1 is True:
+	if char1 is True:                                       
 		if botcheck is False or offline is True:
 			intervallist.append( ( "interval", sixty ) )
-		if botcheck is True:
+		if botcheck is True and fightmode is True:
 			if(level >= 25 and life > 10 and fightmode is True):
 				if(fights >= 0 and fights < 5):
 					intervallist.append( ( "interval", onetwenty ) )
 	if char2 is True:
 		if botcheck2 is False or offline2 is True:
 			intervallist.append( ( "interval", sixty ) )
-		if botcheck2 is True:
+		if botcheck2 is True and fightmode is True:
 			if(level2 >= 25 and life2 > 10 and fightmode is True):
 				if(fights2 >= 0 and fights2 < 5):
 					intervallist.append( ( "interval", onetwenty ) )
 	if char3 is True:
 		if botcheck3 is False or offline3 is True:
 			intervallist.append( ( "interval", sixty ) )
-		if botcheck3 is True:
+		if botcheck3 is True and fightmode is True:
 			if(level3 >= 25 and life3 > 10 and fightmode is True):
 				if(fights3 >= 0 and fights3 < 5):
 					intervallist.append( ( "interval", onetwenty ) )
 	if char4 is True:
 		if botcheck4 is False or offline4 is True:
 			intervallist.append( ( "interval", sixty ) )
-		if botcheck4 is True:
+		if botcheck4 is True and fightmode is True:
 			if(level4 >= 25 and life4 > 10 and fightmode is True):
 				if(fights4 >= 0 and fights4 < 5):
 					intervallist.append( ( "interval", onetwenty ) )
@@ -4074,7 +3867,6 @@ def timercheck(num):
 	global atime
 	global stime
 	global level
-	global fights
 	global attackslaySum
 	global attackslaySum2
 	global attackslaySum3
@@ -4086,7 +3878,7 @@ def timercheck(num):
 	global buypower
 	global slaysum
 	global bottextmode
-
+	
 	getitems2(num)
 
 	if num == 1:
@@ -4272,7 +4064,7 @@ def spendmoney(num):
 	# level 1 >= blackbuy - requires 15 gems per buy
 	# level 1 >= get x gems - 150 gold per gem
 	# xpget 20xp minimum
-	# buy exp - 1000 gold - 10% off TTL
+	# buy experience - 1000 gold - 10% off TTL
 	
 	getitems2(num)
 
@@ -4296,7 +4088,7 @@ def spendmoney(num):
 		usecommand("buy life", num)
 		gold -= lifebuy
 		life = 100
-
+	       
 	gembuy = True
 	if(level >= 35):
 		if upgradelevel == 0 and gold < 600:
@@ -4333,7 +4125,7 @@ def spendmoney(num):
 			usecommand("buy upgrade", num)
 			gold -= 8000
 			upgradelevel = 5
-		
+
 	if(gembuy is True and level >= 15 and buyluck is True):
 		if(luck == 0 and gold >= 2100):
 			usecommand("buy luck", num)
@@ -4356,9 +4148,9 @@ def spendmoney(num):
 					usecommand("buy exp", num)
 					gold -= 1000
 					exp += 1
-					
-#        xchat.prnt("{0} goldsave: {1}  gembuy: {2}  level: {3}  upgradelevel: {4}  align: {5}".format(num, goldsave, gembuy, level, upgradelevel, align))
 
+#	xchat.prnt("{0} goldsave: {1}  gembuy: {2}  level: {3}  upgradelevel: {4}  align: {5}".format(num, goldsave, gembuy, level, upgradelevel, align))
+	
 	if(level >= setbuy):
 		buycost = level * 2 * 3
 		buyitem = level * 2     
@@ -4449,7 +4241,7 @@ def spendmoney(num):
 			blackbuydisable = False
 			if(blackbuyspend14 is True):
 				if(gems >= (15 * 14)):
-					usecommand("blackbuy {0} 14".format(lowestitem[0]), num)
+					usecommand("blackbuy {0} 14".format(lowestitem[0]),num)
 					gems -= (15 * 14) 
 					if(gems >= 15):
 						interval = 120
@@ -4465,7 +4257,7 @@ def spendmoney(num):
 						if(gems >= 15):
 							interval = 120
 							hookmain()
-						
+
 		if(xp >= 20 and mysum >= scrollssum and scrolls < 5):
 			xpcalc = xp // 20
 			scrollsdiff = 5 - scrolls
@@ -4482,7 +4274,7 @@ def spendmoney(num):
 						usecommand("xpget scroll",num)
 						xp -= 20
 						scrolls += 1
-
+						
 	if(level >= 25 and xpupgrade is True):
 		if(xp >= xpspend):
 			if(mysum < scrollssum):
@@ -4576,9 +4368,9 @@ def lvlupmulti(num):
 	hookmain()
 
 	level += 1
-	
+
 	if bottextmode is True:
-		xchat.prnt("{0} {1} has reached level {2}!".format(num, namelist, level))
+		xchat.prnt("{0} has reached level {1}!".format(namelist, level))
 
 	if(level >= 16 and life > 10):
 		if powerpots == 0 and gold >= 1100 and buypower is True:
@@ -4730,9 +4522,6 @@ def testfight(num):
 	global ability
 	global life
 	global fightlevellimit
-	global fightlevellimit2
-	global fightlevellimit3
-	global fightlevellimit4
 
 	getitems2(num)
 	
@@ -4741,25 +4530,21 @@ def testfight(num):
 		namelist = name
 		itemSumlist = itemSum
 		expertSumlist = expertSum
-		fightlevellimits = fightlevellimit
 	if num == 2:
 		newlists = newlist2
 		namelist = name2
 		itemSumlist = itemSum2
 		expertSumlist = expertSum2
-		fightlevellimits = fightlevellimit2
 	if num == 3:
 		newlists = newlist3
 		namelist = name3
 		itemSumlist = itemSum3
 		expertSumlist = expertSum3
-		fightlevellimits = fightlevellimit3
 	if num == 4:
 		newlists = newlist4
 		namelist = name4
 		itemSumlist = itemSum4
 		expertSumlist = expertSum4
-		fightlevellimits = fightlevellimit4
 		
 	upgradeSum1 = upgradelevel * 100
 	fightSumTotal = float(itemSumlist + expertSumlist)
@@ -4771,7 +4556,7 @@ def testfight(num):
 	newlists.sort( key=operator.itemgetter(2))
 	if newlists != None:
 		for entry in newlists:
-			if fightlevellimits is True:
+			if fightlevellimit is True:
 				if(entry[3] >= level and entry[0] != namelist):
 					abilityadj = 0
 					if ability == "b":
@@ -4798,7 +4583,7 @@ def testfight(num):
 						currdiff = 0
 					test.append( (entry, currdiff) )
 
-			if fightlevellimits is False:
+			if fightlevellimit is False:
 				if(entry[0] != namelist):
 					abilityadj = 0
 					if ability == "b":
@@ -4870,7 +4655,7 @@ def attackmulti(num, num2):
 			xchat.prnt("{0}".format(creep))
 	if creepattack is False:
 		usecommand("attack " + setcreeptarget, num)
-
+		
 def slay(userdata):
 	slaymulti(1, 1)
 
@@ -4951,8 +4736,8 @@ def bestslay(num, num2):
 		multi = 2
 	for thing in monsters:
 		if((attackslaySumlist * multi) <= thing[1]):
-			good = thing
-	return good[0]
+			good = thing[0]
+	return good
 
 def worstitem(num):
 	global amulet

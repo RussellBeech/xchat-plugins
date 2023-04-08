@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.5"
+__module_version__ = "1.6"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -29,70 +29,42 @@ if sys.version_info[0] < 3:
 
 # build hardcoded monster/creep lists, reverse
 creeps = [	["Roach",       1500],   \
-		["Spider",	2000],	\
-		["Bat",         3000],  \
-		["Wolf",        4000],  \
-		["Goblin",	5000],	\
-		["Shadow",	6000],	\
-		["Lich",	7000],	\
-		["Skeleton",	8000],	\
-		["Ghost",       9000],	\
-		["Phantom",     10000],  \
-		["Troll",	12000],	\
-		["Cyclop",      14000],  \
-		["Mutant",	17000],	\
-		["Ogre",        21000],  \
-		["Phoenix",	25000],  \
-		["Wraith",      30000],  \
-		["Vampire",     35000],  \
-		["Bigfoot",     40000],  \
-		["Chimera",     45000],  \
-		["Witch",       50000], \
-		["Imp",         55000], \
-		["Hag",         60000], \
-		["Kraken",      65000], \
-		["Wyvern",      70000], \
-		["Grendel",     75000], \
-		["Banshee",     80000], \
-		["Leprechaun",  85000], \
-		["Mummy",       90000], \
-		["Sphinx",      95000], \
-		["Krampus",     100000], \
-		["Griffin",     105000], \
-		["Harpy",       110000], \
-		["Hydra",       115000], \
-		["Demon",       125000], \
-		["Centaur",     150000], \
-		["Werewolf",    250000], \
-		["Giant",       2000000], \
-		["Satan",       9999999]  ]
+		["Spider",	2500],	\
+		["Bat",         3500],  \
+		["Wolf",        4500],  \
+		["Goblin",	5500],	\
+		["Shadow",	6500],	\
+		["Lich",	7500],	\
+		["Skeleton",	8500],	\
+		["Ghost",       9500],	\
+		["Phantom",     10500],  \
+		["Troll",	12500],	\
+		["Cyclop",      14500],  \
+		["Mutant",	17500],	\
+		["Ogre",        21500],  \
+		["Phoenix",	25500],  \
+		["Demon",       30500], \
+		["Centaur",     35500], \
+		["Werewolf",    40500], \
+		["Giant",       9999999]  ]
 
-monsters = [	["Blue_Dragon",	        7500],	\
-		["Yellow_Dragon",       15000],  \
-		["Green_Dragon",	25000],	\
-		["Red_Dragon",	        35000], \
-		["Black_Dragon",        40000], \
-		["White_Dragon",        60000], \
-		["Bronze_Dragon",       80000], \
-		["Silver_Dragon",       100000], \
-		["Gold_Dragon",         350000], \
-		["Platinum_Dragon",     6000000], \
-		["Diamond_Dragon",      9999999]  ]
+monsters = [	["Blue_Dragon",	        8500],	\
+		["Yellow_Dragon",       16000],  \
+		["Green_Dragon",	26000],	\
+		["Red_Dragon",	        36000], \
+		["Black_Dragon",        41000], \
+		["White_Dragon",        61000], \
+		["Bronze_Dragon",       81000], \
+		["Silver_Dragon",       101000], \
+		["Gold_Dragon",         151000], \
+		["Platinum_Dragon",     9999999]  ]
 
 creeps.reverse()
 monsters.reverse()
 
-#               Network                 Website                                 Server                          FightLL ChanName        BotName                 WebSSL
-gamelist = [    ["abandoned",           "https://irpg.abandoned-irc.net",       "irc.abandoned-irc.net",        True,   "#zw-idlerpg",  "IdleRPG",              True],  \
-		["dalnet",              "https://tilde.green/~hellspawn",       "irc.dal.net",                  True,   "#irpg",        "DAL-IRPG",             True], \
-		["efnet",               "http://idle.rpgsystems.org",           "irc.efnet.net",                True,   "#idlerpg",     "IdleRPG",              False], \
-		["technet",             "http://evilnet.idleirpg.site",         "irc.technet.chat",             True,   "#idlerpg",     "IdleRPG/IRC-nERDs",    False],  \
-		["irc-nerds",           "http://evilnet.idleirpg.site",         "irc.irc-nerds.net",            True,   "#idlerpg",     "IdleRPG",              False],  \
-		["twistednet",          "http://idlerpg.twistednet.org",        "irc.twistednet.org",           False,  "#idlerpg",     "IdleRPG",              False]   ]
-
 russweb = "https://russellb.000webhostapp.com/"
 gitweb = "https://github.com/RussellBeech/xchat-plugins"
-playerview = None
+playerview = None 
 interval = 300
 newlist = None
 playerlist = None 
@@ -102,7 +74,7 @@ mainhook = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
-CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamesingle"
+CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgquakesingle"
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
 	configList = pickle.load(f)
@@ -119,6 +91,8 @@ ZNCUser = "***/***" # ZNC Username/Network
 ZNCPass = "*******" # ZNC Password
 
 # Changeable settings
+servername = "irc.quakenet.org"
+website = "https://quakeirpg.abandoned-irc.net"
 setbuy = 15 # level to start buying items from
 goldsave = 3100 # gold kept in hand
 buylife = True
@@ -126,29 +100,24 @@ blackbuyspend = True
 blackbuyspend14 = True
 getgems = True
 fightmode = True
+channame = "#idlerpg"
+setbotname = "IdleRPG"
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
-scrollssum = 3000 # item score you start buying scrolls
+scrollssum = 3000 # Itemscore you start buying scrolls at
 xpupgrade = True # Upgrade Items with XP
 xpspend = 20 # Amount you use with xpget to upgrade items
 bottextmode = True # True = on, False = off
 errortextmode = True # True = on, False = off
 intervaltext = True # True = on, False = off - Text displayed every interval
 townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching
-buyluck = False
-buypower = False
 expbuy = False
 slaysum = 1000 # minimum sum you start slaying without mana from
 
 # declare stats as global
-fightlevellimit = None
-channame = None
-botname = None
-servername = None
-website = None
-webssl = None
 name = None
 pswd = None
+botname = setbotname
 charcount = 0
 private = True
 chanmessage = True
@@ -180,8 +149,6 @@ weapon = 0
 fights = 0
 scrolls = 0
 exp = 0
-luck = 0
-powerpots = 0
 mana = 0
 stone1 = None
 stone2 = None
@@ -198,7 +165,6 @@ xp = 0
 life = 0
 align = "n"
 upgradelevel = 0
-eatused = 0
 
 nickname = None
 netname = None
@@ -224,10 +190,6 @@ for entry in configList:
 		bottextmode = entry[1]
 	if(entry[0] == "buylife"):
 		buylife = entry[1]
-	if(entry[0] == "buyluck"):
-		buyluck = entry[1]
-	if(entry[0] == "buypower"):
-		buypower = entry[1]
 	if(entry[0] == "creepattack"):
 		creepattack = entry[1]
 	if(entry[0] == "errortextmode"):
@@ -276,9 +238,9 @@ def versionchecker():
 	webversion = None
 	try:
 		if python3 is False:
-			text = urllib2.urlopen(russweb + "playbotversionmultigame.txt")
+			text = urllib2.urlopen(russweb + "playbotversionquake.txt")
 		if python3 is True:
-			text = urllib.request.urlopen(russweb + "playbotversionmultigame.txt")
+			text = urllib.request.urlopen(russweb + "playbotversionquake.txt")
 		webversion = text.read()
 		webversion = float( webversion )
 		text.close()
@@ -301,8 +263,6 @@ def configwrite():
 	global blackbuyspend
 	global blackbuyspend14
 	global buylife
-	global buyluck
-	global buypower
 	global creepattack
 	global expbuy
 	global fightmode
@@ -325,8 +285,6 @@ def configwrite():
 	configList.append( ( "blackbuyspend14", blackbuyspend14 ) )
 	configList.append( ( "bottextmode", bottextmode ) )
 	configList.append( ( "buylife", buylife ) )
-	configList.append( ( "buyluck", buyluck ) )
-	configList.append( ( "buypower", buypower ) )
 	configList.append( ( "creepattack", creepattack ) )
 	configList.append( ( "errortextmode", errortextmode ) )
 	configList.append( ( "expbuy", expbuy ) )
@@ -350,13 +308,11 @@ def bottester():
 	global game_chan
 	global botname
 	global botdisable1
-	global netname
+	global setbotname
 	
 	botcount1 = 0
+	botname = setbotname
 
-	for entry in gamelist:
-		if entry[0] in netname.lower():
-			botname = entry[5]
 	bottest = botname
 	botentry = []
 
@@ -401,10 +357,10 @@ def login(word, word_eol, userdata):
 	global netname
 	global nickname
 	global channame
-	global game_chan
 	global gameactive
 	global fightmode
 	global charcount
+	global game_chan
 	global blackbuyspend
 	global blackbuyspend14
 	global getgems
@@ -415,43 +371,25 @@ def login(word, word_eol, userdata):
 	global townworkswitch
 	global goldsave
 	global creepattack
-	global gamelist
-	global website
-	global servername
-	global fightlevellimit
-	global botname
-	global buyluck
-	global buypower
 	global expbuy
 	global playerspagelist
 	global webworks
 	global slaysum
-	global webssl
 	global bottextmode
 	global errortextmode
-	
+
 	charcount += 1
 
 	if charcount == 1:
-		netcheck = False
 		gameactive = True
 		netname = xchat.get_info("network")
 		nickname = xchat.get_info("nick")
 		namecheck = False
-		
-		for entry in gamelist:
-			if entry[0] in netname.lower():
-				website = entry[1]
-				servername = entry[2]
-				fightlevellimit = entry[3]
-				channame = entry[4]
-				botname = entry[5]
-				webssl = entry[6]
-				netcheck = True
-				
 		# find context
 		game_chan = xchat.find_context(channel=channame)
 
+		if "undernet" in netname and channame.lower() == "#irpg":
+			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
 		if(game_chan is None):
 			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
 			charcount = 0
@@ -462,17 +400,8 @@ def login(word, word_eol, userdata):
 		except IndexError:
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 0
-		if netcheck is True:
-			webdata()
-		netlist = []
-		if netcheck is False:
-			for entry in gamelist:
-				netlist.append( ( entry[0] ) )
-			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
-			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
-			if "quakenet" in netname.lower():
-				xchat.prnt("You need to use the QuakeNet version of PlayBot")
-		if(name is None or pswd is None or netcheck is False):
+		webdata()
+		if(name is None or pswd is None):
 			charcount = 0
 			xchat.prnt("Login Failed")
 		if charcount == 1:
@@ -494,12 +423,12 @@ def login(word, word_eol, userdata):
 
 		if charcount == 1:
 			if(name != None and pswd != None):
-				usecommand("login {0} {1}".format(name, pswd))
+				usecommand("login {0} {1}".format(name, pswd) )
 	
-	if (charcount == 1):        
+	if charcount == 1:
 		time.sleep(3) # Needed
 		usecommand("whoami")
-		xchat.prnt("Player Character {0} has logged in".format(charcount))
+		xchat.prnt("Player Character {0} has logged in".format(name))
 		if blackbuyspend is True:
 			xchat.prnt("BlackBuy Spend Mode Activated.  To turn it off use /blackbuyoff")
 		if blackbuyspend is False:
@@ -514,14 +443,6 @@ def login(word, word_eol, userdata):
 			xchat.prnt("Buy Life Mode Activated.  To turn it off use /buylifeoff")
 		if buylife is False:
 			xchat.prnt("Buy Life Mode Deactivated.  To turn it on use /buylifeon")
-		if buyluck is True:
-			xchat.prnt("Buy Luck Potion Mode Activated.  To turn it off use /buyluckoff")
-		if buyluck is False:
-			xchat.prnt("Buy Luck Potion Mode Deactivated.  To turn it on use /buyluckon")
-		if buypower is True:
-			xchat.prnt("Buy Power Potion Mode Activated.  To turn it off use /buypoweroff")
-		if buypower is False:
-			xchat.prnt("Buy Power Potion Mode Deactivated.  To turn it on use /buypoweron")
 		if creepattack is True:
 			xchat.prnt("CreepAttack Mode Activated.  To turn it off use /creepattackoff")
 		if creepattack is False:
@@ -552,7 +473,7 @@ def login(word, word_eol, userdata):
 			xchat.prnt("XPUpgrade Mode Deactivated.  To turn it on use /xpupgradeon")
 		xchat.prnt("Current Goldsave: {0}.  If you want to change it use /setgoldsave number".format(goldsave))
 		xchat.prnt("Current Item Buy Level: {0}.  If you want to change it use /setitembuy number".format(setbuy))
-		xchat.prnt("Current Scroll Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
+		xchat.prnt("Current Scrolls Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
 		xchat.prnt("Current SlaySum Minimum ItemScore: {0}.  If you want to change it use /setslaysum number".format(slaysum))
 		xchat.prnt("Current XPSpend for xpget item upgrades: {0}.  If you want to change it use /setxpspend number".format(xpspend))
 		xchat.prnt("")
@@ -579,7 +500,7 @@ def logoutchar(word, word_eol, userdata):
 	global gameactive
 
 	if(charcount == 0):
-		xchat.prnt("All Characters have already been Logged Out")
+		xchat.prnt("Characters has already been Logged Out")
 	if charcount == 1:
 		xchat.prnt("Character {0} Logged Out".format(name))
 		netname = None
@@ -589,8 +510,8 @@ def logoutchar(word, word_eol, userdata):
 		gameactive = False
 		charcount = 0
 	return xchat.EAT_ALL
-		
-xchat.hook_command("logoutchar", logoutchar, help="/logoutchar - Logs out the last character from the PlayBot")
+
+xchat.hook_command("logoutchar", logoutchar, help="/logoutchar - Logs out the character from the PlayBot")
 
 def setgoldsave(word, word_eol, userdata):
 	global goldsave
@@ -937,42 +858,6 @@ def buylifeon(word, word_eol, userdata):
 
 xchat.hook_command("buylifeon", buylifeon, help="/buylifeon - Turns life buying on")
 
-def buyluckoff(word, word_eol, userdata):
-	global buyluck
-	buyluck = False
-	xchat.prnt("Buy Luck Potion Mode Deactivated.  To turn it on use /buyluckon")
-	configwrite()
-	return xchat.EAT_ALL
-
-xchat.hook_command("buyluckoff", buyluckoff, help="/buyluckoff - Turns buying luck potion off")
-
-def buyluckon(word, word_eol, userdata):
-	global buyluck
-	buyluck = True
-	xchat.prnt("Buy Luck Potion Mode Activated.  To turn if off use /buyluckoff")
-	configwrite()
-	return xchat.EAT_ALL
-
-xchat.hook_command("buyluckon", buyluckon, help="/buyluckon - Turns buying luck potion on")
-
-def buypoweroff(word, word_eol, userdata):
-	global buypower
-	buypower = False
-	xchat.prnt("Buy Power Potion Mode Deactivated.  To turn it on use /buypoweron")
-	configwrite()
-	return xchat.EAT_ALL
-
-xchat.hook_command("buypoweroff", buypoweroff, help="/buypoweroff - Turns buying power potion off")
-
-def buypoweron(word, word_eol, userdata):
-	global buypower
-	buypower = True
-	xchat.prnt("Buy Power Potion Mode Activated.  To turn if off use /buypoweroff")
-	configwrite()
-	return xchat.EAT_ALL
-
-xchat.hook_command("buypoweron", buypoweron, help="/buypoweron - Turns buying power potion on")
-
 def fightoff(word, word_eol, userdata):
 	global fightmode
 	global gameactive
@@ -1130,10 +1015,6 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("Bot Text Mode On            - /bottexton")
 	xchat.prnt("Buy Life Mode Off           - /buylifeoff")
 	xchat.prnt("Buy Life Mode On            - /buylifeon")
-	xchat.prnt("Buy Luck Potion Mode Off    - /buyluckoff")
-	xchat.prnt("Buy Luck Potion Mode On     - /buyluckon")
-	xchat.prnt("Buy Power Potion Mode Off   - /buypoweroff")
-	xchat.prnt("Buy Power Potion Mode On    - /buypoweron")
 	xchat.prnt("CreepAttack Mode Off        - /creepattackoff")
 	xchat.prnt("CreepAttack Mode On         - /creepattackon")
 	xchat.prnt("Error Text Mode Off         - /errortextoff")
@@ -1173,8 +1054,6 @@ xchat.hook_command("helpplaybot", helpplaybot, help="/helpplaybot - Gives a list
 
 def settings(word, word_eol, userdata):
 	global buylife
-	global buyluck
-	global buypower
 	global setbuy
 	global name
 	global fightmode
@@ -1192,7 +1071,6 @@ def settings(word, word_eol, userdata):
 	global intervaltext
 	global townworkswitch
 	global goldsave
-	global netname
 	global expbuy
 	global slaysum
 	
@@ -1206,17 +1084,15 @@ def settings(word, word_eol, userdata):
 	xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
 	xchat.prnt("Bot Text Mode - {0}".format(bottextmode))
 	xchat.prnt("Buy Life Mode - {0}".format(buylife))
-	xchat.prnt("Buy Luck Potion Mode - {0}".format(buyluck))
-	xchat.prnt("Buy Power Potion Mode - {0}".format(buypower))
 	xchat.prnt("CreepAttack Mode - {0}".format(creepattack))
-	xchat.prnt("Experience Buying Mode - {0}".format(expbuy))
 	xchat.prnt("Error Text Mode - {0}".format(errortextmode))
+	xchat.prnt("Experience Buying Mode - {0}".format(expbuy))
 	xchat.prnt("Fighting Mode - {0}".format(fightmode))
 	xchat.prnt("GetGems Mode - {0}".format(getgems))
 	xchat.prnt("Goldsave - {0}".format(goldsave))
 	xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
 	xchat.prnt("Item Buy Level - {0}".format(setbuy))
-	xchat.prnt("Player Character - {0}.  Network {1}".format(name, netname))
+	xchat.prnt("Player Character - {0}".format(name))
 	xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
 	xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
 	xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
@@ -1235,8 +1111,6 @@ def newlister():
 	global webworks
 	global website
 	global level
-	global fightlevellimit
-	global webssl
 	global errortextmode
 	
 	test = []
@@ -1261,12 +1135,9 @@ def newlister():
 						del test[0:14]
 					test2.append(test)        
 
-		if fightlevellimit is True:
-			for entry in test2:
-				if(int(entry[8]) >= level):
-					test3.append(entry)
-		if fightlevellimit is False:
-			test3 = test2
+		for entry in test2:
+			if(int(entry[8]) >= level):
+				test3.append(entry)
 		for player in test3:
 			name_ = player[5]
 
@@ -1276,18 +1147,12 @@ def newlister():
 			playerlist20 = []
 
 			# get raw player data from web, parse for relevant entry
+			context = ssl._create_unverified_context()
 			try:
-				if webssl is True:
-					context = ssl._create_unverified_context()
-					if python3 is False:
-						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
-					if python3 is True:
-						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
-				else:
-					if python3 is False:
-						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_))
-					if python3 is True:
-						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_))
+				if python3 is False:
+					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
+				if python3 is True:
+					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
 				playerview20 = text.read()
 				text.close()
 				if python3 is True:
@@ -1482,7 +1347,6 @@ def newlister():
 					ulevelcalc = ulevel * 100
 					ability_ = player[20]
 					abilityadj = 0
-						
 					if ability == "b":
 						if ability_ == "w":
 							abilityadj = math.floor((sum_ + expertcalcsumtotal) * 0.30)
@@ -1498,11 +1362,12 @@ def newlister():
 					if ability == "w":
 						if ability_ == "r":
 							abilityadj = math.floor((sum_ + expertcalcsumtotal) * 0.30)
+						
 					life_ = float(player[28])
 					lifecalc = life_ / 100
 					adjSum = math.floor((sum_ + ulevelcalc + abilityadj + expertcalcsumtotal) * lifecalc)
 					
-							# name       sum   adjsum       level   life   ability   rank 
+							# name       sum   adjsum       level   life   ability   rank     
 					newlist.append( ( player[5], sum_, int(adjSum), level_, life_, ability_, rank_ ) )
 				except:
 					newlistererror = True
@@ -1514,24 +1379,22 @@ def newlister():
 
 	newlist.sort( key=operator.itemgetter(1), reverse=True )
 	newlist.sort( key=operator.itemgetter(3) )
-	
+
 def status(word, word_eol, userdata):
 	global name
-	global gameactive       
+	global gameactive
 	global level
 	global ttl
 	global atime
 	global stime
 	global location
 	global locationtime
-
-	global powerpots
+	
 	global fights
 	global gold
 	global gems
 	global xp
 	global mana
-	global luck
 	global upgradelevel
 	global expertSum
 	global itemSum
@@ -1544,8 +1407,7 @@ def status(word, word_eol, userdata):
 	global lottonum2
 	global lottonum3
 	global align
-	global eatused
-
+		
 	if gameactive is True:
 		xchat.prnt("{0}'s Status".format(name))
 		xchat.prnt(" ")
@@ -1568,8 +1430,6 @@ def status(word, word_eol, userdata):
 		if(level < 30):
 			xchat.prnt("Slaying Monsters Start at Level 30")
 		xchat.prnt("Mana Potion: {0}".format(mana))
-		xchat.prnt("Power Potions: {0}".format(powerpots))
-		xchat.prnt("Luck Potion: {0}".format(luck))
 		if(level >= 25):
 			xchat.prnt("Fights: {0} of 5".format(fights))
 		if(level < 25):
@@ -1581,7 +1441,6 @@ def status(word, word_eol, userdata):
 		xchat.prnt("Life: {0}".format(life))
 		xchat.prnt("Scrolls: {0} of 5".format(scrolls))
 		xchat.prnt("Exp Used: {0} of 5".format(exp))
-		xchat.prnt("Eat Used: {0} of 200".format(eatused))
 		xchat.prnt("Upgrade Level: {0}".format(upgradelevel))
 		xchat.prnt("Items Sum Score: {0}".format(itemSum))
 		xchat.prnt("Expert Items Score: {0}".format(expertSum))
@@ -1674,19 +1533,17 @@ def on_message(word, word_eol, userdata):
 		    
 		if(checknet == netname and checknick == nickname):
 			lifebuy = False
-			if botname in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name) in word[1]: #rand challenge
+			if botname in word[0] and "and been defeated in combat!" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
 				lifebuy = True
-			if botname in word[0] and "has attacked a" in word[1] and "is added to {0} clock".format(name) in word[1]: #attack
+			if botname in word[0] and "has attacked a" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
 				lifebuy = True
-			if botname in word[0] and "tried to slay a" in word[1] and "is added to {0} clock".format(name) in word[1]: #slay
+			if botname in word[0] and "tried to slay a" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
 				lifebuy = True
-			if botname in word[0] and "has been set upon by some" in word[1] and "is added to {0}'s clock".format(name) in word[1]: #rand creep
+			if botname in word[0] and "has challenged" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
 				lifebuy = True
-			if botname in word[0] and "fights a random" in word[1] and "is added to {0} clock".format(name) in word[1]: #rand god
+			if botname in word[0] and "has challenged {0}".format(name) in word[1] and "and won!" in word[1]:
 				lifebuy = True
-			if botname in word[0] and "{0}".format(name) in word[1] and "have hunted down a bunch of" in word[1] and "but they beat them badly!" in word[1]: #team hunt
-				lifebuy = True
-			if botname in word[0] and "from {0}!".format(name) in word[1] and "XP and loses" in word[1]: #tourney
+			if botname in word[0] and "gold from {0}!".format(name) in word[1] and "XP and loses" in word[1]:
 				lifebuy = True
 			if lifebuy is True:
 				if(level >= 15 and buylife is True and life >= 0):
@@ -1727,39 +1584,26 @@ def webdata():
 	global playerspage
 	global playerspagelist
 	global website
-	global webssl
 	global errortextmode
 	
 	webworks = True
 	weberror = False
 
+	context = ssl._create_unverified_context()
 	# get raw player data from web, parse for relevant entry
 	try:
-		context = ssl._create_unverified_context()
-		if webssl is True:
-			if python3 is False:
-				text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
-			if python3 is True:
-				text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
-		else:
-			if python3 is False:
-				text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name))
-			if python3 is True:
-				text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name))
+		if python3 is False:
+			text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+		if python3 is True:
+			text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
 		playerview = text.read()
 		text.close()
 		if python3 is True:
 			playerview = playerview.decode("UTF-8")
-		if webssl is True:
-			if python3 is False:
-				text2 = urllib2.urlopen(website + "/players.php", context=context)
-			if python3 is True:
-				text2 = urllib.request.urlopen(website + "/players.php", context=context)
-		else:
-			if python3 is False:
-				text2 = urllib2.urlopen(website + "/players.php")
-			if python3 is True:
-				text2 = urllib.request.urlopen(website + "/players.php")
+		if python3 is False:
+			text2 = urllib2.urlopen(website + "/players.php", context=context)
+		if python3 is True:
+			text2 = urllib.request.urlopen(website + "/players.php", context=context)
 		playerspage = text2.read()
 		text2.close()
 		if python3 is True:
@@ -1793,14 +1637,13 @@ def playerarea():
 	global location
 	global locationtime
 	global townworkswitch
-       
+	
 	if townworkswitch is True:
 		area = "work"
 	if townworkswitch is False:
 		area = "forest"
 
 #	xchat.prnt("{0} Time: {1} seconds".format(location, locationtime))
-
 	if (level <= 25):
 		mintime = (3 * 60 * 60)
 	if (level > 25 and level <= 40):
@@ -1847,11 +1690,8 @@ def getvariables():
 	global fights
 	global scrolls
 	global exp
-	global luck
 	global mana
-	global powerpots
 	global align
-	global eatused
 
 	global stone1
 	global stone2
@@ -1883,12 +1723,9 @@ def getvariables():
 	exptext = None
 	lifetext = None
 	scrollstext = None
-	lucktext = None
-	powerpotstext = None
 	manatext = None
 	atimetext = None
 	ctimetext = None
-	eatusedtext = None
 	
 	amulettext = None
 	bootstext = None
@@ -1945,14 +1782,8 @@ def getvariables():
 				lifetext = entry
 			if "Scrolls Used:" in entry:
 				scrollstext = entry
-			if "Eat Used:" in entry:
-				eatusedtext = entry
-			if "Power Potion:" in entry:
-				powerpotstext = entry
 			if "Mana Potion:" in entry:
 				manatext = entry
-			if "Luck Potion:" in entry:
-				lucktext = entry
 			if "Creep Attack in:" in entry:
 				atimetext = entry
 			if "Dragon Slay in:" in entry:
@@ -2067,25 +1898,10 @@ def getvariables():
 				scrolls = int(scrollssplit[0])
 			except ValueError:
 				scrolls = 0
-			eatusedtext = eatusedtext.split(" ")
-			eatusedsplit = eatusedtext[8]
-			eatusedsplit = eatusedsplit.split("/")
-			try:
-				eatused = int(eatusedsplit[0])
-			except ValueError:
-				eatused = 0
-			powerpotstext = powerpotstext.split(" ")
-			powerpotssplit = powerpotstext[8]
-			powerpotssplit = powerpotssplit.split("/")
-			powerpots = int(powerpotssplit[0])
 			manatext = manatext.split(" ")
 			manasplit = manatext[8]
 			manasplit = manasplit.split("/")
 			mana = int(manasplit[0])
-			lucktext = lucktext.split(" ")
-			lucksplit = lucktext[8]
-			lucksplit = lucksplit.split("/")
-			luck = int(lucksplit[0])
 
 			try:
 				atimetext = atimetext.split(" ")
@@ -2258,7 +2074,7 @@ def main(userdata):
 	global bottextmode
 	global errortextmode
 	global botdisable1
-	
+
 	if intervaltext is True:
 		xchat.prnt( "INTERVAL {0}".format(time.asctime()) )
 	if chanmessage is True:
@@ -2311,10 +2127,13 @@ def main(userdata):
 		if "offline" in test:
 			offline = True
 		if offline is False:
-			test = test.split('">')
-			ranktext = test[1]
-			ranktext = ranktext.split("</")
-			rank = int(ranktext[0])
+                        try:
+                                test = test.split('">')
+                                ranktext = test[1]
+                                ranktext = ranktext.split("</")
+                                rank = int(ranktext[0])
+                        except:
+                                offline = True
 	if(webworks is True and offline is True):
 		if errortextmode is True:
 			xchat.prnt("Player Offline")
@@ -2339,7 +2158,7 @@ def main(userdata):
 			hookmain()
 			intervaldisable = True
 
-	if (webworks is True and intervaldisable is False):
+	if webworks is True and intervaldisable is False:
 		intervalcalc()
 	if webworks is False and intervaldisable is False:
 		interval = 300
@@ -2369,7 +2188,7 @@ def intervalcalc():
 	
 	interval = 5
 	interval *= 60			# conv from min to sec
-
+				
 	if botcheck is False or offline is True:
 		interval = 60
 	if botcheck is True:
@@ -2387,13 +2206,11 @@ def timercheck():
 	global level
 	global attackslaySum
 	global mana
-	global powerpots
 	global gold
 	global life
-	global buypower
 	global slaysum
 	global bottextmode
-			
+	       
 	# make sure no times are negative
 	if(atime < 0):
 		atime = 0
@@ -2409,24 +2226,14 @@ def timercheck():
 			xchat.prnt("Set lvlup timer. Going off in {0} minutes.".format(timer // 60000))
 		xchat.hook_timer(timer, lvlup)
 	if(level >= 15 and atime <= interval and atime <= ttl and life > 10):
-		if powerpots == 0 and gold >= 1100 and buypower is True:
-			usecommand("buy power")
-			gold -= 1000
-			powerpots = 1
-
 		timer = (atime+10)*1000
 		if bottextmode is True:
 			xchat.prnt("Set attack timer. Going off in {0} minutes.".format(timer // 60000))
 		slaydisable = True
-
-		if powerpots == 0:
-			xchat.hook_timer(timer, attack)
-		if powerpots == 1:
-			xchat.hook_timer(timer, attackb)
-			powerpots = 0
+		xchat.hook_timer(timer, attack)
 
 	if(level >= 30 and attackslaySum >= 1000 and stime <= interval and stime <= ttl and slaydisable is False and life > 10):
-		if(mana == 0 and gold >= 1100 and attackslaySum < 6300000):
+		if(mana == 0 and gold >= 1100 and attackslaySum < 150000):
 			usecommand("buy mana")
 			gold -= 1000
 			mana = 1
@@ -2490,7 +2297,6 @@ def spendmoney():
 	global interval
 	global scrolls
 	global exp
-	global luck
 	global getgems
 	global goldsave
 	global scrollssum
@@ -2506,15 +2312,14 @@ def spendmoney():
 	global shield
 	global tunic
 	global weapon 
-	global buyluck
 	global expbuy
 	
 	# level 15 >= buy - decide what to spend our gold on! :D
 	# level 1 >= blackbuy - requires 15 gems per buy
 	# level 1 >= get x gems - 150 gold per gem
 	# xpget 20xp minimum
-	# buy exp - 1000 gold - 10% off TTL
-	       
+	# buy experience - 500 gold - 10% off TTL
+	
 	lowestitem = worstitem()
 #        xchat.prnt("Worst item {0}".format(lowestitem))
 
@@ -2535,7 +2340,7 @@ def spendmoney():
 		usecommand("buy life")
 		gold -= lifebuy
 		life = 100
-	
+		
 	gembuy = True
 	if(level >= 35):
 		if upgradelevel == 0 and gold < 600:
@@ -2573,27 +2378,21 @@ def spendmoney():
 			gold -= 8000
 			upgradelevel = 5
 		
-	if(gembuy is True and level >= 15 and buyluck is True):
-		if(luck == 0 and gold >= 2100):
-			usecommand("buy luck")
-			luck = 1
-			gold -= 1000
-			
 	if(gembuy is True and expbuy is True and exp < 5):
 		expdiff = 5 - exp
-		expcost = expdiff * 1000
+		expcost = expdiff * 500
 		if(gold >= (expcost + 1100)):
 			for i in range(expdiff):
-				usecommand("buy exp")
-				gold -= 1000
+				usecommand("buy experience")
+				gold -= 500
 				exp += 1
-		elif(gold >= 1000 + 1100):
+		elif(gold >= 500 + 1100):
 			golddiff = gold - 1100
-			expcalc = golddiff // 1000
+			expcalc = golddiff // 500
 			if expcalc >= 1:
 				for i in range(expcalc):
-					usecommand("buy exp")
-					gold -= 1000
+					usecommand("buy experience")
+					gold -= 500
 					exp += 1
 
 #        xchat.prnt("goldsave: {0}  gembuy: {1}  level: {2}  upgradelevel: {3}  align: {4}".format(goldsave, gembuy, level, upgradelevel, align))
@@ -2704,7 +2503,7 @@ def spendmoney():
 						if(gems >= 15):
 							interval = 120
 							hookmain()
-						
+
 		if(xp >= 20 and mysum >= scrollssum and scrolls < 5):
 			xpcalc = xp // 20
 			scrollsdiff = 5 - scrolls
@@ -2721,7 +2520,7 @@ def spendmoney():
 						usecommand("xpget scroll")
 						xp -= 20
 						scrolls += 1
-
+						
 	if(level >= 25 and xpupgrade is True):
 		if(xp >= xpspend):
 			if(mysum < scrollssum):
@@ -2735,7 +2534,7 @@ def spendmoney():
 				for i in range(xpcalc):
 					usecommand("xpget {0} {1}".format(lowestitem[0], xpspend))
 					xp -= xpspend
-       
+
 	expertitem1 = expertcalc(expert1)
 	expertitem2 = expertcalc(expert2)
 	expertitem3 = expertcalc(expert3)
@@ -2750,10 +2549,7 @@ def lvlup(userdata):
 	global name
 	global level
 	global interval
-	global gold
-	global powerpots
 	global life
-	global buypower
 	global bottextmode
 
 	interval = 60
@@ -2765,16 +2561,7 @@ def lvlup(userdata):
 		xchat.prnt("{0} has reached level {1}!".format(name, level))
 
 	if(level >= 16 and life > 10):
-		if powerpots == 0 and gold >= 1100 and buypower is True:
-			usecommand("buy power")
-			gold -= 1000
-			powerpots = 1
-
-		if powerpots == 0:
-			xchat.hook_timer(0, attack)
-		if powerpots == 1:
-			xchat.hook_timer(0, attackb)
-			powerpots = 0
+		xchat.hook_timer(0, attack)
 
 def fight_fight():
 	global name
@@ -2790,8 +2577,8 @@ def fight_fight():
 	global fightmode
 	global bottextmode
 
-	ufight = testfight()       
-
+	ufight = testfight()
+	
 	upgradeSum1 = upgradelevel * 100
 	fightSumTotal = itemSum + expertSum
 	abilityadj = 0
@@ -2832,8 +2619,7 @@ def testfight():
 	global expertSum
 	global ability
 	global life
-	global fightlevellimit
-	       
+		
 	upgradeSum1 = upgradelevel * 100
 	fightSumTotal = float(itemSum + expertSum)
 	lifepercent = (float(life) / 100)
@@ -2844,59 +2630,31 @@ def testfight():
 	newlist.sort( key=operator.itemgetter(2))
 	if newlist != None:
 		for entry in newlist:
-			if fightlevellimit is True:
-				if(entry[3] >= level and entry[0] != name):
-					abilityadj = 0
-					if ability == "b":
-						if entry[5] == "p":
-							abilityadj = math.floor(fightSumTotal * 0.30)
+			if(entry[3] >= level and entry[0] != name):
+				abilityadj = 0
+				if ability == "b":
+					if entry[5] == "p":
+						abilityadj = math.floor(fightSumTotal * 0.30)
 
-					if ability == "p":
-						if entry[5] == "r":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-						
-					if ability == "r":
-						if entry[5] == "w":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-						
-					if ability == "w":
-						if entry[5] == "b":
-							abilityadj = math.floor(fightSumTotal * 0.30)
+				if ability == "p":
+					if entry[5] == "r":
+						abilityadj = math.floor(fightSumTotal * 0.30)
+					
+				if ability == "r":
+					if entry[5] == "w":
+						abilityadj = math.floor(fightSumTotal * 0.30)
+					
+				if ability == "w":
+					if entry[5] == "b":
+						abilityadj = math.floor(fightSumTotal * 0.30)
 
-					fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
+				fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
 
-					try:
-						currdiff = fightAdj / entry[2]
-					except ZeroDivisionError:
-						currdiff = 0
-					test.append( (entry, currdiff) )
-
-			if fightlevellimit is False:
-				if(entry[0] != name):
-					abilityadj = 0
-					if ability == "b":
-						if entry[5] == "p":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-
-					if ability == "p":
-						if entry[5] == "r":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-						
-					if ability == "r":
-						if entry[5] == "w":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-						
-					if ability == "w":
-						if entry[5] == "b":
-							abilityadj = math.floor(fightSumTotal * 0.30)
-
-					fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
-
-					try:
-						currdiff = fightAdj / entry[2]
-					except ZeroDivisionError:
-						currdiff = 0
-					test.append( (entry, currdiff) )
+				try:
+					currdiff = fightAdj / entry[2]
+				except ZeroDivisionError:
+					currdiff = 0
+				test.append( (entry, currdiff) )
 
 		test.sort( key=operator.itemgetter(1))
 
@@ -2908,24 +2666,18 @@ def testfight():
 	return best
 
 def attack(userdata):
-	attackmulti(1)
-
-def attackb(userdata):
-	attackmulti(2)
-
-def attackmulti(num2):
 	global creepattack
 	global setcreeptarget
-
+	
 	if creepattack is True:
-		creep = bestattack(num2)
+		creep = bestattack()
 		if creep != "CreepList Error":
 			usecommand("attack " + creep)
 		if creep == "CreepList Error":
 			xchat.prnt("{0}".format(creep))
 	if creepattack is False:
 		usecommand("attack " + setcreeptarget)
-
+		
 def slay(userdata):
 	slaymulti(1)
 
@@ -2939,33 +2691,29 @@ def slaymulti(num2):
 	if monster == "MonsterList Error":
 		xchat.prnt("{0}".format(monster))
 
-def bestattack(num2):
+def bestattack():
 	global creeps
 	global attackslaySum
-		
-	good = creeps
-	if num2 == 1:
-		multi = 1
-	if num2 == 2:
-		multi = 2
+	      
+	good = "CreepList Error"
 	for thing in creeps:
-		if((attackslaySum * multi) <= thing[1]):
-			good = thing
-	return good[0]
+		if(attackslaySum <= thing[1]):
+			good = thing[0]
+	return good
 
 def bestslay(num2):
 	global monsters
 	global attackslaySum
-		
-	good = monsters
+	       
+	good = "MonsterList Error"
 	if num2 == 1:
 		multi = 1
 	if num2 == 2:
 		multi = 2
 	for thing in monsters:
 		if((attackslaySum * multi) <= thing[1]):
-			good = thing
-	return good[0]
+			good = thing[0]
+	return good
 
 def worstitem():
 	global amulet
