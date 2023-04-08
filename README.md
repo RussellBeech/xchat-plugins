@@ -14,7 +14,7 @@ Single - Single player.
 Multi - Up to 5 players.
 
 playbotidlerpg_v1-4multigamesingle, playbotidlerpg_v1-4multigamemulti, playbotidlerpg_v1-4multigamemultimulti are PlayBots for IdleRPG games on:  
-Abandoned #zw-idlerpg  EfNet, TechNet, Irc-Nerds & TwistedNet #idlerpg  DalNet #irpg  
+Abandoned #zw-idlerpg  EfNet, Irc-Nerds & TwistedNet #idlerpg  DalNet #irpg  
 The different version are:  
 Single - Single player on a Single Game.  
 Multi - Up to 4 players on a Single Game.  
