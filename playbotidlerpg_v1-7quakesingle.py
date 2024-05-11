@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.6"
+__module_version__ = "1.7"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -62,8 +62,9 @@ monsters = [	["Blue_Dragon",	        8500],	\
 creeps.reverse()
 monsters.reverse()
 
-russweb = "https://russellb.000webhostapp.com/"
+russweb = "http://russellb.x10.mx/"
 gitweb = "https://github.com/RussellBeech/xchat-plugins"
+gitweb2 = "https://raw.githubusercontent.com/RussellBeech/xchat-plugins/master/"
 playerview = None 
 interval = 300
 newlist = None
@@ -234,8 +235,11 @@ def versionchecker():
 	global python3
 	global russweb
 	global gitweb
+	global gitweb2
 
-	webversion = None
+	webversion = 0
+	gitversion = 0
+	newversion = 0
 	try:
 		if python3 is False:
 			text = urllib2.urlopen(russweb + "playbotversionquake.txt")
@@ -248,15 +252,37 @@ def versionchecker():
 	except:
 		xchat.prnt( "Could not access {0}".format(russweb))
 
+	try:
+		if python3 is False:
+			text2 = urllib2.urlopen(gitweb2 + "playbotversionquake.txt")
+		if python3 is True:
+			text2 = urllib.request.urlopen(gitweb2 + "playbotversionquake.txt")
+		gitversion = text2.read()
+		text2.close()
+		if python3 is True:
+			gitversion = gitversion.decode("UTF-8")
+		gitversion = float( gitversion )
+
+	except:
+		xchat.prnt("Could not access {0}".format(gitweb2))
+
 	xchat.prnt("Current version {0}".format(currentversion))
 	xchat.prnt("Web version {0}".format(webversion))
-	if webversion != None:
-		if(currentversion == webversion):
+	xchat.prnt("GitHub version {0}".format(gitversion))
+	if webversion > gitversion:
+		newversion = webversion
+	if webversion < gitversion:
+		newversion = gitversion
+	if webversion == gitversion:
+		newversion = gitversion
+		
+	if newversion > 0:
+		if(currentversion == newversion):
 			xchat.prnt("You have the current version of PlayBot")
-		if(currentversion < webversion):
+		if(currentversion < newversion):
 			xchat.prnt("You have an old version of PlayBot")
 			xchat.prnt("You can download a new version from {0} or {1}".format(russweb, gitweb))
-		if(currentversion > webversion):
+		if(currentversion > newversion):
 			xchat.prnt("Give me, Give me")
 
 def configwrite():
@@ -1130,6 +1156,7 @@ def newlister():
 					testadd = False
 				if testadd is True:
 					test = re.sub(r'<.*?>', ' ', test)
+					test = re.sub(r"&#039;", "'", test)
 					test = test.split(" ")
 					if testnum == 1:
 						del test[0:14]
@@ -2127,13 +2154,13 @@ def main(userdata):
 		if "offline" in test:
 			offline = True
 		if offline is False:
-                        try:
-                                test = test.split('">')
-                                ranktext = test[1]
-                                ranktext = ranktext.split("</")
-                                rank = int(ranktext[0])
-                        except:
-                                offline = True
+			try:
+				test = test.split('">')
+				ranktext = test[1]
+				ranktext = ranktext.split("</")
+				rank = int(ranktext[0])
+			except:
+				offline = True
 	if(webworks is True and offline is True):
 		if errortextmode is True:
 			xchat.prnt("Player Offline")

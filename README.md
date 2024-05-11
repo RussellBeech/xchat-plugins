@@ -13,14 +13,14 @@ The different version are:
 Single - Single player.  
 Multi - Up to 5 players.
 
-playbotidlerpg_v1-6multigamesingle, playbotidlerpg_v1-6multigamemulti, playbotidlerpg_v1-6multigamemultimulti are PlayBots for IdleRPG games on:  
-Abandoned #zw-idlerpg  EfNet, Irc-Nerds & TwistedNet #idlerpg  DalNet #irpg  
+playbotidlerpg_v1-7multigamesingle, playbotidlerpg_v1-7multigamemulti, playbotidlerpg_v1-7multigamemultimulti are PlayBots for IdleRPG games on:  
+Abandoned #zw-idlerpg  
 The different version are:  
 Single - Single player on a Single Game.  
 Multi - Up to 4 players on a Single Game.  
 MultiMulti - Up to 4 players over Multiple Games.
 
-playbotidlerpg_v1-6quakesingle and playbotidlerpg_v1-6quakemulti are PlayBots for IdleRPG game on QuakeNet #idlerpg  
+playbotidlerpg_v1-7quakesingle and playbotidlerpg_v1-7quakemulti are PlayBots for IdleRPG game on QuakeNet #idlerpg  
 The different version are:  
 Single - Single player.  
 Multi - Up to 4 players.  
