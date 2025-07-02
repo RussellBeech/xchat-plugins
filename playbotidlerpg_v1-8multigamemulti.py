@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.7"
+__module_version__ = "1.8"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -29,38 +29,65 @@ if sys.version_info[0] < 3:
 
 # build hardcoded monster/creep lists, reverse
 creeps = [	["Roach",       1500],   \
-		["Spider",	2500],	\
-		["Bat",         3500],  \
-		["Wolf",        4500],  \
-		["Goblin",	5500],	\
-		["Shadow",	6500],	\
-		["Lich",	7500],	\
-		["Skeleton",	8500],	\
-		["Ghost",       9500],	\
-		["Phantom",     10500],  \
-		["Troll",	12500],	\
-		["Cyclop",      14500],  \
-		["Mutant",	17500],	\
-		["Ogre",        21500],  \
-		["Phoenix",	25500],  \
-		["Demon",       30500], \
-		["Centaur",     35500], \
-		["Werewolf",    40500], \
-		["Giant",       9999999]  ]
+		["Spider",	2000],	\
+		["Bat",         3000],  \
+		["Wolf",        4000],  \
+		["Goblin",	5000],	\
+		["Shadow",	6000],	\
+		["Lich",	7000],	\
+		["Skeleton",	8000],	\
+		["Ghost",       9000],	\
+		["Phantom",     10000],  \
+		["Troll",	12000],	\
+		["Cyclop",      14000],  \
+		["Mutant",	17000],	\
+		["Ogre",        21000],  \
+		["Phoenix",	25000],  \
+		["Wraith",      30000],  \
+		["Vampire",     35000],  \
+		["Bigfoot",     40000],  \
+		["Chimera",     45000],  \
+		["Witch",       50000], \
+		["Imp",         55000], \
+		["Hag",         60000], \
+		["Kraken",      65000], \
+		["Wyvern",      70000], \
+		["Grendel",     75000], \
+		["Banshee",     80000], \
+		["Leprechaun",  85000], \
+		["Mummy",       90000], \
+		["Sphinx",      95000], \
+		["Krampus",     100000], \
+		["Griffin",     105000], \
+		["Harpy",       110000], \
+		["Hydra",       115000], \
+		["Demon",       125000], \
+		["Centaur",     150000], \
+		["Werewolf",    250000], \
+		["Giant",       2000000], \
+		["Satan",       9999999]  ]
 
-monsters = [	["Blue_Dragon",	        8500],	\
-		["Yellow_Dragon",       16000],  \
-		["Green_Dragon",	26000],	\
-		["Red_Dragon",	        36000], \
-		["Black_Dragon",        41000], \
-		["White_Dragon",        61000], \
-		["Bronze_Dragon",       81000], \
-		["Silver_Dragon",       101000], \
-		["Gold_Dragon",         151000], \
-		["Platinum_Dragon",     9999999]  ]
+monsters = [	["Blue_Dragon",	        7500],	\
+		["Yellow_Dragon",       15000],  \
+		["Green_Dragon",	25000],	\
+		["Red_Dragon",	        35000], \
+		["Black_Dragon",        40000], \
+		["White_Dragon",        60000], \
+		["Bronze_Dragon",       80000], \
+		["Silver_Dragon",       100000], \
+		["Gold_Dragon",         350000], \
+		["Platinum_Dragon",     6000000], \
+		["Diamond_Dragon",      9999999]  ]
 
 creeps.reverse()
 monsters.reverse()
+
+#               Network                 Website                                 Server                          FightLL ChanName        BotName         GameID  WebSSL
+gamelist = [    ["abandoned",           "https://irpg.abandoned-irc.net",       "irc.abandoned-irc.net",        True,   "#zw-idlerpg",  "IdleRPG",      1,      True],  \
+		["efnet",               "http://idle.rpgsystems.org",           "irc.efnet.net",                True,   "#idlerpg",     "IdleRPG",      3,      False], \
+		["irc-nerds",           "http://irpgnerds.ddns.net",            "irc.irc-nerds.net",            True,   "#idlerpg",     "IdleRPG",      4,      False],  \
+		["rizon",               "https://tilde.green/~hellspawn",       "irc.rizon.net",                True,   "#idle",        "iRPG",         2,      True], \
+		["twistednet",          "http://idlerpg.twistednet.org",        "irc.twistednet.org",           False,  "#idlerpg",     "IdleRPG",      5,      False]   ]
 
 russweb = "http://russellb.x10.mx/"
 gitweb = "https://github.com/RussellBeech/xchat-plugins"
@@ -88,7 +115,7 @@ itemslists = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
-CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgquakemulti"
+CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamemulti"
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
 	configList = pickle.load(f)
@@ -120,8 +147,6 @@ ZNCUser4 = "***/***" # ZNC Username/Network
 ZNCPass4 = "*********" # ZNC Password
 
 # Changeable settings
-servername = "irc.quakenet.org"
-website = "https://quakeirpg.abandoned-irc.net"
 setbuy = 15 # level to start buying items from
 goldsave = 3100 # gold kept in hand
 buylife = True
@@ -129,8 +154,6 @@ blackbuyspend = True
 blackbuyspend14 = True
 getgems = True
 fightmode = True
-channame = "#idlerpg"
-setbotname = "IdleRPG"
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
 scrollssum = 3000 # Itemscore you start buying scrolls at
@@ -139,11 +162,30 @@ xpspend = 20 # Amount you use with xpget to upgrade items
 bottextmode = True # True = on, False = off
 errortextmode = True # True = on, False = off
 intervaltext = True # True = on, False = off - Text displayed every interval
-townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching
+townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching, None = Area Switching Off
+areasum = 6000 # Sum at which you switch to Fast Town Switching
+buyluck = False
+buypower = False
 expbuy = False
 slaysum = 1000 # minimum sum you start slaying without mana from
 
 # declare stats as global
+fightlevellimit = None
+channame = None
+botname = None
+channame2 = None
+botname2 = None
+channame3 = None
+botname3 = None
+channame4 = None
+botname4 = None
+servername = None
+website = None
+gameid = 0
+gameid2 = 0
+gameid3 = 0
+gameid4 = 0
+webssl = None
 name = None
 pswd = None
 name2 = None
@@ -152,7 +194,6 @@ name3 = None
 pswd3 = None
 name4 = None
 pswd4 = None
-botname = setbotname
 char1 = False
 char2 = False
 char3 = False
@@ -203,6 +244,8 @@ weapon = 0
 fights = 0
 scrolls = 0
 exp = 0
+luck = 0
+powerpots = 0
 mana = 0
 stone1 = None
 stone2 = None
@@ -228,6 +271,7 @@ xp = 0
 life = 0
 align = "n"
 upgradelevel = 0
+eatused = 0
 
 nickname = None
 netname = None
@@ -261,6 +305,7 @@ botdisable1 = False
 botdisable2 = False
 botdisable3 = False
 botdisable4 = False
+networkname = None
 
 for entry in configList:
 	if(entry[0] == "blackbuyspend"):
@@ -271,6 +316,10 @@ for entry in configList:
 		bottextmode = entry[1]
 	if(entry[0] == "buylife"):
 		buylife = entry[1]
+	if(entry[0] == "buyluck"):
+		buyluck = entry[1]
+	if(entry[0] == "buypower"):
+		buypower = entry[1]
 	if(entry[0] == "creepattack"):
 		creepattack = entry[1]
 	if(entry[0] == "errortextmode"):
@@ -323,14 +372,14 @@ def versionchecker():
 	global gitweb
 	global gitweb2
 
-	webversion = 0
-	gitversion = 0
+	webversion = None
+	gitversion = None
 	newversion = 0
 	try:
 		if python3 is False:
-			text = urllib2.urlopen(russweb + "playbotversionquake.txt")
+			text = urllib2.urlopen(russweb + "playbotversionmultigame.txt")
 		if python3 is True:
-			text = urllib.request.urlopen(russweb + "playbotversionquake.txt")
+			text = urllib.request.urlopen(russweb + "playbotversionmultigame.txt")
 		webversion = text.read()
 		webversion = float( webversion )
 		text.close()
@@ -340,9 +389,9 @@ def versionchecker():
 
 	try:
 		if python3 is False:
-			text2 = urllib2.urlopen(gitweb2 + "playbotversionquake.txt")
+			text2 = urllib2.urlopen(gitweb2 + "playbotversionmultigame.txt")
 		if python3 is True:
-			text2 = urllib.request.urlopen(gitweb2 + "playbotversionquake.txt")
+			text2 = urllib.request.urlopen(gitweb2 + "playbotversionmultigame.txt")
 		gitversion = text2.read()
 		text2.close()
 		if python3 is True:
@@ -355,14 +404,22 @@ def versionchecker():
 	xchat.prnt("Current version {0}".format(currentversion))
 	xchat.prnt("Web version {0}".format(webversion))
 	xchat.prnt("GitHub version {0}".format(gitversion))
-	if webversion > gitversion:
+	if webversion is None and gitversion is None:
+		xchat.prnt("Both Websites have failed to read.  Try again later")
+		return
+	if gitversion is None and webversion != None:
 		newversion = webversion
-	if webversion < gitversion:
+	if webversion is None and gitversion != None:
 		newversion = gitversion
-	if webversion == gitversion:
-		newversion = gitversion
+	if webversion != None and gitversion != None:
+		if webversion > gitversion:
+			newversion = webversion
+		if webversion < gitversion:
+			newversion = gitversion
+		if webversion == gitversion:
+			newversion = gitversion
 		
-	if newversion > 0:
+	if newversion != None:
 		if(currentversion == newversion):
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < newversion):
@@ -375,6 +432,8 @@ def configwrite():
 	global blackbuyspend
 	global blackbuyspend14
 	global buylife
+	global buyluck
+	global buypower
 	global creepattack
 	global expbuy
 	global fightmode
@@ -400,6 +459,8 @@ def configwrite():
 	configList.append( ( "blackbuyspend14", blackbuyspend14 ) )
 	configList.append( ( "bottextmode", bottextmode ) )
 	configList.append( ( "buylife", buylife ) )
+	configList.append( ( "buyluck", buyluck ) )
+	configList.append( ( "buypower", buypower ) )
 	configList.append( ( "creepattack", creepattack ) )
 	configList.append( ( "errortextmode", errortextmode ) )
 	configList.append( ( "expbuy", expbuy ) )
@@ -428,6 +489,13 @@ def bottester(num):
 	global game_chan3
 	global game_chan4
 	global botname
+	global botname2
+	global botname3
+	global botname4
+	global netname
+	global netname2
+	global netname3
+	global netname4
 	global char1
 	global char2
 	global char3
@@ -436,82 +504,106 @@ def bottester(num):
 	global botdisable2
 	global botdisable3
 	global botdisable4
-	global setbotname
 	
 	botcount1 = 0
 	botcount2 = 0
 	botcount3 = 0
 	botcount4 = 0
-	botname = setbotname
 
 	if num == 1 and char1 is True:
-
-		userlist = game_chan.get_list("users")
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				botname = entry[5]
 		bottest = botname
 		botentry = []
 
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+		try:
+			userlist = game_chan.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
+
 		botcount1 = len(botentry)
 		if botcount1 == 1:
 			botname = botname10
 		if botcount1 >= 2:
 			botdisable1 = True
 	if num == 2 and char2 is True:
-
-		userlist = game_chan2.get_list("users")
-		bottest = botname
+		for entry in gamelist:
+			if entry[0] in netname2.lower():
+				botname2 = entry[5]
+		bottest = botname2
 		botentry = []
-		
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+
+		try:
+			userlist = game_chan2.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
+
 		botcount2 = len(botentry)
 		if botcount2 == 1:
-			botname = botname10
+			botname2 = botname10
 		if botcount2 >= 2:
 			botdisable2 = True
-
 	if num == 3 and char3 is True:
-
-		userlist = game_chan3.get_list("users")
-		bottest = botname
+		for entry in gamelist:
+			if entry[0] in netname3.lower():
+				botname3 = entry[5]
+		bottest = botname3
 		botentry = []
-		
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+
+		try:
+			userlist = game_chan3.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
+
 		botcount3 = len(botentry)
 		if botcount3 == 1:
-			botname = botname10
+			botname3 = botname10
 		if botcount3 >= 2:
 			botdisable3 = True
-
 	if num == 4 and char4 is True:
-
-		userlist = game_chan4.get_list("users")
-		bottest = botname
+		for entry in gamelist:
+			if entry[0] in netname4.lower():
+				botname4 = entry[5]
+		bottest = botname4
 		botentry = []
-		
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+
+		try:
+			userlist = game_chan4.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
+
 		botcount4 = len(botentry)
 		if botcount4 == 1:
-			botname = botname10
+			botname4 = botname10
 		if botcount4 >= 2:
 			botdisable4 = True
 
@@ -521,7 +613,13 @@ def usecommand(commanded, num):
 	global game_chan3
 	global game_chan4
 	global botname
+	global botname2
+	global botname3
+	global botname4
 	global channame
+	global channame2
+	global channame3
+	global channame4
 	global botdisable1
 	global botdisable2
 	global botdisable3
@@ -541,21 +639,21 @@ def usecommand(commanded, num):
 			game_chan.command( "msg {0} {1}".format(botname, commanded) )
 		except AttributeError:
 			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
-	if num == 2 and botdisable2 is False:
+	if(num == 2 and botdisable2 is False):
 		try:
-			game_chan2.command( "msg {0} {1}".format(botname, commanded) )
+			game_chan2.command( "msg {0} {1}".format(botname2, commanded) )
 		except AttributeError:
-			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
-	if num == 3 and botdisable3 is False:
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2) )
+	if(num == 3 and botdisable3 is False):
 		try:
-			game_chan3.command( "msg {0} {1}".format(botname, commanded) )
+			game_chan3.command( "msg {0} {1}".format(botname3, commanded) )
 		except AttributeError:
-			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
-	if num == 4 and botdisable4 is False:
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3) )
+	if(num == 4 and botdisable4 is False):
 		try:
-			game_chan4.command( "msg {0} {1}".format(botname, commanded) )
+			game_chan4.command( "msg {0} {1}".format(botname4, commanded) )
 		except AttributeError:
-			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
+			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4) )
 
 xchat.prnt( "To start PlayBot use /login CharName Password" )
 
@@ -579,13 +677,16 @@ def login(word, word_eol, userdata):
 	global netname4
 	global nickname4
 	global channame
-	global gameactive
-	global fightmode
-	global charcount
+	global channame2
+	global channame3
+	global channame4
 	global game_chan
 	global game_chan2
 	global game_chan3
 	global game_chan4
+	global gameactive
+	global fightmode
+	global charcount
 	global char1
 	global char2
 	global char3
@@ -600,25 +701,56 @@ def login(word, word_eol, userdata):
 	global townworkswitch
 	global goldsave
 	global creepattack
+	global gamelist
+	global website
+	global servername
+	global fightlevellimit
+	global botname
+	global botname2
+	global botname3
+	global botname4
+	global buyluck
+	global buypower
 	global expbuy
+	global gameid
+	global gameid2
+	global gameid3
+	global gameid4
 	global playerspagelist
 	global webworks
+	global networkname
 	global slaysum
+	global webssl
 	global bottextmode
 	global errortextmode
 
 	charcount += 1
 
+	netlist = []
+	for entry in gamelist:
+		netlist.append( ( entry[0] ) )
 	if charcount == 1:
+		netcheck = False
 		gameactive = True
 		netname = xchat.get_info("network")
 		nickname = xchat.get_info("nick")
 		namecheck = False
+
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				networkname = entry[0]
+				website = entry[1]
+				servername = entry[2]
+				fightlevellimit = entry[3]
+				channame = entry[4]
+				botname = entry[5]
+				gameid = entry[6]
+				webssl = entry[7]
+				netcheck = True
+
 		# find context
 		game_chan = xchat.find_context(channel=channame)
 
-		if "undernet" in netname and channame.lower() == "#irpg":
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
 		if(game_chan is None):
 			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
 			charcount = 0
@@ -629,8 +761,13 @@ def login(word, word_eol, userdata):
 		except IndexError:
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 0
-		webdata()
-		if(name is None or pswd is None):
+		if netcheck is True:
+			webdata()
+		if netcheck is False:
+			xchat.prnt("Networks supported: {0}".format(netlist))
+			if "quakenet" in netname.lower():
+				xchat.prnt("You need to use the QuakeNet version of PlayBot")
+		if(name is None or pswd is None or netcheck is False):
 			charcount = 0
 			xchat.prnt("Login Failed")
 		if charcount == 1:
@@ -656,16 +793,23 @@ def login(word, word_eol, userdata):
 				usecommand("login {0} {1}".format(name, pswd), 1 )
 	
 	if charcount == 2:
+		netcheck = False
 		netname2 = xchat.get_info("network")
 		nickname2 = xchat.get_info("nick")
 		namecheck2 = False
-		# find context
-		game_chan2 = xchat.find_context(channel=channame)
 
-		if "undernet" in netname2 and channame.lower() == "#irpg":
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		for entry in gamelist:
+			if entry[0] in netname2.lower():
+				channame2 = entry[4]
+				botname2 = entry[5]
+				gameid2 = entry[6]
+				netcheck = True
+
+		# find context
+		game_chan2 = xchat.find_context(channel=channame2)
+
 		if(game_chan2 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2))
 			charcount = 1
 		try:
 			if(name2 is None or pswd2 is None):
@@ -674,30 +818,40 @@ def login(word, word_eol, userdata):
 		except IndexError:
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 1
-		webdata()
-		if(name2 is None or pswd2 is None):
+		if netcheck is True:
+			webdata()
+		if netcheck is False:
+			xchat.prnt("Networks supported: {0}".format(netlist))
+			if "quakenet" in netname2.lower():
+				xchat.prnt("You need to use the QuakeNet version of PlayBot")
+		if(name2 is None or pswd2 is None or netcheck is False):
 			charcount = 1
 			xchat.prnt("Login Failed")
-		try:
-			for entry in playerspagelist:
-				if ">{0}<".format(name2) in entry:
-					namecheck2 = True
-		except TypeError:
-			webworks = False
-		if(namecheck2 is False and webworks is True):
-			xchat.prnt("LOGIN ERROR: {0} does not exist".format(name2))
-			charcount = 1
 		if charcount == 2:
-			if(nickname2 == nickname):
+			if gameid2 != gameid:
 				charcount = 1
-				xchat.prnt("Character {0} is already logged in".format(name))
-			if(nickname2 != nickname):
-				if name2 != name:
-					char2 = True
-					usecommand("login {0} {1}".format(name2, pswd2), 2 )
-				if name2 == name:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid2 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name2) in entry:
+							namecheck2 = True
+				except TypeError:
+					webworks = False
+				if(namecheck2 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name2))
 					charcount = 1
-					xchat.prnt("Character {0} is already logged in".format(name))
+				if charcount == 2:
+					if(nickname2 == nickname):
+						charcount = 1
+						xchat.prnt("Character {0} is already logged in".format(name))
+					if(nickname2 != nickname):
+						if name2 != name:
+							char2 = True
+							usecommand("login {0} {1}".format(name2, pswd2), 2 )
+						if name2 == name:
+							charcount = 1
+							xchat.prnt("Character {0} is already logged in".format(name))
 		if charcount == 1:
 			char2 = False
 			netname2 = None
@@ -708,16 +862,23 @@ def login(word, word_eol, userdata):
 			return
 
 	if charcount == 3:
+		netcheck = False
 		netname3 = xchat.get_info("network")
 		nickname3 = xchat.get_info("nick")
 		namecheck3 = False
-		# find context
-		game_chan3 = xchat.find_context(channel=channame)
 
-		if "undernet" in netname3 and channame.lower() == "#irpg":
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		for entry in gamelist:
+			if entry[0] in netname3.lower():
+				channame3 = entry[4]
+				botname3 = entry[5]
+				gameid3 = entry[6]
+				netcheck = True
+
+		# find context
+		game_chan3 = xchat.find_context(channel=channame3)
+
 		if(game_chan3 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3))
 			charcount = 2
 		try:
 			if(name3 is None or pswd3 is None):
@@ -726,29 +887,39 @@ def login(word, word_eol, userdata):
 		except IndexError:
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 2
-		webdata()
-		if(name3 is None or pswd3 is None):
+		if netcheck is True:
+			webdata()
+		if netcheck is False:
+			xchat.prnt("Networks supported: {0}".format(netlist))
+			if "quakenet" in netname3.lower():
+				xchat.prnt("You need to use the QuakeNet version of PlayBot")
+		if(name3 is None or pswd3 is None or netcheck is False):
 			charcount = 2
 			xchat.prnt("Login Failed")
-		try:
-			for entry in playerspagelist:
-				if ">{0}<".format(name3) in entry:
-					namecheck3 = True
-		except TypeError:
-			webworks = False
-		if(namecheck3 is False and webworks is True):
-			xchat.prnt("LOGIN ERROR: {0} does not exist".format(name3))
-			charcount = 2
 		if charcount == 3:
-			if(nickname3 != nickname and name3 != name and nickname3 != nickname2 and name3 != name2):
-				char3 = True
-				usecommand("login {0} {1}".format(name3, pswd3), 3 )
-			if(nickname3 == nickname or name3 == name):
+			if gameid3 != gameid:
 				charcount = 2
-				xchat.prnt("Character {0} is already logged in".format(name))
-			if(nickname3 == nickname2 or name3 == name2):
-				charcount = 2
-				xchat.prnt("Character {0} is already logged in".format(name2))
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid3 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name3) in entry:
+							namecheck3 = True
+				except TypeError:
+					webworks = False
+				if(namecheck3 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name3))
+					charcount = 2
+				if charcount == 3:
+					if(nickname3 != nickname and name3 != name and nickname3 != nickname2 and name3 != name2):
+						char3 = True
+						usecommand("login {0} {1}".format(name3, pswd3), 3 )
+					if(nickname3 == nickname or name3 == name):
+						charcount = 2
+						xchat.prnt("Character {0} is already logged in".format(name))
+					if(nickname3 == nickname2 or name3 == name2):
+						charcount = 2
+						xchat.prnt("Character {0} is already logged in".format(name2))
 		if charcount == 2:
 			char3 = False
 			netname3 = None
@@ -759,16 +930,23 @@ def login(word, word_eol, userdata):
 			return
 
 	if charcount == 4:
+		netcheck = False
 		netname4 = xchat.get_info("network")
 		nickname4 = xchat.get_info("nick")
 		namecheck4 = False
-		# find context
-		game_chan4 = xchat.find_context(channel=channame)
 
-		if "undernet" in netname4 and channame.lower() == "#irpg":
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		for entry in gamelist:
+			if entry[0] in netname4.lower():
+				channame4 = entry[4]
+				botname4 = entry[5]
+				gameid4 = entry[6]
+				netcheck = True
+
+		# find context
+		game_chan4 = xchat.find_context(channel=channame4)
+
 		if(game_chan4 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4))
 			charcount = 3
 		try:
 			if(name4 is None or pswd4 is None):
@@ -777,32 +955,42 @@ def login(word, word_eol, userdata):
 		except IndexError:
 			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			charcount = 3
-		webdata()
-		if(name4 is None or pswd4 is None):
+		if netcheck is True:
+			webdata()
+		if netcheck is False:
+			xchat.prnt("Networks supported: {0}".format(netlist))
+			if "quakenet" in netname4.lower():
+				xchat.prnt("You need to use the QuakeNet version of PlayBot")
+		if(name4 is None or pswd4 is None or netcheck is False):
 			charcount = 3
 			xchat.prnt("Login Failed")
-		try:
-			for entry in playerspagelist:
-				if ">{0}<".format(name4) in entry:
-					namecheck4 = True
-		except TypeError:
-			webworks = False
-		if(namecheck4 is False and webworks is True):
-			xchat.prnt("LOGIN ERROR: {0} does not exist".format(name4))
-			charcount = 3
 		if charcount == 4:
-			if(nickname4 != nickname and name4 != name and nickname4 != nickname2 and name4 != name2 and nickname4 != nickname3 and name4 != name3):
-				char4 = True
-				usecommand("login {0} {1}".format(name4, pswd4), 4 )
-			if(nickname4 == nickname or name4 == name):
+			if gameid4 != gameid:
 				charcount = 3
-				xchat.prnt("Character {0} is already logged in".format(name))
-			if(nickname4 == nickname2 or name4 == name2):
-				charcount = 3
-				xchat.prnt("Character {0} is already logged in".format(name2))
-			if(nickname4 == nickname3 or name4 == name3):
-				charcount = 3
-				xchat.prnt("Character {0} is already logged in".format(name3))
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+			if gameid4 == gameid:
+				try:
+					for entry in playerspagelist:
+						if ">{0}<".format(name4) in entry:
+							namecheck4 = True
+				except TypeError:
+					webworks = False
+				if(namecheck4 is False and webworks is True):
+					xchat.prnt("LOGIN ERROR: {0} does not exist".format(name4))
+					charcount = 3
+				if charcount == 4:
+					if(nickname4 != nickname and name4 != name and nickname4 != nickname2 and name4 != name2 and nickname4 != nickname3 and name4 != name3):
+						char4 = True
+						usecommand("login {0} {1}".format(name4, pswd4), 4 )
+					if(nickname4 == nickname or name4 == name):
+						charcount = 3
+						xchat.prnt("Character {0} is already logged in".format(name))
+					if(nickname4 == nickname2 or name4 == name2):
+						charcount = 3
+						xchat.prnt("Character {0} is already logged in".format(name2))
+					if(nickname4 == nickname3 or name4 == name3):
+						charcount = 3
+						xchat.prnt("Character {0} is already logged in".format(name3))
 		if charcount == 3:
 			char4 = False
 			netname4 = None
@@ -831,6 +1019,14 @@ def login(word, word_eol, userdata):
 			xchat.prnt("Buy Life Mode Activated.  To turn it off use /buylifeoff")
 		if buylife is False:
 			xchat.prnt("Buy Life Mode Deactivated.  To turn it on use /buylifeon")
+		if buyluck is True:
+			xchat.prnt("Buy Luck Potion Mode Activated.  To turn it off use /buyluckoff")
+		if buyluck is False:
+			xchat.prnt("Buy Luck Potion Mode Deactivated.  To turn it on use /buyluckon")
+		if buypower is True:
+			xchat.prnt("Buy Power Potion Mode Activated.  To turn it off use /buypoweroff")
+		if buypower is False:
+			xchat.prnt("Buy Power Potion Mode Deactivated.  To turn it on use /buypoweron")
 		if creepattack is True:
 			xchat.prnt("CreepAttack Mode Activated.  To turn it off use /creepattackoff")
 		if creepattack is False:
@@ -902,6 +1098,7 @@ def logoutchar(word, word_eol, userdata):
 	global pswd3
 	global pswd4
 	global gameactive
+	global networkname
 
 	if charcount == 4:
 		xchat.prnt("Character {0} Logged Out".format(name4))
@@ -932,6 +1129,7 @@ def logoutchar(word, word_eol, userdata):
 		name = None
 		pswd = None
 		gameactive = False
+		networkname = None
 	if(charcount == 0):
 		xchat.prnt("All Characters have already been Logged Out")
 	if(charcount >= 1 and charcount <= 4):
@@ -1331,6 +1529,42 @@ def buylifeon(word, word_eol, userdata):
 
 xchat.hook_command("buylifeon", buylifeon, help="/buylifeon - Turns life buying on")
 
+def buyluckoff(word, word_eol, userdata):
+	global buyluck
+	buyluck = False
+	xchat.prnt("Buy Luck Power Mode Deactivated.  To turn it on use /buyluckon")
+	configwrite()
+	return xchat.EAT_ALL
+
+xchat.hook_command("buyluckoff", buyluckoff, help="/buyluckoff - Turns buying luck off")
+
+def buyluckon(word, word_eol, userdata):
+	global buyluck
+	buyluck = True
+	xchat.prnt("Buy Luck Power Mode Activated.  To turn if off use /buyluckoff")
+	configwrite()
+	return xchat.EAT_ALL
+
+xchat.hook_command("buyluckon", buyluckon, help="/buyluckon - Turns buying luck on")
+
+def buypoweroff(word, word_eol, userdata):
+	global buypower
+	buypower = False
+	xchat.prnt("Buy Power Potion Mode Deactivated.  To turn it on use /buypoweron")
+	configwrite()
+	return xchat.EAT_ALL
+
+xchat.hook_command("buypoweroff", buypoweroff, help="/buypoweroff - Turns buying power potion off")
+
+def buypoweron(word, word_eol, userdata):
+	global buypower
+	buypower = True
+	xchat.prnt("Buy Power Potion Mode Activated.  To turn if off use /buypoweroff")
+	configwrite()
+	return xchat.EAT_ALL
+
+xchat.hook_command("buypoweron", buypoweron, help="/buypoweron - Turns buying power potion on")
+
 def fightoff(word, word_eol, userdata):
 	global fightmode
 	global gameactive
@@ -1457,6 +1691,20 @@ def townwork(word, word_eol, userdata):
 
 xchat.hook_command("townwork", townwork, help="/townwork - Changes to Town/Work Switching")
 
+def areaoff(word, word_eol, userdata):
+	global townworkswitch
+	global gameactive
+
+	if gameactive is True:
+		townworkswitch = None
+		xchat.prnt("Area Switch Mode Deactivated.  To change to Town/Work use /townwork or Town/Forest use /townforest")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("areaoff", areaoff, help="/areaoff - Turns Town/Work Switching Off")
+
 def townforest(word, word_eol, userdata):
 	global townworkswitch
 	global gameactive
@@ -1480,6 +1728,7 @@ xchat.hook_command("versioncheck", versioncheck, help="/versioncheck - To check 
 def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("PlayBot Commands List")
 	xchat.prnt("")
+	xchat.prnt("Area Switching Mode Off     - /areaoff")
 	xchat.prnt("BlackBuy Spend Mode Off     - /blackbuyoff")
 	xchat.prnt("BlackBuy Spend Mode On      - /blackbuyon")
 	xchat.prnt("BlackBuy 14 Spend Mode Off  - /blackbuy14off")
@@ -1488,6 +1737,10 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("Bot Text Mode On            - /bottexton")
 	xchat.prnt("Buy Life Mode Off           - /buylifeoff")
 	xchat.prnt("Buy Life Mode On            - /buylifeon")
+	xchat.prnt("Buy Luck Potion Mode Off    - /buyluckoff")
+	xchat.prnt("Buy Luck Potion Mode On     - /buyluckon")
+	xchat.prnt("Buy Power Potion Mode Off   - /buypoweroff")
+	xchat.prnt("Buy Power Potion Mode On    - /buypoweron")
 	xchat.prnt("CreepAttack Mode Off        - /creepattackoff")
 	xchat.prnt("CreepAttack Mode On         - /creepattackon")
 	xchat.prnt("Error Text Mode Off         - /errortextoff")
@@ -1527,6 +1780,8 @@ xchat.hook_command("helpplaybot", helpplaybot, help="/helpplaybot - Gives a list
 
 def settings(word, word_eol, userdata):
 	global buylife
+	global buyluck
+	global buypower
 	global setbuy
 	global char1
 	global char2
@@ -1563,10 +1818,14 @@ def settings(word, word_eol, userdata):
 		xchat.prnt("Area Switch Mode - Town/Work")
 	if townworkswitch is False:
 		xchat.prnt("Area Switch Mode - Town/Forest")
+	if townworkswitch is None:
+		xchat.prnt("Area Switch Mode - Deactivated")
 	xchat.prnt("BlackBuy Spend Mode - {0}".format(blackbuyspend))
 	xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
 	xchat.prnt("Bot Text Mode - {0}".format(bottextmode))
 	xchat.prnt("Buy Life Mode - {0}".format(buylife))
+	xchat.prnt("Buy Luck Mode - {0}".format(buyluck))
+	xchat.prnt("Buy Power Potion Mode - {0}".format(buypower))
 	xchat.prnt("CreepAttack Mode - {0}".format(creepattack))
 	xchat.prnt("Error Text Mode - {0}".format(errortextmode))
 	xchat.prnt("Experience Buying Mode - {0}".format(expbuy))
@@ -1603,6 +1862,8 @@ def newlister(num):
 	global webworks
 	global website
 	global level
+	global fightlevellimit
+	global webssl
 	global errortextmode
 	
 	test = []
@@ -1637,9 +1898,12 @@ def newlister(num):
 						del test[0:14]
 					test2.append(test)        
 
-		for entry in test2:
-			if(int(entry[8]) >= level):
-				test3.append(entry)
+		if fightlevellimit is True:
+			for entry in test2:
+				if(int(entry[8]) >= level):
+					test3.append(entry)
+		if fightlevellimit is False:
+			test3 = test2
 		for player in test3:
 			name_ = player[5]
 
@@ -1649,12 +1913,18 @@ def newlister(num):
 			playerlist20 = []
 
 			# get raw player data from web, parse for relevant entry
-			context = ssl._create_unverified_context()
 			try:
-				if python3 is False:
-					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
-				if python3 is True:
-					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
+				if webssl is True:
+					context = ssl._create_unverified_context()
+					if python3 is False:
+						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
+					if python3 is True:
+						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_), context=context)
+				else:
+					if python3 is False:
+						text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name_))
+					if python3 is True:
+						text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name_))
 				playerview20 = text.read()
 				text.close()
 				if python3 is True:
@@ -1964,11 +2234,13 @@ def characterstats(num):
 	global location
 	global locationtime
 
+	global powerpots
 	global fights
 	global gold
 	global gems
 	global xp
 	global mana
+	global luck
 	global upgradelevel
 	global expertSum
 	global expertSum2
@@ -1993,7 +2265,8 @@ def characterstats(num):
 	global lottonum2
 	global lottonum3
 	global align
-	
+	global eatused
+
 	getitems2(num)
 
 	if num == 1:
@@ -2036,6 +2309,8 @@ def characterstats(num):
 	if(level < 30):
 		xchat.prnt("Slaying Monsters Start at Level 30")
 	xchat.prnt("Mana Potion: {0}".format(mana))
+	xchat.prnt("Power Potions: {0}".format(powerpots))
+	xchat.prnt("Luck Potion: {0}".format(luck))
 	if(level >= 25):
 		xchat.prnt("Fights: {0} of 5".format(fights))
 	if(level < 25):
@@ -2047,6 +2322,7 @@ def characterstats(num):
 	xchat.prnt("Life: {0}".format(life))
 	xchat.prnt("Scrolls: {0} of 5".format(scrolls))
 	xchat.prnt("Exp Used: {0} of 5".format(exp))
+	xchat.prnt("Eat Used: {0} of 200".format(eatused))
 	xchat.prnt("Upgrade Level: {0}".format(upgradelevel))
 	xchat.prnt("Items Sum Score: {0}".format(itemSums))
 	xchat.prnt("Expert Items Score: {0}".format(expertSums))
@@ -2200,6 +2476,9 @@ def on_message(word, word_eol, userdata):
 	global name3
 	global name4
 	global botname
+	global botname2
+	global botname3
+	global botname4
 	global netname
 	global netname2
 	global netname3
@@ -2232,17 +2511,19 @@ def on_message(word, word_eol, userdata):
 							level = entry[2]
 							life = entry[3]
 				lifebuy = False
-				if botname in word[0] and "and been defeated in combat!" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
+				if botname in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name) in word[1]: #rand challenge
 					lifebuy = True
-				if botname in word[0] and "has attacked a" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
+				if botname in word[0] and "has attacked a" in word[1] and "is added to {0} clock".format(name) in word[1]: #attack
 					lifebuy = True
-				if botname in word[0] and "tried to slay a" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
+				if botname in word[0] and "tried to slay a" in word[1] and "is added to {0} clock".format(name) in word[1]: #slay
 					lifebuy = True
-				if botname in word[0] and "has challenged" in word[1] and "is added to {0}'s clock".format(name) in word[1]:
+				if botname in word[0] and "has been set upon by some" in word[1] and "is added to {0}'s clock".format(name) in word[1]: #rand creep
 					lifebuy = True
-				if botname in word[0] and "has challenged {0}".format(name) in word[1] and "and won!" in word[1]:
+				if botname in word[0] and "fights a random" in word[1] and "is added to {0} clock".format(name) in word[1]: #rand god
 					lifebuy = True
-				if botname in word[0] and "gold from {0}!".format(name) in word[1] and "XP and loses" in word[1]:
+				if botname in word[0] and "{0}".format(name) in word[1] and "have hunted down a bunch of" in word[1] and "but they beat them badly!" in word[1]: #team hunt
+					lifebuy = True
+				if botname in word[0] and "from {0}!".format(name) in word[1] and "XP and loses" in word[1]: #tourney
 					lifebuy = True
 				if lifebuy is True:
 					if(level >= 15 and buylife is True and life >= 0):
@@ -2258,17 +2539,19 @@ def on_message(word, word_eol, userdata):
 							level2 = entry[2]
 							life2 = entry[3]
 				lifebuyb = False
-				if botname in word[0] and "and been defeated in combat!" in word[1] and "is added to {0}'s clock".format(name2) in word[1]:
+				if botname2 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name2) in word[1]:
 					lifebuyb = True
-				if botname in word[0] and "has attacked a" in word[1] and "is added to {0}'s clock".format(name2) in word[1]:
+				if botname2 in word[0] and "has attacked a" in word[1] and "is added to {0} clock".format(name2) in word[1]:
 					lifebuyb = True
-				if botname in word[0] and "tried to slay a" in word[1] and "is added to {0}'s clock".format(name2) in word[1]:
+				if botname2 in word[0] and "tried to slay a" in word[1] and "is added to {0} clock".format(name2) in word[1]:
 					lifebuyb = True
-				if botname in word[0] and "has challenged" in word[1] and "is added to {0}'s clock".format(name2) in word[1]:
+				if botname2 in word[0] and "has been set upon by some" in word[1] and "is added to {0}'s clock".format(name2) in word[1]: #rand creep
 					lifebuyb = True
-				if botname in word[0] and "has challenged {0}".format(name2) in word[1] and "and won!" in word[1]:
+				if botname2 in word[0] and "fights a random" in word[1] and "is added to {0} clock".format(name2) in word[1]: #rand god
 					lifebuyb = True
-				if botname in word[0] and "gold from {0}!".format(name2) in word[1] and "XP and loses" in word[1]:
+				if botname2 in word[0] and "{0}".format(name2) in word[1] and "have hunted down a bunch of" in word[1] and "but they beat them badly!" in word[1]: #team hunt
+					lifebuyb = True
+				if botname2 in word[0] and "from {0}!".format(name2) in word[1] and "XP and loses" in word[1]:
 					lifebuyb = True
 				if lifebuyb is True:
 					if(level2 >= 15 and buylife is True and life2 >= 0):
@@ -2284,17 +2567,19 @@ def on_message(word, word_eol, userdata):
 							level3 = entry[2]
 							life3 = entry[3]
 				lifebuyc = False
-				if botname in word[0] and "and been defeated in combat!" in word[1] and "is added to {0}'s clock".format(name3) in word[1]:
+				if botname3 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name3) in word[1]:
 					lifebuyc = True
-				if botname in word[0] and "has attacked a" in word[1] and "is added to {0}'s clock".format(name3) in word[1]:
+				if botname3 in word[0] and "has attacked a" in word[1] and "is added to {0} clock".format(name3) in word[1]:
 					lifebuyc = True
-				if botname in word[0] and "tried to slay a" in word[1] and "is added to {0}'s clock".format(name3) in word[1]:
+				if botname3 in word[0] and "tried to slay a" in word[1] and "is added to {0} clock".format(name3) in word[1]:
 					lifebuyc = True
-				if botname in word[0] and "has challenged" in word[1] and "is added to {0}'s clock".format(name3) in word[1]:
+				if botname3 in word[0] and "has been set upon by some" in word[1] and "is added to {0}'s clock".format(name3) in word[1]: #rand creep
 					lifebuyc = True
-				if botname in word[0] and "has challenged {0}".format(name3) in word[1] and "and won!" in word[1]:
+				if botname3 in word[0] and "fights a random" in word[1] and "is added to {0} clock".format(name3) in word[1]: #rand god
 					lifebuyc = True
-				if botname in word[0] and "gold from {0}!".format(name3) in word[1] and "XP and loses" in word[1]:
+				if botname3 in word[0] and "{0}".format(name3) in word[1] and "have hunted down a bunch of" in word[1] and "but they beat them badly!" in word[1]: #team hunt
+					lifebuyc = True
+				if botname3 in word[0] and "from {0}!".format(name3) in word[1] and "XP and loses" in word[1]:
 					lifebuyc = True
 				if lifebuyc is True:
 					if(level3 >= 15 and buylife is True and life3 >= 0):
@@ -2310,17 +2595,19 @@ def on_message(word, word_eol, userdata):
 							level4 = entry[2]
 							life4 = entry[3]
 				lifebuyd = False
-				if botname in word[0] and "and been defeated in combat!" in word[1] and "is added to {0}'s clock".format(name4) in word[1]:
+				if botname4 in word[0] and "has challenged" in word[1] and "is added to {0} clock".format(name4) in word[1]:
 					lifebuyd = True
-				if botname in word[0] and "has attacked a" in word[1] and "is added to {0}'s clock".format(name4) in word[1]:
+				if botname4 in word[0] and "has attacked a" in word[1] and "is added to {0} clock".format(name4) in word[1]:
 					lifebuyd = True
-				if botname in word[0] and "tried to slay a" in word[1] and "is added to {0}'s clock".format(name4) in word[1]:
+				if botname4 in word[0] and "tried to slay a" in word[1] and "is added to {0} clock".format(name4) in word[1]:
 					lifebuyd = True
-				if botname in word[0] and "has challenged" in word[1] and "is added to {0}'s clock".format(name4) in word[1]:
+				if botname4 in word[0] and "has been set upon by some" in word[1] and "is added to {0}'s clock".format(name4) in word[1]: #rand creep
 					lifebuyd = True
-				if botname in word[0] and "has challenged {0}".format(name4) in word[1] and "and won!" in word[1]:
+				if botname4 in word[0] and "fights a random" in word[1] and "is added to {0} clock".format(name4) in word[1]: #rand god
 					lifebuyd = True
-				if botname in word[0] and "gold from {0}!".format(name4) in word[1] and "XP and loses" in word[1]:
+				if botname4 in word[0] and "{0}".format(name4) in word[1] and "have hunted down a bunch of" in word[1] and "but they beat them badly!" in word[1]: #team hunt
+					lifebuyd = True
+				if botname4 in word[0] and "from {0}!".format(name4) in word[1] and "XP and loses" in word[1]:
 					lifebuyd = True
 				if lifebuyd is True:
 					if(level4 >= 15 and buylife is True and life4 >= 0):
@@ -2329,6 +2616,9 @@ def on_message(word, word_eol, userdata):
 
 def private_cb(word, word_eol, userdata):
 	global botname
+	global botname2
+	global botname3
+	global botname4
 	global netname
 	global nickname
 	global game_chan
@@ -2379,19 +2669,19 @@ def private_cb(word, word_eol, userdata):
 					interval = 60
 					hookmain()
 		if char2 is True:
-			if(word[0] == botname and "You are not logged in." in word[1]):                
+			if(word[0] == botname2 and "You are not logged in." in word[1]):                
 				if(checknet == netname2 and checknick == nickname2):
 					usecommand("login {0} {1}".format(name2, pswd2), 2)
 					interval = 60
 					hookmain()
 		if char3 is True:
-			if(word[0] == botname and "You are not logged in." in word[1]):                
+			if(word[0] == botname3 and "You are not logged in." in word[1]):                
 				if(checknet == netname3 and checknick == nickname3):
 					usecommand("login {0} {1}".format(name3, pswd3), 3)
 					interval = 60
 					hookmain()
 		if char4 is True:
-			if(word[0] == botname and "You are not logged in." in word[1]):                
+			if(word[0] == botname4 and "You are not logged in." in word[1]):                
 				if(checknet == netname4 and checknick == nickname4):
 					usecommand("login {0} {1}".format(name4, pswd4), 4)
 					interval = 60
@@ -2419,6 +2709,7 @@ def webdata():
 	global playerspage
 	global playerspagelist
 	global website
+	global webssl
 	global errortextmode
 	
 	webworks = True
@@ -2429,22 +2720,37 @@ def webdata():
 	if python3 is False:
 		try:
 			if char1 is True:
-				text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				if webssl is True:
+					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				else:
+					text = urllib2.urlopen(website + "/playerview.php?player={0}".format(name))
 				playerview = text.read()
 				text.close()
 			if char2 is True:
-				textb = urllib2.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
+				if webssl is True:
+					textb = urllib2.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
+				else:
+					textb = urllib2.urlopen(website + "/playerview.php?player={0}".format(name2))
 				playerview2 = textb.read()
 				textb.close()
 			if char3 is True:
-				textc = urllib2.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
+				if webssl is True:
+					textc = urllib2.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
+				else:
+					textc = urllib2.urlopen(website + "/playerview.php?player={0}".format(name3))
 				playerview3 = textc.read()
 				textc.close()
 			if char4 is True:
-				textd = urllib2.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
+				if webssl is True:
+					textd = urllib2.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
+				else:
+					textd = urllib2.urlopen(website + "/playerview.php?player={0}".format(name4))
 				playerview4 = textd.read()
 				textd.close()
-			text2 = urllib2.urlopen(website + "/players.php", context=context)
+			if webssl is True:
+				text2 = urllib2.urlopen(website + "/players.php", context=context)
+			else:
+				text2 = urllib2.urlopen(website + "/players.php")
 			playerspage = text2.read()
 			text2.close()
 		except:
@@ -2452,26 +2758,41 @@ def webdata():
 	if python3 is True:
 		try:
 			if char1 is True:
-				text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				if webssl is True:
+					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name), context=context)
+				else:
+					text = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name))
 				playerview = text.read()
 				text.close()
 				playerview = playerview.decode("UTF-8")
 			if char2 is True:
-				textb = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
+				if webssl is True:
+					textb = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name2), context=context)
+				else:
+					textb = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name2))
 				playerview2 = textb.read()
 				textb.close()
 				playerview2 = playerview2.decode("UTF-8")
 			if char3 is True:
-				textc = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
+				if webssl is True:
+					textc = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name3), context=context)
+				else:
+					textc = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name3))
 				playerview3 = textc.read()
 				textc.close()
 				playerview3 = playerview3.decode("UTF-8")
 			if char4 is True:
-				textd = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
+				if webssl is True:
+					textd = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name4), context=context)
+				else:
+					textd = urllib.request.urlopen(website + "/playerview.php?player={0}".format(name4))
 				playerview4 = textd.read()
 				textd.close()
 				playerview4 = playerview4.decode("UTF-8")
-			text2 = urllib.request.urlopen(website + "/players.php", context=context)
+			if webssl is True:
+				text2 = urllib.request.urlopen(website + "/players.php", context=context)
+			else:
+				text2 = urllib.request.urlopen(website + "/players.php")
 			playerspage = text2.read()
 			text2.close()
 			playerspage = playerspage.decode("UTF-8")
@@ -2529,6 +2850,7 @@ def playerarea(num):
 	global location
 	global locationtime
 	global townworkswitch
+	global areasum
 	
 	getitems2(num)
 	
@@ -2536,6 +2858,8 @@ def playerarea(num):
 		area = "work"
 	if townworkswitch is False:
 		area = "forest"
+	if townworkswitch is None:
+		return
 
 #	xchat.prnt("{0} {1} Time: {2} seconds".format(num, location, locationtime))
 	if (level <= 25):
@@ -2550,9 +2874,9 @@ def playerarea(num):
 	if locationtime == 0:
 		usecommand("goto {0}".format(area), num)
 		
-	if(location == "In Town" and locationtime >= mintime and mysum < 6000 and mysum != 0):
+	if(location == "In Town" and locationtime >= mintime and mysum < areasum and mysum != 0):
 		usecommand("goto {0}".format(area), num)
-	if(location == "In Town" and mysum >= 6000):
+	if(location == "In Town" and mysum >= areasum):
 		usecommand("goto {0}".format(area), num)
 	if(location == "At Work" and locationtime >= mintime):
 		usecommand("goto town", num)
@@ -2605,9 +2929,12 @@ def getvariables2(num):
 	exptext = None
 	lifetext = None
 	scrollstext = None
+	lucktext = None
+	powerpotstext = None
 	manatext = None
 	atimetext = None
 	ctimetext = None
+	eatusedtext = None
 	
 	amulettext = None
 	bootstext = None
@@ -2666,8 +2993,14 @@ def getvariables2(num):
 				lifetext = entry
 			if "Scrolls Used:" in entry:
 				scrollstext = entry
+			if "Eat Used:" in entry:
+				eatusedtext = entry
+			if "Power Potion:" in entry:
+				powerpotstext = entry
 			if "Mana Potion:" in entry:
 				manatext = entry
+			if "Luck Potion:" in entry:
+				lucktext = entry
 			if "Creep Attack in:" in entry:
 				atimetext = entry
 			if "Dragon Slay in:" in entry:
@@ -2782,10 +3115,25 @@ def getvariables2(num):
 				scrolls_ = int(scrollssplit[0])
 			except ValueError:
 				scrolls_ = 0
+			eatusedtext = eatusedtext.split(" ")
+			eatusedsplit = eatusedtext[8]
+			eatusedsplit = eatusedsplit.split("/")
+			try:
+				eatused_ = int(eatusedsplit[0])
+			except ValueError:
+				eatused_ = 0
+			powerpotstext = powerpotstext.split(" ")
+			powerpotssplit = powerpotstext[8]
+			powerpotssplit = powerpotssplit.split("/")
+			powerpots_ = int(powerpotssplit[0])
 			manatext = manatext.split(" ")
 			manasplit = manatext[8]
 			manasplit = manasplit.split("/")
 			mana_ = int(manasplit[0])
+			lucktext = lucktext.split(" ")
+			lucksplit = lucktext[8]
+			lucksplit = lucksplit.split("/")
+			luck_ = int(lucksplit[0])
 
 			try:
 				atimetext = atimetext.split(" ")
@@ -2918,10 +3266,10 @@ def getvariables2(num):
 				xchat.prnt("{0} Variable Error".format(num))
 
 		try:
-				    # num  mysum   level   life   ability   ttl 
-			itemslist = ( num, mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, location_, locationtime_ )
+					  # num  mysum   level   life   ability   ttl 
+			itemslist = ( num, mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, eatused_, powerpots_, luck_, location_, locationtime_ )
 		except:
-			itemslist = (num, None )
+			itemslist = ( num, None )
 			
 	return itemslist
 
@@ -2962,14 +3310,21 @@ def getitems2(num):
 	global fights
 
 	global itemslists
+	global name
+	global name2
+	global name3
+	global name4
 	global lottonum1
 	global lottonum2
 	global lottonum3
+	global eatused
+	global powerpots
+	global luck
 	global location
 	global locationtime
 	
-#itemslists.append( ( player[5], mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, location_, locationtime_ ) )
-
+#itemslists.append( ( player[5], mysum_, level_, life_, ability_, ttl_, gold_, gems_, upgradelevel_, xp_, exp_, scrolls_, mana_, atime_, stime_, amulet_, boots_, charm_, gloves_, helm_, leggings_, ring_, shield_, tunic_, weapon_, expert1_, expert2_, expert3_, stone1_, stone2_, stone3_, fights_, align_, lottonum1_, lottonum2_, lottonum3_, rank_, eatused_, powerpots_, luck_, location_, locationtime_ ) )
+		
 	if itemslists != None:
 		for entry in itemslists:
 			if(entry[0] == num and entry[1] != None):
@@ -3008,8 +3363,11 @@ def getitems2(num):
 				lottonum1 = entry[33]
 				lottonum2 = entry[34]
 				lottonum3 = entry[35]
-				location = entry[36]
-				locationtime = entry[37]
+				eatused = entry[36]
+				powerpots = entry[37]
+				luck = entry[38]
+				location = entry[39]
+				locationtime = entry[40]
 
 def timetosecs(days,time):
 	timesecs = 0
@@ -3023,6 +3381,12 @@ def timetosecs(days,time):
 def main(userdata):
 	global channame
 	global botname
+	global channame2
+	global botname2
+	global channame3
+	global botname3
+	global channame4
+	global botname4
 	global nickname
 	global netname
 	global nickname2
@@ -3143,49 +3507,49 @@ def main(userdata):
 				 if errortextmode is True:
 					 xchat.prnt( "1 Game Bot not in channel" )
 	if char2 is True:
-		if game_chan2.get_info("channel").lower() != channame:
+		if game_chan2.get_info("channel").lower() != channame2:
 			chancheck2 = False
 		if chancheck2 is False:
 			if ZNC2 is True:
 				game_chan2.command( "quote PASS {0}:{1}".format(ZNCUser2, ZNCPass2) )
-			game_chan2.command( "join {0}".format(channame) )
+			game_chan2.command( "join {0}".format(channame2) )
 			botcheck2 = False
 		if chancheck2 is True:
 			userlist = game_chan2.get_list("users")
 			for user in userlist:
-				if botname in user.nick:
+				if botname2 in user.nick:
 					botcheck2 = True
 			if botcheck2 is False:
 				 if errortextmode is True:
 					 xchat.prnt( "2 Game Bot not in channel" )
 	if char3 is True:
-		if game_chan3.get_info("channel").lower() != channame:
+		if game_chan3.get_info("channel").lower() != channame3:
 			chancheck3 = False
 		if chancheck3 is False:
 			if ZNC3 is True:
 				game_chan3.command( "quote PASS {0}:{1}".format(ZNCUser3, ZNCPass3) )
-			game_chan3.command( "join {0}".format(channame) )
+			game_chan3.command( "join {0}".format(channame3) )
 			botcheck3 = False
 		if chancheck3 is True:
 			userlist = game_chan3.get_list("users")
 			for user in userlist:
-				if botname in user.nick:
+				if botname3 in user.nick:
 					botcheck3 = True
 			if botcheck3 is False:
 				 if errortextmode is True:
 					 xchat.prnt( "3 Game Bot not in channel" )
 	if char4 is True:
-		if game_chan4.get_info("channel").lower() != channame:
+		if game_chan4.get_info("channel").lower() != channame4:
 			chancheck4 = False
 		if chancheck4 is False:
 			if ZNC4 is True:
 				game_chan4.command( "quote PASS {0}:{1}".format(ZNCUser4, ZNCPass4) )
-			game_chan4.command( "join {0}".format(channame) )
+			game_chan4.command( "join {0}".format(channame4) )
 			botcheck4 = False
 		if chancheck4 is True:
 			userlist = game_chan4.get_list("users")
 			for user in userlist:
-				if botname in user.nick:
+				if botname4 in user.nick:
 					botcheck4 = True
 			if botcheck4 is False:
 				 if errortextmode is True:
@@ -3270,19 +3634,19 @@ def main(userdata):
 					rank4 = int(ranktext[0])
 				except:
 					offline4 = True
-	if char1 is True:
+	if char1 is True and botcheck is True:
 		if(webworks is True and offline is True):
 			if errortextmode is True:
 				xchat.prnt("1 Player Offline")
-	if char2 is True:
+	if char2 is True and botcheck2 is True:
 		if(webworks is True and offline2 is True):
 			if errortextmode is True:
 				xchat.prnt("2 Player Offline")
-	if char3 is True:
+	if char3 is True and botcheck3 is True:
 		if(webworks is True and offline3 is True):
 			if errortextmode is True:
 				xchat.prnt("3 Player Offline")
-	if char4 is True:
+	if char4 is True and botcheck4 is True:
 		if(webworks is True and offline4 is True):
 			if errortextmode is True:
 				xchat.prnt("4 Player Offline")
@@ -3302,10 +3666,10 @@ def main(userdata):
 			intervaldisable = True
 
 		if webworks is True and offline is True and botcheck is True:
-			usecommand("login {0} {1}".format(name, pswd),1)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+				usecommand("login {0} {1}".format(name, pswd),1)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char2 is True:
 		nickname2 = game_chan2.get_info("nick")
 		netname2 = game_chan2.get_info("network")
@@ -3321,10 +3685,10 @@ def main(userdata):
 			intervaldisable = True
 
 		if webworks is True and offline2 is True and botcheck2 is True:
-			usecommand("login {0} {1}".format(name2, pswd2),2)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+				usecommand("login {0} {1}".format(name2, pswd2),2)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char3 is True:
 		nickname3 = game_chan3.get_info("nick")
 		netname3 = game_chan3.get_info("network")
@@ -3340,10 +3704,10 @@ def main(userdata):
 			intervaldisable = True
 
 		if webworks is True and offline3 is True and botcheck3 is True:
-			usecommand("login {0} {1}".format(name3, pswd3),3)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+				usecommand("login {0} {1}".format(name3, pswd3),3)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 	if char4 is True:
 		nickname4 = game_chan4.get_info("nick")
 		netname4 = game_chan4.get_info("network")
@@ -3359,10 +3723,10 @@ def main(userdata):
 			intervaldisable = True
 
 		if webworks is True and offline4 is True and botcheck4 is True:
-			usecommand("login {0} {1}".format(name4, pswd4),4)
-			interval = 45
-			hookmain()
-			intervaldisable = True
+				usecommand("login {0} {1}".format(name4, pswd4),4)
+				interval = 45
+				hookmain()
+				intervaldisable = True
 
 	if webworks is True and intervaldisable is False:
 		intervalcalc()
@@ -3566,8 +3930,10 @@ def timercheck(num):
 	global attackslaySum3
 	global attackslaySum4
 	global mana
+	global powerpots
 	global gold
 	global life
+	global buypower
 	global slaysum
 	global bottextmode
 	
@@ -3606,21 +3972,38 @@ def timercheck(num):
 	
 	# do checks for other actions.
 	if(level >= 15 and atime <= interval and atime <= ttl and life > 10):
+		if powerpots == 0 and gold >= 1100 and buypower is True:
+			usecommand("buy power", num)
+			gold -= 1000
+			powerpots = 1
+
 		timer = (atime+10)*1000
 		if bottextmode is True:
 			xchat.prnt("Set attack {0} timer. Going off in {1} minutes.".format(num, timer // 60000))
 		slaydisable = True
-		if num == 1:
-			xchat.hook_timer(timer, attack)
-		if num == 2:
-			xchat.hook_timer(timer, attack2)
-		if num == 3:
-			xchat.hook_timer(timer, attack3)
-		if num == 4:
-			xchat.hook_timer(timer, attack4)
+
+		if powerpots == 0:
+			if num == 1:
+				xchat.hook_timer(timer, attack)
+			if num == 2:
+				xchat.hook_timer(timer, attack2)
+			if num == 3:
+				xchat.hook_timer(timer, attack3)
+			if num == 4:
+				xchat.hook_timer(timer, attack4)
+		if powerpots == 1:
+			if num == 1:
+				xchat.hook_timer(timer, attackb)
+			if num == 2:
+				xchat.hook_timer(timer, attackb2)
+			if num == 3:
+				xchat.hook_timer(timer, attackb3)
+			if num == 4:
+				xchat.hook_timer(timer, attackb4)
+			powerpots = 0
 
 	if(level >= 30 and attackslaySumlist >= 1000 and stime <= interval and stime <= ttl and slaydisable is False and life > 10):
-		if(mana == 0 and gold >= 1100 and attackslaySumlist < 150000):
+		if(mana == 0 and gold >= 1100 and attackslaySumlist < 6300000):
 			usecommand("buy mana", num)
 			gold -= 1000
 			mana = 1
@@ -3716,6 +4099,7 @@ def spendmoney(num):
 	global interval
 	global scrolls
 	global exp
+	global luck
 	global getgems
 	global goldsave
 	global scrollssum
@@ -3731,13 +4115,14 @@ def spendmoney(num):
 	global shield
 	global tunic
 	global weapon 
+	global buyluck
 	global expbuy
 	
 	# level 15 >= buy - decide what to spend our gold on! :D
 	# level 1 >= blackbuy - requires 15 gems per buy
 	# level 1 >= get x gems - 150 gold per gem
 	# xpget 20xp minimum
-	# buy experience - 500 gold - 10% off TTL
+	# buy experience - 1000 gold - 10% off TTL
 	
 	getitems2(num)
 
@@ -3799,21 +4184,27 @@ def spendmoney(num):
 			gold -= 8000
 			upgradelevel = 5
 
+	if(gembuy is True and level >= 15 and buyluck is True):
+		if(luck == 0 and gold >= 2100):
+			usecommand("buy luck", num)
+			luck = 1
+			gold -= 1000
+
 	if(gembuy is True and expbuy is True and exp < 5):
 		expdiff = 5 - exp
-		expcost = expdiff * 500
+		expcost = expdiff * 1000
 		if(gold >= (expcost + 1100)):
 			for i in range(expdiff):
-				usecommand("buy experience", num)
-				gold -= 500
+				usecommand("buy exp", num)
+				gold -= 1000
 				exp += 1
-		elif(gold >= 500 + 1100):
+		elif(gold >= 1000 + 1100):
 			golddiff = gold - 1100
-			expcalc = golddiff // 500
+			expcalc = golddiff // 1000
 			if expcalc >= 1:
 				for i in range(expcalc):
-					usecommand("buy experience", num)
-					gold -= 500
+					usecommand("buy exp", num)
+					gold -= 1000
 					exp += 1
 
 #	xchat.prnt("{0} goldsave: {1}  gembuy: {2}  level: {3}  upgradelevel: {4}  align: {5}".format(num, goldsave, gembuy, level, upgradelevel, align))
@@ -4015,7 +4406,10 @@ def lvlupmulti(num):
 	global name4
 	global level
 	global interval
+	global gold
+	global powerpots
 	global life
+	global buypower
 	global bottextmode
 
 	getitems2(num)
@@ -4037,14 +4431,30 @@ def lvlupmulti(num):
 		xchat.prnt("{0} has reached level {1}!".format(namelist, level))
 
 	if(level >= 16 and life > 10):
-		if num == 1:
-			xchat.hook_timer(0, attack)
-		if num == 2:
-			xchat.hook_timer(0, attack2)
-		if num == 3:
-			xchat.hook_timer(0, attack3)
-		if num == 4:
-			xchat.hook_timer(0, attack4)
+		if powerpots == 0 and gold >= 1100 and buypower is True:
+			usecommand("buy power", num)
+			gold -= 1000
+			powerpots = 1
+
+		if powerpots == 0:
+			if num == 1:
+				xchat.hook_timer(0, attack)
+			if num == 2:
+				xchat.hook_timer(0, attack2)
+			if num == 3:
+				xchat.hook_timer(0, attack3)
+			if num == 4:
+				xchat.hook_timer(0, attack4)
+		if powerpots == 1:
+			if num == 1:
+				xchat.hook_timer(0, attackb)
+			if num == 2:
+				xchat.hook_timer(0, attackb2)
+			if num == 3:
+				xchat.hook_timer(0, attackb3)
+			if num == 4:
+				xchat.hook_timer(0, attackb4)
+			powerpots = 0
 
 def fight_fight(num):
 	global name
@@ -4169,6 +4579,7 @@ def testfight(num):
 	global expertSum4
 	global ability
 	global life
+	global fightlevellimit
 
 	getitems2(num)
 	
@@ -4203,31 +4614,59 @@ def testfight(num):
 	newlists.sort( key=operator.itemgetter(2))
 	if newlists != None:
 		for entry in newlists:
-			if(entry[3] >= level and entry[0] != namelist):
-				abilityadj = 0
-				if ability == "b":
-					if entry[5] == "p":
-						abilityadj = math.floor(fightSumTotal * 0.30)
+			if fightlevellimit is True:
+				if(entry[3] >= level and entry[0] != namelist):
+					abilityadj = 0
+					if ability == "b":
+						if entry[5] == "p":
+							abilityadj = math.floor(fightSumTotal * 0.30)
 
-				if ability == "p":
-					if entry[5] == "r":
-						abilityadj = math.floor(fightSumTotal * 0.30)
-					
-				if ability == "r":
-					if entry[5] == "w":
-						abilityadj = math.floor(fightSumTotal * 0.30)
-					
-				if ability == "w":
-					if entry[5] == "b":
-						abilityadj = math.floor(fightSumTotal * 0.30)
+					if ability == "p":
+						if entry[5] == "r":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+						
+					if ability == "r":
+						if entry[5] == "w":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+						
+					if ability == "w":
+						if entry[5] == "b":
+							abilityadj = math.floor(fightSumTotal * 0.30)
 
-				fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
+					fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
 
-				try:
-					currdiff = fightAdj / entry[2]
-				except ZeroDivisionError:
-					currdiff = 0
-				test.append( (entry, currdiff) )
+					try:
+						currdiff = fightAdj / entry[2]
+					except ZeroDivisionError:
+						currdiff = 0
+					test.append( (entry, currdiff) )
+
+			if fightlevellimit is False:
+				if(entry[0] != namelist):
+					abilityadj = 0
+					if ability == "b":
+						if entry[5] == "p":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+
+					if ability == "p":
+						if entry[5] == "r":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+						
+					if ability == "r":
+						if entry[5] == "w":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+						
+					if ability == "w":
+						if entry[5] == "b":
+							abilityadj = math.floor(fightSumTotal * 0.30)
+
+					fightAdj = (fightSumTotal + abilityadj + upgradeSum1) * lifepercent
+
+					try:
+						currdiff = fightAdj / entry[2]
+					except ZeroDivisionError:
+						currdiff = 0
+					test.append( (entry, currdiff) )
 
 		test.sort( key=operator.itemgetter(1))
 
@@ -4239,23 +4678,35 @@ def testfight(num):
 	return best
 
 def attack(userdata):
-	attackmulti(1)
+	attackmulti(1, 1)
 
 def attack2(userdata):
-	attackmulti(2)
+	attackmulti(2, 1)
 
 def attack3(userdata):
-	attackmulti(3)
+	attackmulti(3, 1)
 
 def attack4(userdata):
-	attackmulti(4)
+	attackmulti(4, 1)
 
-def attackmulti(num):
+def attackb(userdata):
+	attackmulti(1, 2)
+
+def attackb2(userdata):
+	attackmulti(2, 2)
+
+def attackb3(userdata):
+	attackmulti(3, 2)
+
+def attackb4(userdata):
+	attackmulti(4, 2)
+
+def attackmulti(num, num2):
 	global creepattack
 	global setcreeptarget
-	
+
 	if creepattack is True:
-		creep = bestattack(num)
+		creep = bestattack(num, num2)
 		if creep != "CreepList Error":
 			usecommand("attack " + creep, num)
 		if creep == "CreepList Error":
@@ -4294,7 +4745,7 @@ def slaymulti(num, num2):
 	if monster == "MonsterList Error":
 		xchat.prnt("{0}".format(monster))
 
-def bestattack(num):
+def bestattack(num, num2):
 	global creeps
 	global attackslaySum
 	global attackslaySum2
@@ -4311,10 +4762,14 @@ def bestattack(num):
 		attackslaySumlist = attackslaySum4
 		
 	good = "CreepList Error"
+	if num2 == 1:
+		multi = 1
+	if num2 == 2:
+		multi = 2
 	for thing in creeps:
-		if(attackslaySumlist <= thing[1]):
-			good = thing[0]
-	return good
+		if((attackslaySumlist * multi) <= thing[1]):
+			good = thing
+	return good[0]
 
 def bestslay(num, num2):
 	global monsters

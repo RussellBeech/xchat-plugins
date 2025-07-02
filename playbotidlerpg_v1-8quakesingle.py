@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.7"
+__module_version__ = "1.8"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -111,7 +111,8 @@ xpspend = 20 # Amount you use with xpget to upgrade items
 bottextmode = True # True = on, False = off
 errortextmode = True # True = on, False = off
 intervaltext = True # True = on, False = off - Text displayed every interval
-townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching
+townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Area Switching, None = Area Switching Off
+areasum = 6000 # Sum at which you switch to Fast Town Switching
 expbuy = False
 slaysum = 1000 # minimum sum you start slaying without mana from
 
@@ -237,8 +238,8 @@ def versionchecker():
 	global gitweb
 	global gitweb2
 
-	webversion = 0
-	gitversion = 0
+	webversion = None
+	gitversion = None
 	newversion = 0
 	try:
 		if python3 is False:
@@ -269,14 +270,22 @@ def versionchecker():
 	xchat.prnt("Current version {0}".format(currentversion))
 	xchat.prnt("Web version {0}".format(webversion))
 	xchat.prnt("GitHub version {0}".format(gitversion))
-	if webversion > gitversion:
+	if webversion is None and gitversion is None:
+		xchat.prnt("Both Websites have failed to read.  Try again later")
+		return
+	if gitversion is None and webversion != None:
 		newversion = webversion
-	if webversion < gitversion:
+	if webversion is None and gitversion != None:
 		newversion = gitversion
-	if webversion == gitversion:
-		newversion = gitversion
+	if webversion != None and gitversion != None:
+		if webversion > gitversion:
+			newversion = webversion
+		if webversion < gitversion:
+			newversion = gitversion
+		if webversion == gitversion:
+			newversion = gitversion
 		
-	if newversion > 0:
+	if newversion != None:
 		if(currentversion == newversion):
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < newversion):
@@ -1010,6 +1019,20 @@ def townwork(word, word_eol, userdata):
 
 xchat.hook_command("townwork", townwork, help="/townwork - Changes to Town/Work Switching")
 
+def areaoff(word, word_eol, userdata):
+	global townworkswitch
+	global gameactive
+
+	if gameactive is True:
+		townworkswitch = None
+		xchat.prnt("Area Switch Mode Deactivated.  To change to Town/Work use /townwork or Town/Forest use /townforest")
+		configwrite()
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("areaoff", areaoff, help="/areaoff - Turns Town/Work Switching Off")
+
 def townforest(word, word_eol, userdata):
 	global townworkswitch
 	global gameactive
@@ -1033,6 +1056,7 @@ xchat.hook_command("versioncheck", versioncheck, help="/versioncheck - To check 
 def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("PlayBot Commands List")
 	xchat.prnt("")
+	xchat.prnt("Area Switching Mode Off     - /areaoff")
 	xchat.prnt("BlackBuy Spend Mode Off     - /blackbuyoff")
 	xchat.prnt("BlackBuy Spend Mode On      - /blackbuyon")
 	xchat.prnt("BlackBuy 14 Spend Mode Off  - /blackbuy14off")
@@ -1106,6 +1130,8 @@ def settings(word, word_eol, userdata):
 		xchat.prnt("Area Switch Mode - Town/Work")
 	if townworkswitch is False:
 		xchat.prnt("Area Switch Mode - Town/Forest")
+	if townworkswitch is None:
+		xchat.prnt("Area Switch Mode - Deactivated")
 	xchat.prnt("BlackBuy Spend Mode - {0}".format(blackbuyspend))
 	xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
 	xchat.prnt("Bot Text Mode - {0}".format(bottextmode))
@@ -1664,11 +1690,14 @@ def playerarea():
 	global location
 	global locationtime
 	global townworkswitch
+	global areasum
 	
 	if townworkswitch is True:
 		area = "work"
 	if townworkswitch is False:
 		area = "forest"
+	if townworkswitch is None:
+		return
 
 #	xchat.prnt("{0} Time: {1} seconds".format(location, locationtime))
 	if (level <= 25):
@@ -1683,9 +1712,9 @@ def playerarea():
 	if locationtime == 0:
 		usecommand("goto {0}".format(area))
 		
-	if(location == "In Town" and locationtime >= mintime and mysum < 6000 and mysum != 0):
+	if(location == "In Town" and locationtime >= mintime and mysum < areasum and mysum != 0):
 		usecommand("goto {0}".format(area))
-	if(location == "In Town" and mysum >= 6000):
+	if(location == "In Town" and mysum >= areasum):
 		usecommand("goto {0}".format(area))
 	if(location == "At Work" and locationtime >= mintime):
 		usecommand("goto town")
