@@ -10,7 +10,7 @@ import socket
 import ssl
 
 __module_name__ = "Multirpg Playbot Script"
-__module_version__ = "10.0"
+__module_version__ = "10.1"
 __module_description__ = "Multirpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -77,16 +77,12 @@ networklist = [ ["AyoChat",     "irc.ayochat.or.id",            False,  1,      
 		["Koach",       "172.105.168.90",               False,  2,      6667,           "+6697",        ".skralg.com"], \
 		["Libera",      "irc.libera.chat",              False,  1,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
 		["Libera",      "130.185.232.126",              False,  2,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
-		["mIRCPhantom", "irc.mircphantom.net",          False,  1,      6667,           "+6697",        ".skralg.com"], \
-		["mIRCPhantom", "51.89.198.165",                False,  2,      6667,           "+6697",        ".skralg.com"], \
-		["Pissnet",     "irc.shitposting.space",        False,  1,      6667,           "+6697",        ".skralg.com"], \
+		["Pissnet",     "irc.letspiss.net",             False,  1,      6667,           "+6697",        ".skralg.com"], \
 		["Pissnet",     "91.92.144.105",                False,  2,      6667,           "+6697",        ".skralg.com"], \
 		["QuakeNet",    "irc.quakenet.org",             False,  1,      6667,           6667,           "multirpg@multirpg.users.quakenet.org"], \
 		["QuakeNet",    "188.240.145.70",               False,  2,      6667,           6667,           "multirpg@multirpg.users.quakenet.org"], \
 		["Rizon",       "irc.rizon.net",                False,  1,      6667,           "+6697",        ".skralg.com"], \
 		["Rizon",       "45.88.6.116",                  False,  2,      6667,           "+6697",        ".skralg.com"], \
-		["ScaryNet",    "irc.scarynet.org",             True,   1,      6667,           6667,           "multirpg@venus.skralg.com"],  \
-		["ScaryNet",    "69.162.163.62",                True,   2,      6667,           6667,           "multirpg@venus.skralg.com"],  \
 		["SkyChatz",    "irc.skychatz.org",             False,  1,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["SkyChatz",    "15.235.141.21",                False,  2,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["Techtronix",  "irc.techtronix.net",           True,   1,      "+6697",        "+6697",        "multirpg@multirpg.net"],  \
@@ -281,17 +277,17 @@ connectfail2 = 0
 connectfail3 = 0
 connectfail4 = 0
 connectfail5 = 0
+port1 = None
+port2 = None
+port3 = None
+port4 = None
+port5 = None
 webfail = 0
 nolag1 = None
 nolag2 = None
 nolag3 = None
 nolag4 = None
 nolag5 = None
-port1 = None
-port2 = None
-port3 = None
-port4 = None
-port5 = None
 
 char1 = False
 char2 = False
@@ -476,14 +472,16 @@ def versionchecker():
 	global gitweb
 	global gitweb2
 
-	webversion = 0
-	gitversion = 0
+	webversion = None
+	gitversion = None
 	newversion = 0
+	versionfilename = "playbotversion.txt"
+
 	try:
 		if python3 is False:
-			text = urllib2.urlopen(russweb + "playbotversion.txt")
+			text = urllib2.urlopen(russweb + versionfilename)
 		if python3 is True:
-			text = urllib.request.urlopen(russweb + "playbotversion.txt")
+			text = urllib.request.urlopen(russweb + versionfilename)
 		webversion = text.read()
 		webversion = float( webversion )
 		text.close()
@@ -492,10 +490,11 @@ def versionchecker():
 		xchat.prnt( "Could not access {0}".format(russweb))
 
 	try:
+		context = ssl._create_unverified_context()
 		if python3 is False:
-			text2 = urllib2.urlopen(gitweb2 + "playbotversion.txt")
+			text2 = urllib2.urlopen(gitweb2 + versionfilename, context=context)
 		if python3 is True:
-			text2 = urllib.request.urlopen(gitweb2 + "playbotversion.txt")
+			text2 = urllib.request.urlopen(gitweb2 + versionfilename, context=context)
 		gitversion = text2.read()
 		text2.close()
 		if python3 is True:
@@ -508,14 +507,22 @@ def versionchecker():
 	xchat.prnt("Current version {0}".format(currentversion))
 	xchat.prnt("Web version {0}".format(webversion))
 	xchat.prnt("GitHub version {0}".format(gitversion))
-	if webversion > gitversion:
+	if webversion is None and gitversion is None:
+		xchat.prnt("Both Websites have failed to read.  Try again later")
+		return
+	if gitversion is None and webversion != None:
 		newversion = webversion
-	if webversion < gitversion:
+	if webversion is None and gitversion != None:
 		newversion = gitversion
-	if webversion == gitversion:
-		newversion = gitversion
+	if webversion != None and gitversion != None:
+		if webversion > gitversion:
+			newversion = webversion
+		if webversion < gitversion:
+			newversion = gitversion
+		if webversion == gitversion:
+			newversion = gitversion
 		
-	if newversion > 0:
+	if newversion != None:
 		if(currentversion == newversion):
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < newversion):
@@ -1355,6 +1362,7 @@ def login(word, word_eol, userdata):
 			if netcheck is False:
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
+				charcount = 0
 
 			if("undernet" in netname.lower()):
 				channame = "#idlerpg"
@@ -1366,21 +1374,23 @@ def login(word, word_eol, userdata):
 		if customnetworksettings is True:
 			channame = customchanname
 			botname = custombotname
-		# find context
-		game_chan = xchat.find_context(channel=channame)
-	
-		if(game_chan is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
-			charcount = 0
-		try:
+
+		if charcount == 1:
+			# find context
+			game_chan = xchat.find_context(channel=channame)
+		
+			if(game_chan is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+				charcount = 0
+			try:
+				if(name is None or pswd is None):
+					name = word[1]
+					pswd = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			if(name is None or pswd is None):
-				name = word[1]
-				pswd = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 0
-		if(name is None or pswd is None or netcheck is False):
-			charcount = 0
+				charcount = 0
+
 		if charcount == 1:
 			if rawstatsmode is True or rawstatsswitch is True:
 				opcheck = False
@@ -1396,7 +1406,6 @@ def login(word, word_eol, userdata):
 					xchat.prnt("GameBot Not Opped Changing to RawPlayers")
 					configwrite()
 		if charcount == 0:
-			char1 = False
 			gameactive = False
 			name = None
 			pswd = None
@@ -1420,6 +1429,7 @@ def login(word, word_eol, userdata):
 			if netcheck is False:
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname2))
+				charcount = 1
 
 			if("undernet" in netname2.lower()):
 				channame2 = "#idlerpg"
@@ -1431,22 +1441,22 @@ def login(word, word_eol, userdata):
 		if customnetworksettings2 is True:
 			channame2 = customchanname2
 			botname2 = custombotname2
-		# find context
-		game_chan2 = xchat.find_context(channel=channame2)
-	
-		if(game_chan2 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2))
-			charcount = 1
-		try:
-			if(name2 is None or pswd2 is None):
-				name2 = word[1]
-				pswd2 = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 1
 
-		if(name2 is None or pswd2 is None or netcheck is False):
-			charcount = 1
+		if charcount == 2:
+			# find context
+			game_chan2 = xchat.find_context(channel=channame2)
+		
+			if(game_chan2 is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame2))
+				charcount = 1
+			try:
+				if(name2 is None or pswd2 is None):
+					name2 = word[1]
+					pswd2 = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
+			if(name2 is None or pswd2 is None):
+				charcount = 1
 		if charcount == 2:
 			if rawstatsmode is True or rawstatsswitch is True:
 				opcheck = False
@@ -1497,6 +1507,7 @@ def login(word, word_eol, userdata):
 			if netcheck is False:
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname3))
+				charcount = 2
 			if("undernet" in netname3.lower()):
 				channame3 = "#idlerpg"
 				botname3 = "idlerpg"
@@ -1507,22 +1518,22 @@ def login(word, word_eol, userdata):
 		if customnetworksettings3 is True:
 			channame3 = customchanname3
 			botname3 = custombotname3
-		# find context
-		game_chan3 = xchat.find_context(channel=channame3)
-	
-		if(game_chan3 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3))
-			charcount = 2
-		try:
-			if(name3 is None or pswd3 is None):
-				name3 = word[1]
-				pswd3 = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 2
 
-		if(name3 is None or pswd3 is None or netcheck is False):
-			charcount = 2
+		if charcount == 3:
+			# find context
+			game_chan3 = xchat.find_context(channel=channame3)
+
+			if(game_chan3 is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame3))
+				charcount = 2
+			try:
+				if(name3 is None or pswd3 is None):
+					name3 = word[1]
+					pswd3 = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
+			if(name3 is None or pswd3 is None):
+				charcount = 2
 
 		if charcount == 3:
 			if rawstatsmode is True or rawstatsswitch is True:
@@ -1584,6 +1595,7 @@ def login(word, word_eol, userdata):
 			if netcheck is False:
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname4))
+				charcount = 3
 			if("undernet" in netname4.lower()):
 				channame4 = "#idlerpg"
 				botname4 = "idlerpg"
@@ -1594,22 +1606,22 @@ def login(word, word_eol, userdata):
 		if customnetworksettings4 is True:
 			channame4 = customchanname4
 			botname4 = custombotname4
-		# find context
-		game_chan4 = xchat.find_context(channel=channame4)
-	
-		if(game_chan4 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4))
-			charcount = 3
-		try:
-			if(name4 is None or pswd4 is None):
-				name4 = word[1]
-				pswd4 = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 3
 
-		if(name4 is None or pswd4 is None or netcheck is False):
-			charcount = 3
+		if charcount == 4:
+			# find context
+			game_chan4 = xchat.find_context(channel=channame4)
+		
+			if(game_chan4 is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame4))
+				charcount = 3
+			try:
+				if(name4 is None or pswd4 is None):
+					name4 = word[1]
+					pswd4 = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
+			if(name4 is None or pswd4 is None):
+				charcount = 3
 		if charcount == 4:
 			if rawstatsmode is True or rawstatsswitch is True:
 				opcheck = False
@@ -1675,6 +1687,7 @@ def login(word, word_eol, userdata):
 			if netcheck is False:
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname5))
+				charcount = 4
 			if("undernet" in netname5.lower()):
 				channame5 = "#idlerpg"
 				botname5 = "idlerpg"
@@ -1685,21 +1698,22 @@ def login(word, word_eol, userdata):
 		if customnetworksettings5 is True:
 			channame5 = customchanname5
 			botname5 = custombotname5
-		# find context
-		game_chan5 = xchat.find_context(channel=channame5)
-	
-		if(game_chan5 is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame5))
-			charcount = 4
-		try:
+
+		if charcount == 5:
+			# find context
+			game_chan5 = xchat.find_context(channel=channame5)
+		
+			if(game_chan5 is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame5))
+				charcount = 4
+			try:
+				if(name5 is None or pswd5 is None):
+					name5 = word[1]
+					pswd5 = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
 			if(name5 is None or pswd5 is None):
-				name5 = word[1]
-				pswd5 = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 4
-		if(name5 is None or pswd5 is None or netcheck is False):
-			charcount = 4
+				charcount = 4
 		if charcount == 5:
 			if rawstatsmode is True or rawstatsswitch is True:
 				opcheck = False
@@ -4100,6 +4114,16 @@ def networklists(num):
 	global servername4
 	global networkname5
 	global servername5
+	global ssl1
+	global ssl2
+	global ssl3
+	global ssl4
+	global ssl5
+	global port1
+	global port2
+	global port3
+	global port4
+	global port5
 	global myentry
 	global myentry2
 	global myentry3
@@ -4115,11 +4139,6 @@ def networklists(num):
 	global nolag3
 	global nolag4
 	global nolag5
-	global port1
-	global port2
-	global port3
-	global port4
-	global port5
 	global servernum1
 	global servernum2
 	global servernum3
@@ -4161,11 +4180,6 @@ def networklists(num):
 	global bothostmask3
 	global bothostmask4
 	global bothostmask5
-	global ssl1
-	global ssl2
-	global ssl3
-	global ssl4
-	global ssl5
 	global networklist
 	
 	maxservers = 2 # Change if you are using more than 2 servers per network in the networklist
@@ -5369,15 +5383,17 @@ def main(userdata):
 	opswitch = False
 	if(opcheck is False or opcheck2 is False or opcheck3 is False or opcheck4 is False or opcheck5 is False):
 		opswitch = True
-	if(rawstatsswitch is False and rawstatsmode is True and webworks is True and ttlfrozenmode is False and opswitch is False):
-		rawplayersmodeon = True
-	if(rawstatsswitch is False and rawstatsmode is False and webworks is False and webfail >= 3  and opswitch is False):
-		rawstatsmodeon = True
-	if(levelrank1 < laglevel and rawstatsswitch is True and rawstatsmode is True  and opswitch is False):
-		if(nolag1 is False or nolag2 is False or nolag3 is False or nolag4 is False or nolag5 is False):
+	if(rawstatsswitch is False and opswitch is False):
+		if(rawstatsmode is True and webworks is True and ttlfrozenmode is False):
 			rawplayersmodeon = True
-	if(levelrank1 >= laglevel and rawstatsswitch is True and rawstatsmode is False  and opswitch is False):
-		rawstatsmodeon = True
+		if(rawstatsmode is False and webworks is False and webfail >= 3):
+			rawstatsmodeon = True
+	if(rawstatsswitch is True and opswitch is False):
+		if(levelrank1 < laglevel and rawstatsmode is True):
+			if(nolag1 is False or nolag2 is False or nolag3 is False or nolag4 is False or nolag5 is False):
+				rawplayersmodeon = True
+		if(levelrank1 >= laglevel and rawstatsmode is False):
+			rawstatsmodeon = True
 	if(rawstatsmode is True and opswitch is True):
 		rawplayersmodeon = True
 	if rawstatsmodeon is True:

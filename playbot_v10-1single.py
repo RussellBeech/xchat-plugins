@@ -11,7 +11,7 @@ import ssl
 import re ##
 
 __module_name__ = "Multirpg Playbot Script"
-__module_version__ = "10.0"
+__module_version__ = "10.1"
 __module_description__ = "Multirpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -78,16 +78,12 @@ networklist = [ ["AyoChat",     "irc.ayochat.or.id",            False,  1,      
 		["Koach",       "172.105.168.90",               False,  2,      6667,           "+6697",        ".skralg.com"], \
 		["Libera",      "irc.libera.chat",              False,  1,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
 		["Libera",      "130.185.232.126",              False,  2,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
-		["mIRCPhantom", "irc.mircphantom.net",          False,  1,      6667,           "+6697",        ".skralg.com"], \
-		["mIRCPhantom", "51.89.198.165",                False,  2,      6667,           "+6697",        ".skralg.com"], \
-		["Pissnet",     "irc.shitposting.space",        False,  1,      6667,           "+6697",        ".skralg.com"], \
+		["Pissnet",     "irc.letspiss.net",             False,  1,      6667,           "+6697",        ".skralg.com"], \
 		["Pissnet",     "91.92.144.105",                False,  2,      6667,           "+6697",        ".skralg.com"], \
 		["QuakeNet",    "irc.quakenet.org",             False,  1,      6667,           6667,           "multirpg@multirpg.users.quakenet.org"], \
 		["QuakeNet",    "188.240.145.70",               False,  2,      6667,           6667,           "multirpg@multirpg.users.quakenet.org"], \
 		["Rizon",       "irc.rizon.net",                False,  1,      6667,           "+6697",        ".skralg.com"], \
 		["Rizon",       "45.88.6.116",                  False,  2,      6667,           "+6697",        ".skralg.com"], \
-		["ScaryNet",    "irc.scarynet.org",             True,   1,      6667,           6667,           "multirpg@venus.skralg.com"],  \
-		["ScaryNet",    "69.162.163.62",                True,   2,      6667,           6667,           "multirpg@venus.skralg.com"],  \
 		["SkyChatz",    "irc.skychatz.org",             False,  1,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["SkyChatz",    "15.235.141.21",                False,  2,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["Techtronix",  "irc.techtronix.net",           True,   1,      "+6697",        "+6697",        "multirpg@multirpg.net"],  \
@@ -148,8 +144,8 @@ customservername2 = "176.31.181.159" # Custom Server address
 customchanname = "#multirpg" # Custom Channel Name
 custombotname = "multirpg/fun" # Custom Botname
 customnolag = False # True = on, False = off - If network is on the nolag network list
-custombosthostmask = "multirpg@multirpg.users.IRC4Fun.net" # Custom Bot Host Name
 customport = 6667 # Port Number.  If port is an SSL port use "+6697" format
+custombosthostmask = "multirpg@multirpg.users.IRC4Fun.net" # Custom Bot Host Name
 
 # ZNC settings
 ZNC = False # ZNC Server Mode - True = On, False = Off
@@ -162,8 +158,8 @@ ZNCPass = "********" # ZNC Password
 multirpgclass = "MultiRPG PlayBot" # Class to be used when re-registering if player gets removed
 nickserv = False # True = on, False = off
 nickservpass = "*********" # NickServ Password
-connectretry = 6 # Retries to connect to network before it switch to another server
 laglevel = 20 # If using rawstats and a laggy network it will switch between using rawstats and rawplayers
+connectretry = 6 # Retries to connect to network before it switch to another server
 setalign = 40 # Level in which alignment changes from permanent priest to human/priest switching
 upgradeall = True # True = on, False = off - Upgrades all 1 and above after Hero and Engineer is upgraded to level 9
 itemupgrader = True # True = on, False = off - Upgrades individual items after Hero and Engineer is upgraded to level 9
@@ -188,10 +184,10 @@ pswd = None
 servername = None
 networkname = None
 servernum = 1
+port = None
 connectfail = 0
 webfail = 0
 nolag = None
-port = None
 charcount = 0
 private = True
 notice = True
@@ -246,6 +242,7 @@ chancheck = None
 game_chan = None
 webworks = True
 gameactive = None
+
 ttlfrozen = 0
 ttlfrozenmode = False
 botdisable1 = False
@@ -305,14 +302,16 @@ def versionchecker():
 	global gitweb
 	global gitweb2
 
-	webversion = 0
-	gitversion = 0
+	webversion = None
+	gitversion = None
 	newversion = 0
+	versionfilename = "playbotversion.txt"
+
 	try:
 		if python3 is False:
-			text = urllib2.urlopen(russweb + "playbotversion.txt")
+			text = urllib2.urlopen(russweb + versionfilename)
 		if python3 is True:
-			text = urllib.request.urlopen(russweb + "playbotversion.txt")
+			text = urllib.request.urlopen(russweb + versionfilename)
 		webversion = text.read()
 		webversion = float( webversion )
 		text.close()
@@ -321,10 +320,11 @@ def versionchecker():
 		xchat.prnt( "Could not access {0}".format(russweb))
 
 	try:
+		context = ssl._create_unverified_context()
 		if python3 is False:
-			text2 = urllib2.urlopen(gitweb2 + "playbotversion.txt")
+			text2 = urllib2.urlopen(gitweb2 + versionfilename, context=context)
 		if python3 is True:
-			text2 = urllib.request.urlopen(gitweb2 + "playbotversion.txt")
+			text2 = urllib.request.urlopen(gitweb2 + versionfilename, context=context)
 		gitversion = text2.read()
 		text2.close()
 		if python3 is True:
@@ -337,14 +337,22 @@ def versionchecker():
 	xchat.prnt("Current version {0}".format(currentversion))
 	xchat.prnt("Web version {0}".format(webversion))
 	xchat.prnt("GitHub version {0}".format(gitversion))
-	if webversion > gitversion:
+	if webversion is None and gitversion is None:
+		xchat.prnt("Both Websites have failed to read.  Try again later")
+		return
+	if gitversion is None and webversion != None:
 		newversion = webversion
-	if webversion < gitversion:
+	if webversion is None and gitversion != None:
 		newversion = gitversion
-	if webversion == gitversion:
-		newversion = gitversion
+	if webversion != None and gitversion != None:
+		if webversion > gitversion:
+			newversion = webversion
+		if webversion < gitversion:
+			newversion = gitversion
+		if webversion == gitversion:
+			newversion = gitversion
 		
-	if newversion > 0:
+	if newversion != None:
 		if(currentversion == newversion):
 			xchat.prnt("You have the current version of PlayBot")
 		if(currentversion < newversion):
@@ -680,6 +688,7 @@ def login(word, word_eol, userdata):
 						netlist.append( ( entry[0] ) )
 				xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
 				xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
+				charcount = 0
 
 			if("undernet" in netname.lower()):
 				channame = "#idlerpg"
@@ -692,22 +701,22 @@ def login(word, word_eol, userdata):
 			channame = customchanname
 			botname = custombotname
 			
-		# find context
-		game_chan = xchat.find_context(channel=channame)
+		if charcount == 1:
+			# find context
+			game_chan = xchat.find_context(channel=channame)
 
-		if(game_chan is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
-			charcount = 0
-		try:
+			if(game_chan is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+				charcount = 0
+			try:
+				if(name is None or pswd is None):
+					name = word[1]
+					pswd = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
+
 			if(name is None or pswd is None):
-				name = word[1]
-				pswd = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 0
-
-		if(name is None or pswd is None or netcheck is False):
-			charcount = 0
+				charcount = 0
 
 		if charcount == 1:
 			if rawstatsmode is True or rawstatsswitch is True:
@@ -727,7 +736,6 @@ def login(word, word_eol, userdata):
 			gameactive = False
 			name = None
 			pswd = None
-			return
 
 		if charcount == 1:
 			if(name != None and pswd != None):
@@ -824,10 +832,11 @@ def logoutchar(word, word_eol, userdata):
 	global ttlfrozen
 	global autostartmode
 	
-	if(charcount == 0):
+	if gameactive is False:
 		xchat.prnt("You are not logged in")
-	if charcount == 1:
+	if gameactive is True:
 		xchat.prnt("Character {0} Logged Out".format(name))
+		charcount = 0
 		netname = None
 		channame = None
 		botname = None
@@ -835,12 +844,12 @@ def logoutchar(word, word_eol, userdata):
 		pswd = None
 		myentry = None
 		rawmyentry = None
-		charcount = 0
-		gameactive = False
 		ttlfrozen = 0        
+		gameactive = False
 		if autostartmode is True:
 			autostartmode = False
 			configwrite()
+			configwrite2()
 	return xchat.EAT_ALL
 
 xchat.hook_command("logoutchar", logoutchar, help="/logoutchar - Logs out the character from the PlayBot")
@@ -1959,9 +1968,10 @@ def newlister():
 def networklists():
 	global networkname
 	global servername
+	global ssl1
+	global port
 	global myentry
 	global nolag
-	global port
 	global servernum
 	global connectfail
 	global connectretry
@@ -1972,7 +1982,6 @@ def networklists():
 	global custombosthostmask
 	global customport
 	global bothostmask
-	global ssl1
 	global networklist 
 
 	maxservers = 2 # Change if you are using more than 2 servers per network in the networklist
@@ -2478,9 +2487,9 @@ def main(userdata):
 	if(rawstatsmode is False and webworks is True and botcheck is True and opswitch is False):
 		if online is True:
 			if(ttl == oldttl):
-				ttlfrozen += 1
 				if errortextmode is True:
 					xchat.prnt("TTL Frozen {0}".format(ttlfrozen))
+				ttlfrozen += 1
 	if (ttlfrozen >= 2):
 		rawstatsmode = True
 		ttlfrozenmode = True
@@ -2939,6 +2948,7 @@ def fight_fight():
 	global fightcalcmin
 
 	ufight = testfight()
+
 	ufightcalc = fightSum / ufight[2]
 	if(ufight[0] == name):
 		ufightcalc = 0.1
