@@ -1,6 +1,8 @@
 PlayBot Commands List
 
 Area Switching Mode Off     	- /areaoff
+Autostart Mode Off              - /autostartoff		- (Single Only)
+Autostart Mode On               - /autostarton		- (Single Only)
 BlackBuy Spend Mode Off		- /blackbuyoff  
 BlackBuy Spend Mode On      	- /blackbuyon  
 BlackBuy 14 Spend Mode Off  	- /blackbuy14off  

@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "1.8"
+__module_version__ = "2.0"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -62,6 +62,7 @@ monsters = [	["Blue_Dragon",	        8500],	\
 creeps.reverse()
 monsters.reverse()
 
+website = "https://quakeirpg.abandoned-irc.net"
 russweb = "http://russellb.x10.mx/"
 gitweb = "https://github.com/RussellBeech/xchat-plugins"
 gitweb2 = "https://raw.githubusercontent.com/RussellBeech/xchat-plugins/master/"
@@ -76,6 +77,8 @@ currentversion = __module_version__
 currentversion = float( currentversion )
 
 CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgquakesingle"
+CONFIG_FILE_LOCATION2 = xchat.get_info('xchatdir')+"/.autostartsinglequake"
+
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
 	configList = pickle.load(f)
@@ -83,6 +86,13 @@ try:
 except:
 	xchat.prnt("ConfigList Load Error - Using Default Settings")
 	configList = []
+try:
+	f = open(CONFIG_FILE_LOCATION2,"rb")
+	autoconfigList = pickle.load(f)
+	f.close()
+except:
+	xchat.prnt("AutoConfigList Load Error - Using Default Settings")
+	autoconfigList = []
 
 # ZNC settings
 ZNC = False # ZNC Server Mode - True = On, False = Off
@@ -93,7 +103,6 @@ ZNCPass = "*******" # ZNC Password
 
 # Changeable settings
 servername = "irc.quakenet.org"
-website = "https://quakeirpg.abandoned-irc.net"
 setbuy = 15 # level to start buying items from
 goldsave = 3100 # gold kept in hand
 buylife = True
@@ -102,7 +111,7 @@ blackbuyspend14 = True
 getgems = True
 fightmode = True
 channame = "#idlerpg"
-setbotname = "IdleRPG"
+botname = "IdleRPG"
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
 scrollssum = 3000 # Itemscore you start buying scrolls at
@@ -115,11 +124,11 @@ townworkswitch = True # True = Town/Work Area Switching, False = Town/Forest Are
 areasum = 6000 # Sum at which you switch to Fast Town Switching
 expbuy = False
 slaysum = 1000 # minimum sum you start slaying without mana from
+autostartdelay = 60 #seconds delay for autostart when you have the plugin auto loaded from startup
 
 # declare stats as global
 name = None
 pswd = None
-botname = setbotname
 charcount = 0
 private = True
 chanmessage = True
@@ -182,8 +191,11 @@ locationtime = 0
 
 game_chan = None
 botdisable1 = False
+autostartmode = False
 
 for entry in configList:
+	if(entry[0] == "autostartmode"):
+		autostartmode = entry[1]
 	if(entry[0] == "blackbuyspend"):
 		blackbuyspend = entry[1]
 	if(entry[0] == "blackbuyspend14"):
@@ -241,11 +253,13 @@ def versionchecker():
 	webversion = None
 	gitversion = None
 	newversion = 0
+	versionfilename = "playbotversionquake.txt"
+
 	try:
 		if python3 is False:
-			text = urllib2.urlopen(russweb + "playbotversionquake.txt")
+			text = urllib2.urlopen(russweb + versionfilename)
 		if python3 is True:
-			text = urllib.request.urlopen(russweb + "playbotversionquake.txt")
+			text = urllib.request.urlopen(russweb + versionfilename)
 		webversion = text.read()
 		webversion = float( webversion )
 		text.close()
@@ -254,10 +268,11 @@ def versionchecker():
 		xchat.prnt( "Could not access {0}".format(russweb))
 
 	try:
+		context = ssl._create_unverified_context()
 		if python3 is False:
-			text2 = urllib2.urlopen(gitweb2 + "playbotversionquake.txt")
+			text2 = urllib2.urlopen(gitweb2 + versionfilename, context=context)
 		if python3 is True:
-			text2 = urllib.request.urlopen(gitweb2 + "playbotversionquake.txt")
+			text2 = urllib.request.urlopen(gitweb2 + versionfilename, context=context)
 		gitversion = text2.read()
 		text2.close()
 		if python3 is True:
@@ -295,6 +310,7 @@ def versionchecker():
 			xchat.prnt("Give me, Give me")
 
 def configwrite():
+	global autostartmode
 	global blackbuyspend
 	global blackbuyspend14
 	global buylife
@@ -316,6 +332,7 @@ def configwrite():
 	global errortextmode
 	
 	configList = []
+	configList.append( ( "autostartmode", autostartmode ) )
 	configList.append( ( "blackbuyspend", blackbuyspend ) )
 	configList.append( ( "blackbuyspend14", blackbuyspend14 ) )
 	configList.append( ( "bottextmode", bottextmode ) )
@@ -339,14 +356,70 @@ def configwrite():
 	pickle.dump(configList,f)
 	f.close()
 
+def configwrite2():
+	global name
+	global pswd
+
+	autoconfigList = []
+	autoconfigList.append( ( "name", name ) )
+	autoconfigList.append( ( "pswd", pswd ) )
+	f = open(CONFIG_FILE_LOCATION2,"wb")
+	pickle.dump(autoconfigList,f)
+	f.close()
+
+def autostarton(word, word_eol, userdata):
+	global autostartmode
+	global gameactive
+
+	if gameactive is True:
+		autostartmode = True
+		configwrite()
+		configwrite2()
+		xchat.prnt("Autostart mode on")
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+	
+xchat.hook_command("autostarton", autostarton, help="/autostarton - Turns autostart mode on")
+
+def autostartoff(word, word_eol, userdata):
+	global autostartmode
+	global gameactive
+
+	if gameactive is True:
+		autostartmode = False
+		configwrite()
+		autoconfigList = []
+		f = open(CONFIG_FILE_LOCATION2,"wb")
+		pickle.dump(autoconfigList,f)
+		f.close()
+		xchat.prnt("Autostart mode off")
+	if gameactive is False:
+		xchat.prnt("You are not logged in")
+	return xchat.EAT_ALL
+
+xchat.hook_command("autostartoff", autostartoff, help="/autostartoff - Turns autostart mode off")
+
+def eraseconfig(word, word_eol, userdata):
+	configList = []
+	f = open(CONFIG_FILE_LOCATION,"wb")
+	pickle.dump(configList,f)
+	f.close()
+	autoconfigList = []
+	f = open(CONFIG_FILE_LOCATION2,"wb")
+	pickle.dump(autoconfigList,f)
+	f.close()
+	xchat.prnt("Config Erased")
+	return xchat.EAT_ALL
+
+xchat.hook_command("eraseconfig", eraseconfig, help="/eraseconfig - Erases config file")
+
 def bottester():
 	global game_chan
 	global botname
 	global botdisable1
-	global setbotname
 	
 	botcount1 = 0
-	botname = setbotname
 
 	bottest = botname
 	botentry = []
@@ -382,36 +455,75 @@ def usecommand(commanded):
 		except AttributeError:
 			xchat.prnt( "Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame) )
 
-xchat.prnt( "To start PlayBot use /login CharName Password" )
-
-def login(word, word_eol, userdata):
+def autostart(userdata):
 	global name
 	global pswd
-	global setbuy
-	global buylife
 	global netname
 	global nickname
 	global channame
 	global gameactive
-	global fightmode
 	global charcount
 	global game_chan
-	global blackbuyspend
-	global blackbuyspend14
-	global getgems
-	global scrollssum
-	global xpupgrade
-	global xpspend
-	global intervaltext
-	global townworkswitch
-	global goldsave
-	global creepattack
-	global expbuy
+	global autostartmode
+	global autostartdelay
+
+	for entry in autoconfigList:
+		if(entry[0] == "name"):
+			name = entry[1]
+		if(entry[0] == "pswd"):
+			pswd = entry[1]
+
+	if name != None and pswd != None:
+		charcount += 1
+
+	if charcount == 1:
+		gameactive = True
+		netname = xchat.get_info("network")
+
+		if netname is None:
+			netname = xchat.get_info("network")
+			charcount = 0
+			mainhook = xchat.hook_timer(autostartdelay * 1000, autostart)  # hook_timer requires milliseconds                       
+			return
+
+		nickname = xchat.get_info("nick")
+
+		# find context
+		game_chan = xchat.find_context(channel=channame)
+		webdata()
+
+		if(game_chan is None):
+			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+			charcount = 0
+			gameactive = False
+			xchat.prnt("Autostart Failed")
+			autostartmode = False
+			configwrite()
+			return
+
+		if(name != None and pswd != None):
+			loginstart()
+
+	if charcount == 0:
+		gameactive = False
+		xchat.prnt("Autostart Failed")
+		autostartmode = False
+		configwrite()
+
+if autostartmode is False:
+	xchat.prnt( "To start PlayBot use /login CharName Password" )
+
+def login(word, word_eol, userdata):
+	global name
+	global pswd
+	global netname
+	global nickname
+	global channame
+	global gameactive
+	global charcount
+	global game_chan
 	global playerspagelist
 	global webworks
-	global slaysum
-	global bottextmode
-	global errortextmode
 
 	charcount += 1
 
@@ -423,22 +535,28 @@ def login(word, word_eol, userdata):
 		# find context
 		game_chan = xchat.find_context(channel=channame)
 
-		if "undernet" in netname and channame.lower() == "#irpg":
+		if "undernet" in netname.lower():
 			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
-		if(game_chan is None):
-			xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
 			charcount = 0
-		try:
+		if "abandoned" in netname.lower():
+			xchat.prnt("You need to use the Abandoned-IRC version of PlayBot")
+			charcount = 0
+
+		if charcount == 1:
+			if(game_chan is None):
+				xchat.prnt("Can not find the Game channel.  Make sure you are in the game channel {0}".format(channame))
+				charcount = 0
+			try:
+				if(name is None or pswd is None):
+					name = word[1]
+					pswd = word[2]
+			except IndexError:
+				xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
+
+			webdata()
 			if(name is None or pswd is None):
-				name = word[1]
-				pswd = word[2]
-		except IndexError:
-			xchat.prnt( "LOGIN ERROR: To log in use /login CharName Password" )
-			charcount = 0
-		webdata()
-		if(name is None or pswd is None):
-			charcount = 0
-			xchat.prnt("Login Failed")
+				charcount = 0
+				xchat.prnt("Login Failed")
 		if charcount == 1:
 			try:
 				for entry in playerspagelist:
@@ -458,73 +576,96 @@ def login(word, word_eol, userdata):
 
 		if charcount == 1:
 			if(name != None and pswd != None):
-				usecommand("login {0} {1}".format(name, pswd) )
-	
-	if charcount == 1:
-		time.sleep(3) # Needed
-		usecommand("whoami")
-		xchat.prnt("Player Character {0} has logged in".format(name))
-		if blackbuyspend is True:
-			xchat.prnt("BlackBuy Spend Mode Activated.  To turn it off use /blackbuyoff")
-		if blackbuyspend is False:
-			xchat.prnt("BlackBuy Spend Mode Deactivated.  To turn it off use /blackbuyon")
-		if blackbuyspend14 is True:
-			xchat.prnt("BlackBuy Spend 14 Mode Activated.  To turn it off use /blackbuy14off")
-		if blackbuyspend14 is False:
-			xchat.prnt("BlackBuy Spend 14 Mode Deactivated.  To turn it off use /blackbuy14on")
-		if bottextmode is True:
-			xchat.prnt("Bot Text Mode Activated.  To turn it off use /bottextoff")
-		if buylife is True:
-			xchat.prnt("Buy Life Mode Activated.  To turn it off use /buylifeoff")
-		if buylife is False:
-			xchat.prnt("Buy Life Mode Deactivated.  To turn it on use /buylifeon")
-		if creepattack is True:
-			xchat.prnt("CreepAttack Mode Activated.  To turn it off use /creepattackoff")
-		if creepattack is False:
-			xchat.prnt("CreepAttack Mode Deactivated.  To turn it on use /creepattackon")
-		if errortextmode is True:
-			xchat.prnt("Error Text Mode Activated.  To turn it off use /errortextoff")
-		if expbuy is True:
-			xchat.prnt("Experience Buying Mode Activated.  To turn it off use /expbuyoff")
-		if expbuy is False:
-			xchat.prnt("Experience Buying Mode Deactivated.  To turn it on use /expbuyon")
-		if fightmode is True:
-			xchat.prnt("Fighting Mode Activated.  To turn it off use /fightoff")
-		if fightmode is False:
-			xchat.prnt("Fighting Mode Deactivated.  To turn it on use /fighton")
-		if getgems is True:
-			xchat.prnt("GetGems Mode Activated.  To turn it off use /getgemsoff")
-		if getgems is False:
-			xchat.prnt("GetGems Mode Deactivated.  To turn it on use /getgemson")
-		if intervaltext is True:
-			xchat.prnt("Interval Text Mode Activated.  To turn it off use /intervaltextoff")
-		if townworkswitch is True:
-			xchat.prnt("Town/Work Switch Mode Activated.  To change to Town/Forest use /townforest")
-		if townworkswitch is False:
-			xchat.prnt("Town/Forest Switch Mode Activated.  To change to Town/Work use /townwork")
-		if xpupgrade is True:
-			xchat.prnt("XPUpgrade Mode Activated.  To turn it off use /xpupgradeoff")
-		if xpupgrade is False:
-			xchat.prnt("XPUpgrade Mode Deactivated.  To turn it on use /xpupgradeon")
-		xchat.prnt("Current Goldsave: {0}.  If you want to change it use /setgoldsave number".format(goldsave))
-		xchat.prnt("Current Item Buy Level: {0}.  If you want to change it use /setitembuy number".format(setbuy))
-		xchat.prnt("Current Scrolls Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
-		xchat.prnt("Current SlaySum Minimum ItemScore: {0}.  If you want to change it use /setslaysum number".format(slaysum))
-		xchat.prnt("Current XPSpend for xpget item upgrades: {0}.  If you want to change it use /setxpspend number".format(xpspend))
-		xchat.prnt("")
-		xchat.prnt("For a list of PlayBot commands use /helpplaybot")
-		xchat.prnt("")
-		versionchecker()
+				loginstart()
 
-		# call main directly
-		main(None)
-	if charcount > 1:
+	if charcount >= 2:
 		xchat.prnt("You can only play with 1 character")
 		charcount = 1
 	return xchat.EAT_ALL
 
 # hook login command
 xchat.hook_command("login", login, help="/login <charname> <password> - You can use this to login your character into the game")
+
+def loginstart():
+	global name
+	global pswd
+
+	global setbuy
+	global buylife
+	global fightmode
+	global blackbuyspend
+	global blackbuyspend14
+	global getgems
+	global scrollssum
+	global xpupgrade
+	global xpspend
+	global intervaltext
+	global townworkswitch
+	global goldsave
+	global creepattack
+	global expbuy
+	global slaysum
+	global bottextmode
+	global errortextmode
+
+	usecommand("login {0} {1}".format(name, pswd) )
+	time.sleep(3) # Needed
+	usecommand("whoami")
+	xchat.prnt("Player Character {0} has logged in".format(name))
+	if blackbuyspend is True:
+		xchat.prnt("BlackBuy Spend Mode Activated.  To turn it off use /blackbuyoff")
+	if blackbuyspend is False:
+		xchat.prnt("BlackBuy Spend Mode Deactivated.  To turn it off use /blackbuyon")
+	if blackbuyspend14 is True:
+		xchat.prnt("BlackBuy Spend 14 Mode Activated.  To turn it off use /blackbuy14off")
+	if blackbuyspend14 is False:
+		xchat.prnt("BlackBuy Spend 14 Mode Deactivated.  To turn it off use /blackbuy14on")
+	if bottextmode is True:
+		xchat.prnt("Bot Text Mode Activated.  To turn it off use /bottextoff")
+	if buylife is True:
+		xchat.prnt("Buy Life Mode Activated.  To turn it off use /buylifeoff")
+	if buylife is False:
+		xchat.prnt("Buy Life Mode Deactivated.  To turn it on use /buylifeon")
+	if creepattack is True:
+		xchat.prnt("CreepAttack Mode Activated.  To turn it off use /creepattackoff")
+	if creepattack is False:
+		xchat.prnt("CreepAttack Mode Deactivated.  To turn it on use /creepattackon")
+	if errortextmode is True:
+		xchat.prnt("Error Text Mode Activated.  To turn it off use /errortextoff")
+	if expbuy is True:
+		xchat.prnt("Experience Buying Mode Activated.  To turn it off use /expbuyoff")
+	if expbuy is False:
+		xchat.prnt("Experience Buying Mode Deactivated.  To turn it on use /expbuyon")
+	if fightmode is True:
+		xchat.prnt("Fighting Mode Activated.  To turn it off use /fightoff")
+	if fightmode is False:
+		xchat.prnt("Fighting Mode Deactivated.  To turn it on use /fighton")
+	if getgems is True:
+		xchat.prnt("GetGems Mode Activated.  To turn it off use /getgemsoff")
+	if getgems is False:
+		xchat.prnt("GetGems Mode Deactivated.  To turn it on use /getgemson")
+	if intervaltext is True:
+		xchat.prnt("Interval Text Mode Activated.  To turn it off use /intervaltextoff")
+	if townworkswitch is True:
+		xchat.prnt("Town/Work Switch Mode Activated.  To change to Town/Forest use /townforest")
+	if townworkswitch is False:
+		xchat.prnt("Town/Forest Switch Mode Activated.  To change to Town/Work use /townwork")
+	if xpupgrade is True:
+		xchat.prnt("XPUpgrade Mode Activated.  To turn it off use /xpupgradeoff")
+	if xpupgrade is False:
+		xchat.prnt("XPUpgrade Mode Deactivated.  To turn it on use /xpupgradeon")
+	xchat.prnt("Current Goldsave: {0}.  If you want to change it use /setgoldsave number".format(goldsave))
+	xchat.prnt("Current Item Buy Level: {0}.  If you want to change it use /setitembuy number".format(setbuy))
+	xchat.prnt("Current Scrolls Buy ItemScore: {0}.  If you want to change it use /setscrolls number".format(scrollssum))
+	xchat.prnt("Current SlaySum Minimum ItemScore: {0}.  If you want to change it use /setslaysum number".format(slaysum))
+	xchat.prnt("Current XPSpend for xpget item upgrades: {0}.  If you want to change it use /setxpspend number".format(xpspend))
+	xchat.prnt("")
+	xchat.prnt("For a list of PlayBot commands use /helpplaybot")
+	xchat.prnt("")
+	versionchecker()
+
+	# call main directly
+	main(None)
 
 def logoutchar(word, word_eol, userdata):
 	global charcount
@@ -533,6 +674,7 @@ def logoutchar(word, word_eol, userdata):
 	global name
 	global pswd
 	global gameactive
+	global autostartmode
 
 	if(charcount == 0):
 		xchat.prnt("Characters has already been Logged Out")
@@ -544,6 +686,10 @@ def logoutchar(word, word_eol, userdata):
 		pswd = None
 		gameactive = False
 		charcount = 0
+		if autostartmode is True:
+			autostartmode = False
+			configwrite()
+			configwrite2()
 	return xchat.EAT_ALL
 
 xchat.hook_command("logoutchar", logoutchar, help="/logoutchar - Logs out the character from the PlayBot")
@@ -1057,6 +1203,8 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("PlayBot Commands List")
 	xchat.prnt("")
 	xchat.prnt("Area Switching Mode Off     - /areaoff")
+	xchat.prnt("Autostart Mode Off          - /autostartoff")
+	xchat.prnt("Autostart Mode On           - /autostarton")
 	xchat.prnt("BlackBuy Spend Mode Off     - /blackbuyoff")
 	xchat.prnt("BlackBuy Spend Mode On      - /blackbuyon")
 	xchat.prnt("BlackBuy 14 Spend Mode Off  - /blackbuy14off")
@@ -1067,6 +1215,7 @@ def helpplaybot(word, word_eol, userdata):
 	xchat.prnt("Buy Life Mode On            - /buylifeon")
 	xchat.prnt("CreepAttack Mode Off        - /creepattackoff")
 	xchat.prnt("CreepAttack Mode On         - /creepattackon")
+	xchat.prnt("Erase Config File           - /eraseconfig")
 	xchat.prnt("Error Text Mode Off         - /errortextoff")
 	xchat.prnt("Error Text Mode On          - /errortexton")
 	xchat.prnt("Experince Buying Mode Off   - /expbuyoff")
@@ -1123,6 +1272,7 @@ def settings(word, word_eol, userdata):
 	global goldsave
 	global expbuy
 	global slaysum
+	global autostartmode
 	
 	xchat.prnt("Playbot Settings List")
 	xchat.prnt("")
@@ -1132,6 +1282,7 @@ def settings(word, word_eol, userdata):
 		xchat.prnt("Area Switch Mode - Town/Forest")
 	if townworkswitch is None:
 		xchat.prnt("Area Switch Mode - Deactivated")
+	xchat.prnt("Autostart Mode - {0}".format(autostartmode))
 	xchat.prnt("BlackBuy Spend Mode - {0}".format(blackbuyspend))
 	xchat.prnt("BlackBuy 14 Spend Mode - {0}".format(blackbuyspend14))
 	xchat.prnt("Bot Text Mode - {0}".format(bottextmode))
@@ -2141,7 +2292,8 @@ def main(userdata):
 	botdisable1 = False
 	intervaldisable = False
 
-	bottester()
+	if gameactive is True:
+		bottester()
 
 	if gameactive is True:
 		if game_chan.get_info("channel").lower() != channame:
@@ -2801,3 +2953,6 @@ def worstitem():
 		if(thing[1] < diff):
 			good = thing
 	return good
+
+if autostartmode is True:
+	autostart(None)

@@ -1,6 +1,8 @@
 PlayBot Commands List
 
 Area Switching Mode Off     	- /areaoff
+Autostart Mode Off              - /autostartoff		- (Single Only)
+Autostart Mode On               - /autostarton		- (Single Only)
 BlackBuy Spend Mode Off		- /blackbuyoff  
 BlackBuy Spend Mode On      	- /blackbuyon  
 BlackBuy 14 Spend Mode Off  	- /blackbuy14off  
@@ -43,8 +45,8 @@ Version Checker             	- /versioncheck
 XPUpgrade Mode Off          	- /xpupgradeoff 
 XPUpgrade Mode On           	- /xpupgradeon  
 ZNC Mode Off                	- /zncoff		- (Single Only)
-ZNC Mode Off                	- /zncoff charnum	- (Multi or MultiMulti Only)
+ZNC Mode Off                	- /zncoff charnum	- (Multi Only)
 ZNC Mode On                 	- /zncon		- (Single Only)
-ZNC Mode On                 	- /zncon charnum	- (Multi or MultiMulti Only)
+ZNC Mode On                 	- /zncon charnum	- (Multi Only)
 
 If you want more information about a command use /help <command> - ie /help settings
