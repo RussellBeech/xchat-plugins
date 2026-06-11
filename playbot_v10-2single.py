@@ -11,7 +11,7 @@ import ssl
 import re ##
 
 __module_name__ = "Multirpg Playbot Script"
-__module_version__ = "10.1"
+__module_version__ = "10.2"
 __module_description__ = "Multirpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -87,15 +87,17 @@ networklist = [ ["AyoChat",     "irc.ayochat.or.id",            False,  1,      
 		["SkyChatz",    "irc.skychatz.org",             False,  1,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["SkyChatz",    "15.235.141.21",                False,  2,      6667,           "+6697",        "multirpg@skychatz.user.multirpg"],  \
 		["Techtronix",  "irc.techtronix.net",           True,   1,      "+6697",        "+6697",        "multirpg@multirpg.net"],  \
-		["Techtronix",  "35.229.28.106",                True,   2,      "+6697",        "+6697",        "multirpg@multirpg.net"],  \
+		["Techtronix",  "storm.techtronix.net",         True,   2,      "+6697",        "+6697",        "multirpg@multirpg.net"],  \
 		["Undernet",    "irc.undernet.org",             False,  1,      6667,           6667,           "multirpg@idlerpg.users.undernet.org"], \
 		["Undernet",    "185.117.74.172",               False,  2,      6667,           6667,           "multirpg@idlerpg.users.undernet.org"], \
 		["UnderX",      "irc.underx.org",               False,  1,      6667,           6667,           "multirpg@venus.skralg.com"], \
 		["UnderX",      "150.136.80.10",                False,  2,      6667,           6667,           "multirpg@venus.skralg.com"], \
 		["UniversalNet","irc.universalnet.org",         False,  1,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
-		["UniversalNet","62.171.172.8",                 False,  2,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
+		["UniversalNet","57.129.12.188",                False,  2,      6667,           "+6697",        "multirpg@venus.skralg.com"], \
+		["VibeTalk",    "irc.vibetalk.net",             False,  1,      6667,           "+6697",        "multirpg@tsqrt.skralg.com"], \
+		["VibeTalk",    "95.182.98.52",                 False,  2,      6667,           "+6697",        "multirpg@tsqrt.skralg.com"], \
 		["Virtulus",    "virtulus.ftp.sh",              True,   1,      "+6697",        "+6697",        "multirpg@B790DC3F.D0CDF40.88109D7.IP"], \
-		["Virtulus",    "129.153.131.239",              True,   2,      "+6697",        "+6697",        "multirpg@B790DC3F.D0CDF40.88109D7.IP"] ]
+		["Virtulus",    "virtulus.ftp.sh",              True,   2,      "+6697",        "+6697",        "multirpg@B790DC3F.D0CDF40.88109D7.IP"] ]
 
 creeps.reverse()
 monsters.reverse()
