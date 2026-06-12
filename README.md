@@ -8,7 +8,7 @@ When it is loaded a message should come up "Playbot Activated".
 To get the bot to play you need to use the command in the game channel /login charname password.  
 Obviously replacing the charname with your character's name and the password with your character's password.
 
-playbot_v10-1single and playbot_v10-1multi are PlayBots for the IRC game MultiRPG https://multirpg.net/  
+playbot_v10-2single and playbot_v10-2multi are PlayBots for the IRC game MultiRPG https://multirpg.net/  
 The different version are:  
 Single - Single player.  
 Multi - Up to 5 players.
