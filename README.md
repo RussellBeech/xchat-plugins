@@ -18,7 +18,7 @@ The different version are:
 Single - Single player.  
 Multi - Up to 4 players.  
 
-playbotidlerpg_v2quakesingle and playbotidlerpg_v2quakemulti are PlayBots for IdleRPG game on QuakeNet #idlerpg  
+playbotidlerpg_v2-1quakesingle and playbotidlerpg_v2-1quakemulti are PlayBots for IdleRPG game on QuakeNet #idlerpg  
 The different version are:  
 Single - Single player.  
 Multi - Up to 4 players.  
