@@ -9,17 +9,20 @@ To get the bot to play you need to use the command in the game channel /login ch
 Obviously replacing the charname with your character's name and the password with your character's password.
 
 playbot_v10-2single and playbot_v10-2multi are PlayBots for the IRC game MultiRPG https://multirpg.net/  
+
 The different version are:  
 Single - Single player.  
 Multi - Up to 5 players.
 
 playbotidlerpg_v2-2multigamesingle, playbotidlerpg_v2-2multigamemulti are PlayBots for IdleRPG games on 
 Abandoned-IRC #zw-idlerpg, Irc-Nerds #idlerpg and TwistedNet #idlerpg
+
 The different version are:  
 Single - Single player.  
 Multi - Up to 4 players.  
 
 playbotidlerpg_v2-1quakesingle and playbotidlerpg_v2-1quakemulti are PlayBots for IdleRPG game on QuakeNet #idlerpg  
+
 The different version are:  
 Single - Single player.  
 Multi - Up to 4 players.  
