@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "2.1"
+__module_version__ = "2.2"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -82,7 +82,11 @@ monsters = [	["Blue_Dragon",	        7500],	\
 creeps.reverse()
 monsters.reverse()
 
-website = "https://irpg.abandoned-irc.net"
+#               Network                 Website                                 Server                          ChanName        BotName 
+gamelist = [    ["abandoned",           "https://irpg.abandoned-irc.net",       "irc.abandoned-irc.net",        "#zw-idlerpg",  "IdleRPG"],  \
+		["irc-nerds",           "https://nerd-idlerpg.ddns.net",        "irc.irc-nerds.net",            "#idlerpg",     "IdleRPG"],  \
+		["twistednet",          "https://idlerpg.twistednet.org",       "irc.twistednet.org",           "#idlerpg",     "idleRPG"]   ]
+
 website2 = "playerview.php"
 website3 = "/players.php"
 russweb = "http://russellb.x10.mx/"
@@ -106,7 +110,7 @@ itemslists = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
-CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgabandonedmulti"
+CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamemulti"
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
 	configList = pickle.load(f)
@@ -138,7 +142,6 @@ ZNCUser4 = "***/***" # ZNC Username/Network
 ZNCPass4 = "*********" # ZNC Password
 
 # Changeable settings
-servername = "irc.abandoned-irc.net"
 setbuy = 15 # level to start buying items from
 goldsave = 3100 # gold kept in hand
 buylife = True
@@ -146,8 +149,6 @@ blackbuyspend = True
 blackbuyspend14 = True
 getgems = True
 fightmode = True
-channame = "#zw-idlerpg"
-botname = "IdleRPG"
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
 scrollssum = 3000 # Itemscore you start buying scrolls at
@@ -164,6 +165,10 @@ expbuy = False
 slaysum = 1000 # minimum sum you start slaying without mana from
 
 # declare stats as global
+channame = None
+botname = None
+servername = None
+website = None
 name = None
 pswd = None
 name2 = None
@@ -281,6 +286,7 @@ botdisable1 = False
 botdisable2 = False
 botdisable3 = False
 botdisable4 = False
+networkname = None
 
 for entry in configList:
 	if(entry[0] == "blackbuyspend"):
@@ -350,7 +356,7 @@ def versionchecker():
 	webversion = None
 	gitversion = None
 	newversion = 0
-	versionfilename = "playbotversionabandoned.txt"
+	versionfilename = "playbotversionmultigame.txt"
 
 	try:
 		if python3 is False:
@@ -467,6 +473,10 @@ def bottester(num):
 	global game_chan3
 	global game_chan4
 	global botname
+	global netname
+	global netname2
+	global netname3
+	global netname4
 	global char1
 	global char2
 	global char3
@@ -482,16 +492,23 @@ def bottester(num):
 	botcount4 = 0
 
 	if num == 1 and char1 is True:
-		userlist = game_chan.get_list("users")
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				botname = entry[4]
 		bottest = botname
 		botentry = []
 
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+		try:
+			userlist = game_chan.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
 
 		botcount1 = len(botentry)
 		if botcount1 == 1:
@@ -499,16 +516,23 @@ def bottester(num):
 		if botcount1 >= 2:
 			botdisable1 = True
 	if num == 2 and char2 is True:
-		userlist = game_chan2.get_list("users")
+		for entry in gamelist:
+			if entry[0] in netname2.lower():
+				botname = entry[4]
 		bottest = botname
 		botentry = []
 
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+		try:
+			userlist = game_chan2.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
 
 		botcount2 = len(botentry)
 		if botcount2 == 1:
@@ -517,16 +541,23 @@ def bottester(num):
 			botdisable2 = True
 
 	if num == 3 and char3 is True:
-		userlist = game_chan3.get_list("users")
+		for entry in gamelist:
+			if entry[0] in netname3.lower():
+				botname = entry[4]
 		bottest = botname
 		botentry = []
 
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+		try:
+			userlist = game_chan3.get_list("users")
+
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
 
 		botcount3 = len(botentry)
 		if botcount3 == 1:
@@ -534,16 +565,22 @@ def bottester(num):
 		if botcount3 >= 2:
 			botdisable3 = True
 	if num == 4 and char4 is True:
-		userlist = game_chan4.get_list("users")
+		for entry in gamelist:
+			if entry[0] in netname4.lower():
+				botname = entry[4]
 		bottest = botname
 		botentry = []
 
-		for user in userlist:
-			if bottest in user.nick and user.nick != bottest:
-				botprefix = user.prefix
-				if(botprefix == "@"):
-					botentry.append(user.nick)
-					botname10 = user.nick
+		try:
+			userlist = game_chan4.get_list("users")
+			for user in userlist:
+				if bottest in user.nick and user.nick != bottest:
+					botprefix = user.prefix
+					if(botprefix == "@"):
+						botentry.append(user.nick)
+						botname10 = user.nick
+		except AttributeError:
+			xchat.prnt( "AttributeError" )
 
 		botcount4 = len(botentry)
 		if botcount4 == 1:
@@ -623,27 +660,51 @@ def login(word, word_eol, userdata):
 	global char2
 	global char3
 	global char4
+	global gamelist
+	global website
+	global servername
+	global botname
 	global playerspagelist
 	global webworks
 	global webworks2
+	global networkname
 
 	charcount += 1
 
+	netlist = []
+	for entry in gamelist:
+		netlist.append( ( entry[0] ) )
 	if charcount == 1:
+		netcheck = False
 		gameactive = True
 		netname = xchat.get_info("network")
 		nickname = xchat.get_info("nick")
 		namecheck = False
 
-		# find context
-		game_chan = xchat.find_context(channel=channame)
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				networkname = entry[0]
+				website = entry[1]
+				servername = entry[2]
+				channame = entry[3]
+				botname = entry[4]
+				netcheck = True
 
-		if "undernet" in netname.lower():
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		if netcheck is False:
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
 			charcount = 0
-		if "quakenet" in netname.lower():
-			xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
-			charcount = 0
+
+		if charcount == 1:
+			# find context
+			game_chan = xchat.find_context(channel=channame)
+
+			if "undernet" in netname.lower():
+				xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+				charcount = 0
+			if "quakenet" in netname.lower():
+				xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
+				charcount = 0
 
 		if charcount == 1:
 			if(game_chan is None):
@@ -683,19 +744,35 @@ def login(word, word_eol, userdata):
 				usecommand("login {0} {1}".format(name, pswd), 1 )
 	
 	if charcount == 2:
+		netcheck = False
 		netname2 = xchat.get_info("network")
 		nickname2 = xchat.get_info("nick")
 		namecheck2 = False
 
-		# find context
-		game_chan2 = xchat.find_context(channel=channame)
+		for entry in gamelist:
+			if entry[0] in netname2.lower():
+				networkname2 = entry[0]                               
+				netcheck = True
 
-		if "undernet" in netname2.lower():
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		if netcheck is False:
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname2))
 			charcount = 1
-		if "quakenet" in netname2.lower():
-			xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
-			charcount = 1
+		if netcheck is True:
+			if networkname2 != networkname:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+				charcount = 1
+
+		if charcount == 2:
+			# find context
+			game_chan2 = xchat.find_context(channel=channame)
+
+			if "undernet" in netname2.lower():
+				xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+				charcount = 1
+			if "quakenet" in netname2.lower():
+				xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
+				charcount = 1
 
 		if charcount == 2:
 			if(game_chan2 is None):
@@ -743,19 +820,35 @@ def login(word, word_eol, userdata):
 			return
 
 	if charcount == 3:
+		netcheck = False
 		netname3 = xchat.get_info("network")
 		nickname3 = xchat.get_info("nick")
 		namecheck3 = False
 
-		# find context
-		game_chan3 = xchat.find_context(channel=channame)
+		for entry in gamelist:
+			if entry[0] in netname3.lower():
+				networkname3 = entry[0]                               
+				netcheck = True
 
-		if "undernet" in netname3.lower():
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		if netcheck is False:
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname3))
 			charcount = 2
-		if "quakenet" in netname3.lower():
-			xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
-			charcount = 2
+		if netcheck is True:
+			if networkname3 != networkname:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+				charcount = 2
+
+		if charcount == 3:
+			# find context
+			game_chan3 = xchat.find_context(channel=channame)
+
+			if "undernet" in netname3.lower():
+				xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+				charcount = 2
+			if "quakenet" in netname3.lower():
+				xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
+				charcount = 2
 
 		if charcount == 3:
 			if(game_chan3 is None):
@@ -802,19 +895,35 @@ def login(word, word_eol, userdata):
 			return
 
 	if charcount == 4:
+		netcheck = False
 		netname4 = xchat.get_info("network")
 		nickname4 = xchat.get_info("nick")
 		namecheck4 = False
 
-		# find context
-		game_chan4 = xchat.find_context(channel=channame)
+		for entry in gamelist:
+			if entry[0] in netname4.lower():
+				networkname4 = entry[0]                               
+				netcheck = True
 
-		if "undernet" in netname4.lower():
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		if netcheck is False:
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname4))
 			charcount = 3
-		if "quakenet" in netname4.lower():
-			xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
-			charcount = 3
+		if netcheck is True:
+			if networkname4 != networkname:
+				xchat.prnt("You can only use multiple players on {0}".format(networkname))
+				charcount = 3
+
+		if charcount == 4:
+			# find context
+			game_chan4 = xchat.find_context(channel=channame)
+
+			if "undernet" in netname4.lower():
+				xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+				charcount = 3
+			if "quakenet" in netname4.lower():
+				xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
+				charcount = 3
 
 		if charcount == 4:
 			if(game_chan4 is None):
@@ -1693,6 +1802,10 @@ def settings(word, word_eol, userdata):
 	global intervaltext
 	global townworkswitch
 	global goldsave
+	global netname
+	global netname2
+	global netname3
+	global netname4
 	global expbuy
 	global slaysum
 	
@@ -1718,10 +1831,10 @@ def settings(word, word_eol, userdata):
 	xchat.prnt("Goldsave - {0}".format(goldsave))
 	xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
 	xchat.prnt("Item Buy Level - {0}".format(setbuy))
-	xchat.prnt("Player Character 1 - {0}, {1}".format(char1, name))
-	xchat.prnt("Player Character 2 - {0}, {1}".format(char2, name2))
-	xchat.prnt("Player Character 3 - {0}, {1}".format(char3, name3))
-	xchat.prnt("Player Character 4 - {0}, {1}".format(char4, name4))
+	xchat.prnt("Player Character 1 - {0}, {1}.  Network - {2}".format(char1, name, netname))
+	xchat.prnt("Player Character 2 - {0}, {1}.  Network - {2}".format(char2, name2, netname2))
+	xchat.prnt("Player Character 3 - {0}, {1}.  Network - {2}".format(char3, name3, netname3))
+	xchat.prnt("Player Character 4 - {0}, {1}.  Network - {2}".format(char4, name4, netname4))
 	xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
 	xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
 	xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
@@ -2325,7 +2438,7 @@ def characterstats(num):
 	xchat.prnt("Life: {0}".format(life))
 	xchat.prnt("Scrolls: {0} of 5".format(scrolls))
 	xchat.prnt("Exp Used: {0} of 5".format(exp))
-	xchat.prnt("Eat Used: {0} of 200".format(eatused))
+	xchat.prnt("Eat Used: {0} of 5".format(eatused))
 	xchat.prnt("Upgrade Level: {0}".format(upgradelevel))
 	xchat.prnt("Items Sum Score: {0}".format(itemSums))
 	xchat.prnt("Expert Items Score: {0}".format(expertSums))

@@ -12,7 +12,7 @@ import math
 import ssl
 
 __module_name__ = "Idlerpg Playbot Script"
-__module_version__ = "2.1"
+__module_version__ = "2.2"
 __module_description__ = "Idlerpg Playbot Script"
 
 if sys.version_info[0] >= 3:
@@ -82,7 +82,11 @@ monsters = [	["Blue_Dragon",	        7500],	\
 creeps.reverse()
 monsters.reverse()
 
-website = "https://irpg.abandoned-irc.net"
+#               Network                 Website                                 Server                          ChanName        BotName 
+gamelist = [    ["abandoned",           "https://irpg.abandoned-irc.net",       "irc.abandoned-irc.net",        "#zw-idlerpg",  "IdleRPG"],  \
+		["irc-nerds",           "https://nerd-idlerpg.ddns.net",        "irc.irc-nerds.net",            "#idlerpg",     "IdleRPG"],  \
+		["twistednet",          "https://idlerpg.twistednet.org",       "irc.twistednet.org",           "#idlerpg",     "idleRPG"]   ]
+
 website2 = "playerview.php"
 website3 = "/players.php"
 russweb = "http://russellb.x10.mx/"
@@ -99,8 +103,8 @@ myentry = None
 currentversion = __module_version__
 currentversion = float( currentversion )
 
-CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgabandonedsingle"
-CONFIG_FILE_LOCATION2 = xchat.get_info('xchatdir')+"/.autostartsingleA"
+CONFIG_FILE_LOCATION = xchat.get_info('xchatdir')+"/.playbotidlerpgmultigamesingle"
+CONFIG_FILE_LOCATION2 = xchat.get_info('xchatdir')+"/.autostartsingleMG"
 
 try:
 	f = open(CONFIG_FILE_LOCATION,"rb")
@@ -125,7 +129,6 @@ ZNCUser = "***/***" # ZNC Username/Network
 ZNCPass = "*******" # ZNC Password
 
 # Changeable settings
-servername = "irc.abandoned-irc.net"
 setbuy = 15 # level to start buying items from
 goldsave = 3100 # gold kept in hand
 buylife = True
@@ -133,8 +136,6 @@ blackbuyspend = True
 blackbuyspend14 = True
 getgems = True
 fightmode = True
-channame = "#zw-idlerpg"
-botname = "IdleRPG"
 creepattack = True # True = On, False = Off - Autocreep selection
 setcreeptarget = "Werewolf" # Sets creep target. creepattack needs to be False to use
 scrollssum = 3000 # item score you start buying scrolls
@@ -152,6 +153,10 @@ slaysum = 1000 # minimum sum you start slaying without mana from
 autostartdelay = 60 #seconds delay for autostart when you have the plugin auto loaded from startup
 
 # declare stats as global
+channame = None
+botname = None
+servername = None
+website = None
 name = None
 pswd = None
 charcount = 0
@@ -286,7 +291,7 @@ def versionchecker():
 	webversion = None
 	gitversion = None
 	newversion = 0
-	versionfilename = "playbotversionabandoned.txt"
+	versionfilename = "playbotversionmultigame.txt"
 
 	try:
 		if python3 is False:
@@ -455,9 +460,13 @@ def bottester():
 	global game_chan
 	global botname
 	global botdisable1
+	global netname
 	
 	botcount1 = 0
 
+	for entry in gamelist:
+		if entry[0] in netname.lower():
+			botname = entry[4]
 	bottest = botname
 	botentry = []
 
@@ -503,6 +512,10 @@ def autostart(userdata):
 	global game_chan
 	global autostartmode
 	global autostartdelay
+	global gamelist
+	global website
+	global servername
+	global botname
 
 	for entry in autoconfigList:
 		if(entry[0] == "name"):
@@ -525,6 +538,13 @@ def autostart(userdata):
 
 		nickname = xchat.get_info("nick")
 		
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				website = entry[1]
+				servername = entry[2]
+				channame = entry[3]
+				botname = entry[4]
+
 		# find context
 		game_chan = xchat.find_context(channel=channame)
 		webdata()
@@ -560,6 +580,10 @@ def login(word, word_eol, userdata):
 	global gameactive
 	global charcount
 	global game_chan
+	global gamelist
+	global website
+	global servername
+	global botname
 	global playerspagelist
 	global webworks
 	global webworks2
@@ -567,20 +591,38 @@ def login(word, word_eol, userdata):
 	charcount += 1
 
 	if charcount == 1:
+		netcheck = False
 		gameactive = True
 		netname = xchat.get_info("network")
 		nickname = xchat.get_info("nick")
 		namecheck = False
+		netlist = []
 			
-		# find context
-		game_chan = xchat.find_context(channel=channame)
+		for entry in gamelist:
+			if entry[0] in netname.lower():
+				website = entry[1]
+				servername = entry[2]
+				channame = entry[3]
+				botname = entry[4]
+				netcheck = True
 
-		if "undernet" in netname.lower():
-			xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+		if netcheck is False:
+			for entry in gamelist:
+				netlist.append( ( entry[0] ) )
+			xchat.prnt("NETWORK ERROR: Networks supported: {0}".format(netlist))
+			xchat.prnt("Current Network: {0}.  The network name needs to have one of the above names in it".format(netname))
 			charcount = 0
-		if "quakenet" in netname.lower():
-			xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
-			charcount = 0
+
+		if charcount == 1:
+			# find context
+			game_chan = xchat.find_context(channel=channame)
+
+			if "undernet" in netname.lower():
+				xchat.prnt("The #irpg game on Undernet is not supported.  Expect your head to explode if you continue")
+				charcount = 0
+			if "quakenet" in netname.lower():
+				xchat.prnt("The game on QuakeNet is not supported.  Use the QuakeNet Plugin")
+				charcount = 0
 
 		if charcount == 1:
 			if(game_chan is None):
@@ -1391,7 +1433,7 @@ def settings(word, word_eol, userdata):
 	xchat.prnt("Goldsave - {0}".format(goldsave))
 	xchat.prnt("Interval Text Mode - {0}".format(intervaltext))
 	xchat.prnt("Item Buy Level - {0}".format(setbuy))
-	xchat.prnt("Player Character - {0}.  Network {1}".format(name, netname))
+	xchat.prnt("Player Character - {0}.  Network - {1}".format(name, netname))
 	xchat.prnt("Scrolls Buy ItemScore - {0}".format(scrollssum))
 	xchat.prnt("Set Creep Target - {0}".format(setcreeptarget))
 	xchat.prnt("SlaySum Minimum - {0}".format(slaysum))
@@ -1690,7 +1732,7 @@ def status(word, word_eol, userdata):
 		xchat.prnt("Life: {0}".format(life))
 		xchat.prnt("Scrolls: {0} of 5".format(scrolls))
 		xchat.prnt("Exp Used: {0} of 5".format(exp))
-		xchat.prnt("Eat Used: {0} of 200".format(eatused))
+		xchat.prnt("Eat Used: {0} of 5".format(eatused))
 		xchat.prnt("Upgrade Level: {0}".format(upgradelevel))
 		xchat.prnt("Items Sum Score: {0}".format(itemSum))
 		xchat.prnt("Expert Items Score: {0}".format(expertSum))
@@ -2076,7 +2118,7 @@ def getvariables():
 			if var == "experience":
 				xp = num
 			if var == "ffight":
-				eatused = num
+				eatused = int(num)
 			if var == "fightcount":
 				fights = num
 			if var == "gems":
